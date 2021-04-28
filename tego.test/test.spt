@@ -1,0 +1,7 @@
+module test
+
+language Tego
+
+test parse [[
+
+]] parse succeeds

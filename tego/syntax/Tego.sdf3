@@ -1,0 +1,99 @@
+module Tego
+
+imports
+
+  Common
+
+context-free start-symbols
+
+  Module
+
+context-free sorts Module
+context-free syntax
+
+  Module.Module = <<ModuleDecl>
+
+    <{Decl "\n"}*>>
+
+context-free sorts ModuleDecl
+context-free syntax
+
+  ModuleDecl.ModuleDecl = <module <ID>>
+
+context-free sorts Decl
+context-free syntax
+
+  Decl.ValDef                   = [val [ID]: [Type] = [Exp].]
+  Decl.ValDefNoType             = [val [ID] = [Exp].]
+
+  Decl.StrategyDecl             = [decl [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type]] // desugared
+  Decl.StrategyDeclNoParams     = [decl [ID]<[{TypeParamDecl ", "}*]>: [Type]] // desugared
+  Decl.StrategyDeclNoTypeParams = [decl [ID]([{Type ", "}*]): [Type]] // desugared
+  Decl.StrategyDeclNoParamsOrTypeParams = [decl [ID]: [Type]]		// desugared
+
+  Decl.StrategyDef              = <<ID>(<{ParamDef ", "}*>) = <Exp>.>
+
+  Decl.StrategyDefNoParams      = <<ID> = <Exp>.>		// desugared
+
+context-free sorts ParamDef
+context-free syntax
+  ParamDef.ParamDef = <<ID>>
+
+context-free sorts TypeParamDecl
+context-free syntax
+  TypeParamDecl.TypeParamDecl = <<ID>>
+
+context-free sorts Type
+context-free syntax
+
+  Type.TypeRef = <<ID>>
+  Type.ListType = <[<Type>]>
+  Type.SetType  = <{<Type>}>
+  Type.FunctionType = [([{Type ", "}*]) [Type]]
+  Type.StrategyType   = [[Type] -> [Type]] {right}
+  Type.AnyType     = <Any>	// FIXME: Make built-in
+  Type.IntType     = <Int>  // FIXME: Make built-in
+  Type = <(<Type>)> {bracket}
+
+context-free sorts Exp Arg
+context-free syntax
+
+  Exp.Seq = <<Exp>;
+    <Exp>> {right}
+  Exp.Id = <id>
+  Exp.Call = <<Exp>(<{Exp ", "}*>)>
+  Exp.Var = <<ID>>
+  Exp.Int = <<INT>>
+  Exp.Object = <object>
+  Exp.String = <<STRING>>
+  Exp.Build = <!<Exp>>
+  Exp = <(<Exp>)> {bracket}
+  //Exp.Lambda = <\\>
+
+//context-free sorts Exp
+//context-free syntax
+//
+//  Exp.Var = <<ID>>
+
+//context-free priorities
+  //Arg = Exp <0> .> Exp.Seq
+
+
+context-free priorities
+  {
+    Exp.Call
+    Exp.Build
+  } > {
+    Exp.Seq
+  }
+
+context-free priorities
+  {
+    Type.StrategyType
+  } > {
+    Type.FunctionType
+  }
+
+template options
+  ID = keyword {reject}
+  keyword -/- [A-Za-z0-9]

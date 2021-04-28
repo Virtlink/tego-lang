@@ -1,0 +1,224 @@
+module statics
+
+imports
+  signatures/Tego-sig
+
+// Single-file entry point
+rules programOk : Module
+
+  programOk(module) :- {s}
+    new s,
+    init(s),
+    moduleOk(s, module).
+
+// Multi-file entry point
+rules projectOk : scope
+
+  projectOk(s) :-
+    init(s).
+
+rules fileOk : scope * Module
+
+  fileOk(s, module) :- moduleOk(s, module).
+
+rules init : scope
+
+  init(s) :- true.
+
+rules moduleOk : scope * Module
+
+  moduleOk(s, Module(moduleDecl, decls)) :- {ms}
+    new ms, ms -P-> s,
+    moduleDeclOk(s, moduleDecl, ms),
+    declsOk(ms, decls).
+
+  moduleOk(s, Module-Plhdr()).
+
+rules moduleDeclOk : scope * ModuleDecl * scope
+
+  moduleDeclOk(s, ModuleDecl(name), ms) :-
+    declareModule(s, name, ms).
+
+  moduleDeclOk(s, ModuleDecl-Plhdr(), ms).
+
+rules declOk : scope * Decl
+  declsOk maps declOk(*, list(*))
+
+  declOk(s, d@ValDef(name, type, body)) :- {T TBODY}
+    typeOfType(s, type) == T,
+    typeOfExp(s, body) == TBODY,
+    subtypeOf(TBODY, T),
+    declareDecl(s, name, T),
+    @d.type := T.
+
+  declOk(s, d@ValDefNoType(name, body)) :- {T}
+    typeOfExp(s, body) == T,
+    declareDecl(s, name, T),
+    @d.type := T.
+
+  declOk(s, d@StrategyDecl(name, typeParams, params, type)) :- {T PTs RT}
+    typeParamDeclsOk(s, typeParams),
+    typesOfTypes(s, params) == PTs,
+    typeOfType(s, type) == RT,
+    T == FUNCTION(PTs, RT),
+    declareDecl(s, name, T),
+    @d.type := T.
+
+  declOk(s, d@StrategyDef(name, paramDefs, body)) :- {T PTs RT ss}
+    typeOfType(s, TypeRef(name)) == FUNCTION(PTs, RT),
+    new ss, ss -P-> s,
+    paramDefsOk(ss, paramDefs, PTs),
+    typeOfExp(ss, body) == RT,
+    @d.type := T.
+
+  declOk(s, Decl-Plhdr()).
+
+rules typeOfType : scope * Type -> TYPE
+  typesOfTypes maps typeOfType(*, list(*)) = list(*)
+
+  typeOfType(s, t@StrategyType(inputType, outputType)) = T@STRATEGY(IT, OT) :-
+    typeOfType(s, inputType) == IT,
+    typeOfType(s, outputType) == OT,
+    @t.type := T.
+
+  typeOfType(s, t@FunctionType(paramTypes, retType)) = T@FUNCTION(PTs, RT) :-
+    typesOfTypes(s, paramTypes) == PTs,
+    typeOfType(s, retType) == RT,
+    @t.type := T.
+
+  typeOfType(s, t@AnyType()) = T@ANY() :-
+    @t.type := T.
+
+  typeOfType(s, t@IntType()) = T@INT() :-
+    @t.type := T.
+
+  typeOfType(s, t@ListType(type)) = T@LIST(ET) :-
+    typeOfType(s, type) == ET,
+    @t.type := T.
+
+  typeOfType(s, t@SetType(type)) = T@SET(ET) :-
+    typeOfType(s, type) == ET,
+    @t.type := T.
+
+  typeOfType(s, t@TypeRef(name)) = T :-
+    resolveDecl(s, name) == T,
+    @t.type := T.
+
+  typeOfType(s, Type-Plhdr()) = _.
+
+rules typeParamDeclOk : scope * TypeParamDecl
+  typeParamDeclsOk maps typeParamDeclOk(*, list(*))
+
+  // FIXME: This is incorrect because we use the same constraint variable
+  // for all instantiations
+  typeParamDeclOk(s, p@TypeParamDecl(name)) :- {T}
+    // A type parameter, unconstrained
+    declareDecl(s, name, T),
+    @p.type := T.
+
+  typeParamDeclOk(s, TypeParamDecl-Plhdr()).
+
+rules paramDefOk : scope * ParamDef * TYPE
+  paramDefsOk maps paramDefOk(*, list(*), list(*))
+
+  paramDefOk(s, p@ParamDef(name), T) :-
+    declareDecl(s, name, T),
+    @p.type := T.
+
+  paramDefOk(s, ParamDef-Plhdr(), T).
+
+rules typeOfExp : scope * Exp -> TYPE
+  typesOfExps maps typeOfExp(*, list(*)) = list(*)
+
+  typeOfExp(s, e@Seq(e1, e2)) = T :- {T1 T2 IT MT OT}
+    typeOfExp(s, e1) == T1,
+    typeOfExp(s, e2) == T2,
+    T1 == STRATEGY(IT, MT),
+    T2 == STRATEGY(MT, OT),
+    T == STRATEGY(IT, OT),
+    @e.type := T.
+
+  typeOfExp(s, e@Id()) = T@STRATEGY(a, a) :-
+    @e.type := T.
+
+  typeOfExp(s, e@Call(rcv, args)) = RT :- {PTs}
+    typeOfExp(s, rcv) == FUNCTION(PTs, RT),
+    typesOfExps(s, args) == PTs,
+    @e.type := RT.
+
+  typeOfExp(s, e@Var(name)) = T :-
+    resolveDecl(s, name) == T,
+    @e.type := T.
+
+  // FIXME: This is incorrect since we want to be able to cast literals to any of the integer types
+  typeOfExp(s, e@Int(_)) = T@INT() :-
+    @e.type := T.
+
+  typeOfExp(s, e@String(_)) = T@STRING() :-
+    @e.type := T.
+
+  typeOfExp(s, e@Object()) = T@ANY() :-
+    @e.type := T.
+
+  typeOfExp(s, e@Build(exp)) = T@STRATEGY(_, TEXP) :-
+    typeOfExp(s, exp) == TEXP,
+    @e.type := T.
+
+  typeOfExp(s, Exp-Plhdr()) = T.
+
+rules subtypeOf : TYPE * TYPE
+
+  subtypeOf(T, T).
+
+rules declareModule : scope * string * scope
+
+  declareModule(s, name, ms) :-
+    !type[Module{name@name}, MODULE(ms)] in s.
+
+rules declareDecl : scope * string * TYPE
+
+  declareDecl(s, name, T) :-
+    !type[Decl{name@name}, T] in s.
+
+rules resolveDecl : scope * string -> TYPE
+
+  resolveDecl(s, name) = T :-
+    query type
+      filter P*
+      and { d' :- d' == Decl{name@_} }
+      min $ < P
+      in s |-> [(_, (_, T))|_].
+
+signature
+  sorts TYPE
+  constructors
+    MODULE   : scope -> TYPE
+    STRATEGY : TYPE * TYPE -> TYPE
+    FUNCTION : list(TYPE) * TYPE -> TYPE
+    LIST     : TYPE -> TYPE
+    SET      : TYPE -> TYPE
+
+    BYTE     : TYPE
+    SHORT    : TYPE
+    INT      : TYPE
+    LONG     : TYPE
+
+    UBYTE    : TYPE
+    USHORT   : TYPE
+    UINT     : TYPE
+    ULONG    : TYPE
+
+    ANY      : TYPE
+    STRING   : TYPE
+  sorts
+    DECL = (path * (occurrence * TYPE))
+
+signature
+  namespaces
+    Module   : ID
+    Decl     : ID
+  relations
+    type     : occurrence -> TYPE
+  name-resolution
+    labels
+      P      // laxical parent

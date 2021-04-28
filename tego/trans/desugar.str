@@ -1,0 +1,17 @@
+module desugar
+
+imports
+
+  signatures/Tego-sig
+
+rules
+
+  // NOTE: Desugar to existing constructors defined in the syntax
+
+  desugar-all = topdown(try(desugar))
+
+  desugar: StrategyDeclNoParams(name, typeParams, type) -> StrategyDecl(name, typeParams, [], type)
+  desugar: StrategyDeclNoTypeParams(name, params, type) -> StrategyDecl(name, [], params, type)
+  desugar: StrategyDeclNoParamsOrTypeParams(name, type) -> StrategyDecl(name, [], [], type)
+
+  desugar: StrategyDefNoParams(name, body) -> StrategyDef(name, [], body)

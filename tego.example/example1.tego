@@ -1,0 +1,56 @@
+module example1
+
+// The difference between a function and a strategy:
+// A strategy builds a lazy computation of one or multiple results
+// A strategy has a context
+// A strategy can be interrupted (cancelled)
+// A strategy can report progress (through its context)
+// A strategy always takes an implicit input argument and always produces an implicit output argument
+// A strategy can fail (when it returns an empty computation or empty lazy sequence)
+// A strategy can be debugged
+
+// It is possible to lift a function into a strategy,
+// but this creates a strategy that cannot easily be debugged,
+// has no context, may not be interruptible, will not report progress
+// may not be lazy
+
+//decl complete: (Var, {String}) SolverState -> [StrategoTerm]
+//complete(v, visitedInjections) =
+//  expandAllPredicates(v);
+//  expandAllInjections(v, visitedInjections);
+//  expandAllQueries(v);
+//  expandDeterministic(v).
+//
+//decl expandAllPredicates : (Var) SolverState -> [SolverState]
+//expandAllPredicates(v) =
+//  repeat(
+//    glc(id, id, id)
+//    //limit(1), selectConstraints(CUser, \(constraint, state) = containsVar(v, constraint, state)\)
+//  ).
+
+val A : Int = 10.
+val B = id.
+val C : Int -> Int = !10.
+val C : Int -> Int -> Int = !!10.
+
+decl x: Int -> Int
+x = !10.
+decl y: Int
+y = 10.
+decl z(Int): Int -> Int
+z(a) = !a.
+
+//decl x(Int): Int -> Int
+//x(y) = !10.
+
+//decl x<a> : (a -> a) a -> a
+//x(b) = b.
+
+//decl repeat<a> : (a -> a) a -> a
+//repeat(s) = try(s; repeat(s)).
+//
+//decl try<a> : (a -> a) a -> a
+//try(s) = x(id).//glc(s, id, id).
+//
+//decl glc<a> : (a -> a, a -> a, a -> a) a -> a
+////decl repeat<a> : (a -> a) a -> a

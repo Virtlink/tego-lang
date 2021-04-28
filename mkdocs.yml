@@ -1,0 +1,48 @@
+site_name: Tego
+site_description: Tego language
+site_author: Daniel A. A. Pelsmaeker
+site_dir: .docs_site/
+
+repo_url: https://github.com/Virtlink/tego-lang
+
+theme:
+  name: material
+  language: en
+  icon:
+    logo: fontawesome/solid/chess-rook
+    repo: fontawesome/brands/github
+  palette:
+    primary: orange
+    accent: indigo
+  font:
+    code: JetBrains Mono
+    
+markdown_extensions:
+  - abbr
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - def_list
+  - toc:
+      permalink: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.saneheaders
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
