@@ -1,0 +1,31 @@
+plugins {
+    id 'java-platform'
+}
+
+group 'com.virtlink'
+version '0.1-SNAPSHOT'
+
+dependencies {
+    constraints {
+        // Platform
+        api     "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        api     "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
+
+        // CLI
+        api     "com.github.ajalt:clikt:2.8.0"
+
+        // Parsing
+        api     "org.antlr:antlr4:4.9"
+
+        // Type Checking
+        api     "com.virtlink:disjoint-map:1.0-SNAPSHOT"
+
+        // Testing
+        api     "org.junit.jupiter:junit-jupiter:5.7.0"
+        api     "org.junit.jupiter:junit-jupiter-api:5.7.0"
+        api     "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+        api     "org.junit.jupiter:junit-jupiter-params:5.7.0"
+        api     "nl.jqno.equalsverifier:equalsverifier:3.5"
+    }
+}
+
