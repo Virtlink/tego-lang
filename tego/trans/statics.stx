@@ -51,11 +51,6 @@ rules declOk : scope * Decl
     declareDecl(s, name, T),
     @d.type := T.
 
-  declOk(s, d@ValDefNoType(name, body)) :- {T}
-    typeOfExp(s, body) == T,
-    declareDecl(s, name, T),
-    @d.type := T.
-
   declOk(s, d@StrategyDecl(name, typeParams, params, type)) :- {T PTs RT}
     typeParamDeclsOk(s, typeParams),
     typesOfTypes(s, params) == PTs,
@@ -65,11 +60,25 @@ rules declOk : scope * Decl
     @d.type := T.
 
   declOk(s, d@StrategyDef(name, paramDefs, body)) :- {T PTs RT ss}
-    typeOfType(s, TypeRef(name)) == FUNCTION(PTs, RT),
+    typeOfType(s, TypeRef(name)) == T@FUNCTION(PTs, RT),
     new ss, ss -P-> s,
     paramDefsOk(ss, paramDefs, PTs),
     typeOfExp(ss, body) == RT,
     @d.type := T.
+
+  declOk(s, d@RuleDef(name, paramDefs, inExp, outExp)) :- {T PTs IT OT ss}
+    typeOfType(s, TypeRef(name)) == T@FUNCTION(PTs, STRATEGY(IT, OT)),
+    new ss, ss -P-> s,
+    paramDefsOk(ss, paramDefs, PTs),
+    typeOfExp(ss, inExp) == IT,
+    typeOfExp(ss, outExp) == OT,
+    @d.type := T.
+
+  declOk(s, d@ClassDecl(name)) :- {T}
+    T == CLASS(name),
+    declareDecl(s, name, T),
+    @d.type := T.
+
 
   declOk(s, Decl-Plhdr()).
 
@@ -141,10 +150,15 @@ rules typeOfExp : scope * Exp -> TYPE
   typeOfExp(s, e@Id()) = T@STRATEGY(a, a) :-
     @e.type := T.
 
-  typeOfExp(s, e@Call(rcv, args)) = RT :- {PTs}
+  typeOfExp(s, e@Apply(rcv, args)) = RT :- {PTs}
     typeOfExp(s, rcv) == FUNCTION(PTs, RT),
     typesOfExps(s, args) == PTs,
     @e.type := RT.
+
+  typeOfExp(s, e@Eval(rcv, input)) = OT :- {IT}
+    typeOfExp(s, rcv) == STRATEGY(IT, OT),
+    typeOfExp(s, input) == IT,
+    @e.type := OT.
 
   typeOfExp(s, e@Var(name)) = T :-
     resolveDecl(s, name) == T,
@@ -195,6 +209,7 @@ signature
     MODULE   : scope -> TYPE
     STRATEGY : TYPE * TYPE -> TYPE
     FUNCTION : list(TYPE) * TYPE -> TYPE
+    CLASS    : string -> TYPE
     LIST     : TYPE -> TYPE
     SET      : TYPE -> TYPE
 

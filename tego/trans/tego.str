@@ -1,14 +1,15 @@
 module tego
 
 imports
-  
+
   completion/completion
   pp
   outline
   analysis
+  generate
 
 rules // Debugging
-  
+
   debug-show-aterm:
     (node, _, _, path, project-path) -> (filename, result)
     with

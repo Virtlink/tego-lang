@@ -14,12 +14,22 @@ module example1
 // has no context, may not be interruptible, will not report progress
 // may not be lazy
 
-//decl complete: (Var, {String}) SolverState -> [StrategoTerm]
-//complete(v, visitedInjections) =
-//  expandAllPredicates(v);
-//  expandAllInjections(v, visitedInjections);
-//  expandAllQueries(v);
-//  expandDeterministic(v).
+class type Var
+class type SolverState
+
+decl complete(Var): SolverState -> [SolverState]
+complete(v) =
+  expandAllPredicates(v);
+  expandAllInjections(v);
+  expandAllQueries(v);
+  expandDeterministic(v).
+
+decl expandAllPredicates(Var): SolverState -> [SolverState]
+decl expandAllInjections(Var): [SolverState] -> [SolverState]
+decl expandAllQueries(Var): [SolverState] -> [SolverState]
+decl expandDeterministic(Var): [SolverState] -> [SolverState]
+
+
 //
 //decl expandAllPredicates : (Var) SolverState -> [SolverState]
 //expandAllPredicates(v) =
@@ -29,7 +39,6 @@ module example1
 //  ).
 
 val A : Int = 10.
-val B = id.
 val C : Int -> Int = !10.
 val C : Int -> Int -> Int = !!10.
 
@@ -39,6 +48,7 @@ decl y: Int
 y = 10.
 decl z(Int): Int -> Int
 z(a) = !a.
+
 
 //decl x(Int): Int -> Int
 //x(y) = !10.

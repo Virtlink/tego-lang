@@ -1,0 +1,23 @@
+module generate
+
+imports
+  signatures/Tego-sig
+  libspoofax/term/annotation
+  analysis
+
+signature
+  constructors
+    OfType : Term -> Annotation
+
+rules
+
+  generate-typed-aterm: (_, _, m@Module(_, _), path, project-path) -> (filename, result)
+  with filename := <guarantee-extension(|"typed.aterm")> path
+     ; result := <type-term> m
+
+  type-term = bottomup(
+    where(get-type < debug(!"type: ") + debug(!"no type: ")) ;
+    try(
+        (is-Tego-Decl + is-Tego-Exp)
+      ; add-annotation(|OfType(<get-type; not(?"nabl2.Var"#(_))>))
+    ) ; remove-annotations(not(?OfType(_))))
