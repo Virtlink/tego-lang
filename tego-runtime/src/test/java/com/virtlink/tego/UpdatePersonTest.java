@@ -1,7 +1,7 @@
 package com.virtlink.tego;
 
 import java.util.function.Function;
-
+/*
 class Test {
     private PersonRepository personRepository;
 
@@ -110,3 +110,5 @@ class Coroutines {
 
     }
 }
+
+ */

@@ -5,7 +5,7 @@ import com.virtlink.tego.strategies.Strategy1;
 import kotlin.sequences.Sequence;
 import kotlin.sequences.SequencesKt;
 import org.jetbrains.annotations.NotNull;
-
+/*
 class GenerateStrategy2<CTX, T> implements Strategy1<CTX, Strategy<CTX, T, T>, T, T> {
         private GenerateStrategy2() { }
 
@@ -77,3 +77,4 @@ class GenerateStrategy2<CTX, T> implements Strategy1<CTX, Strategy<CTX, T, T>, T
 
         }
 }
+*/

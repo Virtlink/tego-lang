@@ -1,6 +1,41 @@
 # Continuation Passing Style (CPS) and Administrative Normal Form (ANF) 
 Continuation passing style (CPS) explicitly encodes the control flow of the program. Instead of returning a value, throwing an exception, or jumping to labels in a loop, a program in CPS calls a _continuation_ function that handles the value or exception. However, writing CPS programs by hand is unintuitive and error-prone, and it considerably increases the size of programs. But CPS can be very useful as the intermediate representation of a program in a compiler. Flanagan et. al. (1993) recognize that typically compilers do a transformation to CPS, followed by a simplification, followed by a transformation to un-CPS, and that these steps can be performed at once using Administrative Normal Form (A-Normal Form, or ANF).
 
+## Continuations
+A function in Continuation Passing Style (CPS) never returns its result, but always uses a continuation to communicate the result. The function has an extra continuation parameter, which is a callback function that takes a single argument of the type that the function used to return. Most continuation calls would be tail calls (i.e., the last call in the function, as they replace the function's `return`), and can be optimized in various ways (such as not allocating a new stack frame for the continuation call, or rewriting a tail recursive function into a loop).
+
+While in _direct style_ the caller decides what happens after the called function terminates, in CPS the callee decides this. Note that since the callee calls the continuation to continue but never returns, the call stack only grows.
+
+A function in CPS can take more than one continuation. For example, one continuation for normal control flow (i.e., `return`), another for exceptional control flow (i.e., `throw`).
+
+While in general continuation could be invoked multiple times (_multi-shot_), often it is fine to have continuations that can only be invoked once (_single-shot_ or _one-shot_).
+
+_Call/cc_ (call-with-current-continuation) is a control operator that captures the rest of the program in a continuation. Calling the captured continuation can't return values, because it can only resume the rest of the program until it completes. This is known as an _undelimited continuation_.
+
+An example of a undelimited continuation is in this `product` function, which calls the continuation `k` when it encounters a `0` to break out early. `callCC` captures the current stack, and a call to `k` resumes as if the given value was provided instead of the `callCC`. 
+
+```
+public decl product : [Int] -> Int
+  product l -> <callCC> \k -> loop(k) l\
+
+decl loop(Int -> Nothing) : [Int] -> Int
+  loop(_)     [] -> 1
+  loop(k)  [0|_] -> <k> 0
+  loop(k) [x|xs] -> xsn := <loop(k)> xs; <mul> (x, xsn)
+```
+
+### See Also
+
+- Marijn Haverbeke — [Continuation-Passing Style](https://marijnhaverbeke.nl/cps/) and why JavaScript developers might be interested in it
+- Yassine Elouafi — Algebraic Effects in JavaScript
+  - [Continuations and Control Transfer](https://gist.github.com/yelouafi/57825fdd223e5337ba0cd2b6ed757f53)
+  - [Capturing Continuations with Generators](https://gist.github.com/yelouafi/bbc559aef92f00d9682b8d0531a36503)
+  - [Delimited Continuations](https://gist.github.com/yelouafi/7261da07c97c5e6322da3894f6ea60e2)
+  - [Implementing Algebraic Effects and Handlers](https://gist.github.com/yelouafi/5f8550b887ab7ffcf3284602330bd37d)
+
+
+## ANF
+
 In ANF, the arguments to a function must be _immediate_ values. Immediate values do not need any computation; they are constants or can be looked up in the environment. For example, the expression:
 
     2 + 2 + let x = 1 in f(x)

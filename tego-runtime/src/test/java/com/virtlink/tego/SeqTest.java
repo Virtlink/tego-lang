@@ -3,7 +3,7 @@ package com.virtlink.tego;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-
+/*
 class SeqTest {
     static void Main(String[] args) {
         // Build the computation
@@ -129,3 +129,4 @@ class SeqTest {
         });
     }
 }
+*/

@@ -1,4 +1,6 @@
 # Coroutines
+Continuations that are used to implement cooperative scheduling are called _coroutines_.
+
 The trick to performing lazy (and possibly asynchronous) computation in Java is to explicitly encode the control flow. Instead of letting a function simply run to its end and return, we rewrite the method to use continuation passing style and provide it with a continuation that handles the result. This way, we can pause execution any time we want, and call the continuation as soon as we want to continue (as the name implies).
 
 Imagine a function `updatePerson`, which loads a person's record using its ID, updates its name, and saves the record again. The function returns the timestamp of when the record was saved. 
