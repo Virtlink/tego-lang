@@ -98,9 +98,11 @@ modules.xml
 
 
 ## Spoofax
+.DS_Store
 src-gen/
 .polyglot.metaborg.yaml
 .cache/
 *.aterm
-.DS_Store
+!tego-compiler/src/**/*.aterm
+!tego-runtime/src/**/*.aterm
 

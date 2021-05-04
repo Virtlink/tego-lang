@@ -21,13 +21,30 @@ interface Attachments {
         /**
          * Gets an attachments object.
          *
+         * If there are multiple attachments of the same class,
+         * the last one is used.
+         *
          * @param attachments the attachments to include
          */
-        fun of(vararg attachments: Attachment): Attachments {
+        fun of(vararg attachments: Attachment): Attachments
+            = of(attachments.asList())
+
+        /**
+         * Gets an attachments object.
+         *
+         * If there are multiple attachments of the same class,
+         * the last one is used.
+         *
+         * @param attachments the attachments to include
+         */
+        fun of(attachments: List<Attachment>): Attachments {
+            val attachmentsMap = attachments
+                .filter { it !is Annotations || it.annotations.isNotEmpty() }
+                .associateBy { it::class.java }
             return when {
-                attachments.isEmpty() -> empty()
-                attachments.size == 1 -> SingletonAttachments(attachments[0])
-                else -> MultiAttachments(attachments.associateBy { it::class.java })
+                attachmentsMap.isEmpty() -> empty()
+                attachmentsMap.size == 1 -> SingletonAttachments(attachmentsMap.values.first())
+                else -> MultiAttachments(attachmentsMap)
             }
         }
     }
@@ -122,7 +139,8 @@ data class MultiAttachments(
     }
 
     override fun set(newAttachment: Attachment): Attachments {
-        return MultiAttachments(map + (newAttachment::class.java to newAttachment))
+        // Let of() sort out which instance to create.
+        return Attachments.of(map.values + newAttachment)
     }
 
     override fun <A : Attachment> remove(cls: Class<A>): Attachments {
@@ -168,14 +186,8 @@ private data class SingletonAttachments(
     }
 
     override fun set(newAttachment: Attachment): Attachments {
-        return if (has(newAttachment::class.java)) {
-            SingletonAttachments(newAttachment)
-        } else {
-            MultiAttachments(mapOf(
-                this.attachment::class.java to this.attachment,
-                newAttachment::class.java to newAttachment
-            ))
-        }
+        // Let of() sort out which instance to create.
+        return Attachments.of(listOf(attachment, newAttachment))
     }
 
     override fun <A : Attachment> remove(cls: Class<A>): Attachments {
@@ -191,7 +203,7 @@ private data class SingletonAttachments(
     }
 
     override fun toString(): String {
-        return if (attachment is Annotation) {
+        return if (attachment is Annotations) {
             attachment.toString()
         } else {
             "«$attachment»"
@@ -218,7 +230,8 @@ private object EmptyAttachments : Attachments {
     }
 
     override fun set(newAttachment: Attachment): Attachments {
-        return SingletonAttachments(newAttachment)
+        // Let of() sort out which instance to create.
+        return Attachments.of(newAttachment)
     }
 
     override fun <A : Attachment> remove(cls: Class<A>): Attachments {

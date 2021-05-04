@@ -35,6 +35,8 @@ data class Annotations(
 
     }
 
+    val isEmpty: Boolean get() = annotations.isEmpty()
+
     override fun toString(): String {
         return annotations.joinToString(", ", "{", "}")
     }
