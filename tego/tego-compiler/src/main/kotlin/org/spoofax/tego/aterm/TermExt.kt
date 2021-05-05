@@ -1,5 +1,6 @@
 package org.spoofax.tego.aterm
 
+import org.spoofax.tego.InvalidFormatException
 import kotlin.reflect.KClass
 
 /**
@@ -10,6 +11,16 @@ import kotlin.reflect.KClass
 fun Term.toJavaString(): String {
     require(this is StringTerm) { "Expected ${describeTermType(StringTerm::class)}, got ${describeTermType(this)}: $this"}
     return this.value
+}
+
+/**
+ * Gets the Java integer in the term.
+ *
+ * @return the Java integer
+ */
+fun Term.toJavaInt(): Int {
+    val str = this.toJavaString()
+    return str.toIntOrNull() ?: throw InvalidFormatException("Expected integer value, got: $str")
 }
 
 /**

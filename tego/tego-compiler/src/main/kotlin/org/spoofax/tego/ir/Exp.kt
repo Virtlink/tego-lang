@@ -12,6 +12,9 @@ interface Exp {
     /** Whether this subtree of the AST is an ANF immediate expression. */
     val isImm: Boolean get() = false
 
+    /** The type of the expression. */
+    val type: Type
+
 }
 
 /**
@@ -30,7 +33,8 @@ interface Const : Exp {
  */
 data class Seq(
     val e1: Exp,
-    val e2: Exp
+    val e2: Exp,
+    override val type: Type,
 ) : Exp {
     override val isComp: Boolean get() = e1.isImm && e2.isImm
 }
@@ -40,16 +44,17 @@ data class Seq(
  * and scopes it to the body of the let.
  *
  * ```
- * let $varName: $varType = $varExp in
+ * let $varName = $varExp in
  *   $body
  * ```
  */
 data class Let(
     val varName: String,
-    val varType: Type,
     val varExp: Exp,            // comp
-    val body: Exp               // anf
+    val body: Exp,              // anf
 ) : Exp {
+    override val type: Type get() = body.type
+
     override val isAnf: Boolean get() = varExp.isComp && body.isAnf
 }
 
@@ -62,7 +67,8 @@ data class Let(
  */
 data class Apply(
     val function: Exp,          // imm
-    val arguments: List<Exp>    // [imm]
+    val arguments: List<Exp>,   // [imm]
+    override val type: Type,
 ) : Exp {
     override val isComp: Boolean get() = function.isImm && arguments.all { it.isImm }
 }
@@ -76,7 +82,8 @@ data class Apply(
  */
 data class Eval(
     val strategy: Exp,          // imm
-    val input: Exp              // imm
+    val input: Exp,             // imm
+    override val type: Type,
 ) : Exp {
     override val isComp: Boolean get() = strategy.isImm && input.isImm
 }
@@ -85,11 +92,12 @@ data class Eval(
  * Gets a value from the environment.
  *
  * ```
- * $varName
+ * name
  * ```
  */
 data class Var(
-    val varName: String
+    val name: String,
+    override val type: Type,
 ) : Exp {
     override val isImm: Boolean get() = true
 }
@@ -102,7 +110,8 @@ data class Var(
  * ```
  */
 data class IntLit(
-    val value: Int
+    val value: Int,
+    override val type: Type,
 ) : Const
 
 /**
@@ -113,7 +122,8 @@ data class IntLit(
  * ```
  */
 data class StringLit(
-    val value: String
+    val value: String,
+    override val type: Type,
 ) : Const
 
 /**
@@ -123,4 +133,6 @@ data class StringLit(
  * Any
  * ```
  */
-object AnyInst : Const
+data class AnyInst(
+    override val type: Type,
+) : Const

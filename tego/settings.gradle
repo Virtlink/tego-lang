@@ -1,0 +1,5 @@
+rootProject.name = 'tego'
+
+include 'tego-platform'
+include 'tego-runtime'
+include 'tego-compiler'

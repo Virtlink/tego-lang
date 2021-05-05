@@ -211,7 +211,6 @@ signature
     FUNCTION : list(TYPE) * TYPE -> TYPE
     CLASS    : string -> TYPE
     LIST     : TYPE -> TYPE
-    SET      : TYPE -> TYPE
 
     BYTE     : TYPE
     SHORT    : TYPE

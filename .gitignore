@@ -103,6 +103,6 @@ src-gen/
 .polyglot.metaborg.yaml
 .cache/
 *.aterm
-!tego-compiler/src/**/*.aterm
-!tego-runtime/src/**/*.aterm
+!tego/tego-compiler/src/**/*.aterm
+!tego/tego-runtime/src/**/*.aterm
 

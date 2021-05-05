@@ -1,5 +1,4 @@
-rootProject.name = 'tego'
+rootProject.name = 'tego-root'
 
-include 'tego-platform'
-include 'tego-runtime'
-include 'tego-compiler'
+includeBuild 'tego'
+includeBuild 'kasm'

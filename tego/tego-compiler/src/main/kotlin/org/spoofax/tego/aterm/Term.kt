@@ -7,7 +7,7 @@ interface Term {
     /** The subterms of the term. */
     val subterms: List<Term>
     /** The annotations of the term. */
-    val annotations: List<Term> get() = Annotations.get(this).annotations
+    val annotations: Annotations get() = Annotations.get(this)
     /** The attachments of the term. */
     val attachments: Attachments
 }

@@ -2,7 +2,7 @@ package org.spoofax.tego.ir
 
 
 typealias Context = List<Assignment>
-typealias Assignment = Triple<String, Type, Exp>
+typealias Assignment = Pair<String, Exp>
 
 /**
  * Performs A-normalization on the expression IR.
@@ -15,49 +15,23 @@ typealias Assignment = Triple<String, Type, Exp>
  * The computations themselves will have been lifted out of the expression
  * into surrounding `let`-expressions.
  */
-class Normalizer {
-
-    class TypeEnvironment(
-        private val map: Map<String, Type>
-    ) {
-        operator fun get(v: String): Type {
-            return map[v] ?: throw NoSuchElementException("No type defined for: $v")
-        }
-        operator fun plus(pair: Pair<String, Type>): TypeEnvironment {
-            return with(pair.first, pair.second)
-        }
-        operator fun plus(pairs: List<Pair<String, Type>>): TypeEnvironment {
-            return withAll(pairs)
-        }
-        fun with(name: String, type: Type): TypeEnvironment {
-            return TypeEnvironment(map + (name to type))
-        }
-        fun withAll(vararg pairs: Pair<String, Type>): TypeEnvironment
-            = withAll(pairs.asList())
-        fun withAll(pairs: List<Pair<String, Type>>): TypeEnvironment {
-            return TypeEnvironment(map + pairs)
-        }
-    }
+class ExpNormalizer {
 
     private data class R(
         val exp : Exp,
-        val expType : Type,
         val ctx : Context,
     )
 
-    private fun Iterable<R>.unzip(): Triple<List<Exp>, List<Type>, List<Context>> {
+    private fun Iterable<R>.unzip(): Pair<List<Exp>, List<Context>> {
         val expectedSize = if (this is Collection<*>) this.size else 10
         val expList = ArrayList<Exp>(expectedSize)
-        val typList = ArrayList<Type>(expectedSize)
         val ctxList = ArrayList<Context>(expectedSize)
-        for ((e, t, c) in this) {
+        for ((e, c) in this) {
             expList.add(e)
-            typList.add(t)
             ctxList.add(c)
         }
-        return Triple(expList, typList, ctxList)
+        return expList to ctxList
     }
-
 
     /**
      * Normalizes the AST to ANF (Administrative Normal Form).
@@ -65,9 +39,9 @@ class Normalizer {
      * @param exp the AST to normalize
      * @return the normalized AST
      */
-    fun normalize(exp: Exp, env: TypeEnvironment): Exp {
-        val (ans, ansType, ansCtx) = toComp(exp, env)
-        val newExp = ansCtx.foldRight(ans) { (bind, bindType, exp), body -> Let(bind, bindType, exp, body) }
+    fun normalize(exp: Exp): Exp {
+        val (ans, ansCtx) = toComp(exp)
+        val newExp = ansCtx.foldRight(ans) { (bind, exp), body -> Let(bind, exp, body) }
         assert(newExp.isAnf)
         return newExp
     }
@@ -79,24 +53,24 @@ class Normalizer {
      * @param exp the expression to normalize
      * @return a pair of a normalized compound expression and a context
      */
-    private fun toComp(exp: Exp, env: TypeEnvironment): R {
-        val (newExp, newType, newCtx) = when (exp) {
+    private fun toComp(exp: Exp): R {
+        val (newExp, newCtx) = when (exp) {
             // Compounds
             is Seq -> TODO()
             is Let -> {
-                val (bnd, bndType, bndCtx) = toComp(exp.varExp, env)
-                val (bdy, bdyType, bdyCtx) = toComp(exp.body, env + (exp.varName to bndType))
-                R(bdy, bdyType, (bndCtx + bdyCtx + Triple(exp.varName, bndType, bnd)))
+                val (bnd, bndCtx) = toComp(exp.varExp)
+                val (bdy, bdyCtx) = toComp(exp.body)
+                R(bdy, (bndCtx + bdyCtx + (exp.varName to bnd)))
             }
             is Apply -> {
-                val (fnc, fncType, fncCtx) = toImm(exp.function, env)
-                val (args, argTypes, argCtxs) = exp.arguments.map { toImm(it, env) }.unzip()
-                R(Apply(fnc, args), fncType, (fncCtx + argCtxs.flatten()))
+                val (fnc, fncCtx) = toImm(exp.function)
+                val (args, argCtxs) = exp.arguments.map { toImm(it) }.unzip()
+                R(Apply(fnc, args, exp.type), (fncCtx + argCtxs.flatten()))
             }
             is Eval -> {
-                val (str, strType, strCtx) = toImm(exp.strategy, env)
-                val (inp, inpType, inpCtx) = toImm(exp.input, env)
-                R(Eval(str, inp), strType, (strCtx + inpCtx))
+                val (str, strCtx) = toImm(exp.strategy)
+                val (inp, inpCtx) = toImm(exp.input)
+                R(Eval(str, inp, exp.type), (strCtx + inpCtx))
             }
 //            is If -> {
 //                val (cnd, cndCtx) = toImm(exp.conditionExp)
@@ -109,12 +83,12 @@ class Normalizer {
 //                Lam(exp.paramId, exp.paramType, bdy) to (bdyCtx)
 //            }
             // Immediates
-            is Const -> toImm(exp, env)
-            is Var -> toImm(exp, env)
+            is Const -> toImm(exp)
+            is Var -> toImm(exp)
             else -> TODO("Unsupported expression: $exp")
         }
         assert(newExp.isComp)
-        return R(newExp, newType, newCtx)
+        return R(newExp, newCtx)
     }
 
     /**
@@ -124,20 +98,20 @@ class Normalizer {
      * @param exp the expression to normalize
      * @return a pair of a normalized immediate expression and a context
      */
-    private fun toImm(exp: Exp, env: TypeEnvironment): R {
-        val (newExp, newType, newCtx) = when (exp) {
+    private fun toImm(exp: Exp): R {
+        val (newExp, newCtx) = when (exp) {
             // Constant Immediates
-            is IntLit -> R(exp, IntType, listOf())
-            is StringLit -> R(exp, StringType, listOf())
-            is AnyInst -> R(exp, AnyType, listOf())
+            is IntLit -> R(exp, listOf())
+            is StringLit -> R(exp, listOf())
+            is AnyInst -> R(exp, listOf())
             is Const -> TODO("Unsupported constant: $exp")
             // Variable Immediates
-            is Var -> R(exp, env[exp.varName], listOf())
+            is Var -> R(exp, listOf())
             // Compounds
-            else -> wrapToImm(exp, env)
+            else -> wrapToImm(exp)
         }
         assert(newExp.isImm)
-        return R(newExp, newType, newCtx)
+        return R(newExp, newCtx)
     }
 
     /**
@@ -147,10 +121,10 @@ class Normalizer {
      * @param exp the compound expression
      * @return a pair of a fresh immediate variable and a context
      */
-    private fun wrapToImm(exp: Exp, env: TypeEnvironment): R {
-        val (c, t, ctx) = toComp(exp, env)
+    private fun wrapToImm(exp: Exp): R {
+        val (c, ctx) = toComp(exp)
         val tmp = fresh()
-        return R(Var(tmp), t, (ctx + Triple(tmp, t, c)))
+        return R(Var(tmp, exp.type), (ctx + (tmp to c)))
     }
 
     private var counter: Int = 0
