@@ -39,7 +39,7 @@ interface Attachments {
          */
         fun of(attachments: List<Attachment>): Attachments {
             val attachmentsMap = attachments
-                .filter { it !is Annotations || it.annotations.isNotEmpty() }
+                .filter { it !is Annotations || it.isNotEmpty() }
                 .associateBy { it::class.java }
             return when {
                 attachmentsMap.isEmpty() -> empty()

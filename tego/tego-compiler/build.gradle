@@ -2,3 +2,8 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
 }
+
+dependencies {
+    // Code Generation
+    implementation "com.virtlink:kasm:0.1-SNAPSHOT"
+}

@@ -1,5 +1,6 @@
 package org.spoofax.tego.compiler
 
+import com.virtlink.kasm.ScopeBuilder
 import org.spoofax.tego.ir.Exp
 
 /**
@@ -13,7 +14,7 @@ class ExpWriter {
     fun writeExp(exp: Exp, builder: ScopeBuilder) {
         require(exp.isAnf) { "Expression is not in ANF." }
 
-
+        TODO()
     }
 
 }

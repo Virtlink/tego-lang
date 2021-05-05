@@ -1,4 +1,4 @@
-rootProject.name = 'tego-root'
+rootProject.name = 'tego-lang'
 
 includeBuild 'tego'
 includeBuild 'kasm'
