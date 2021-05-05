@@ -10,7 +10,8 @@ import org.spoofax.tego.ir.ExpNormalizer
  */
 class TegoCompiler(
     private val irBuilder: IrBuilder,
-    private val expNormalizer: ExpNormalizer
+    private val expNormalizer: ExpNormalizer,
+    private val expWriter: ExpWriter,
 ) {
 
     /**
