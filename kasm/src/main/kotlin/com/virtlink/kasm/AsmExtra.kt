@@ -30,7 +30,7 @@ fun ScopeBuilder.assert(cls: JvmType, builder: ScopeBuilder.(Label) -> Unit) {
  *
  * @param value the value to push
  */
-fun ScopeBuilder.iPush(value: Int) {
+fun ScopeBuilder.iConst(value: Int) {
     when (value) {
         -1 -> iConst_m1()
         0 -> iConst_0()
@@ -54,7 +54,7 @@ fun ScopeBuilder.iPush(value: Int) {
  *
  * @param value the value to push
  */
-fun ScopeBuilder.lPush(value: Long) {
+fun ScopeBuilder.lConst(value: Long) {
     when (value) {
         0L -> lConst_0()
         1L -> lConst_1()
@@ -67,7 +67,7 @@ fun ScopeBuilder.lPush(value: Long) {
  *
  * @param value the value to push
  */
-fun ScopeBuilder.fPush(value: Float) {
+fun ScopeBuilder.fConst(value: Float) {
     when (value) {
         0.0f -> fConst_0()
         1.0f -> fConst_1()
@@ -81,7 +81,7 @@ fun ScopeBuilder.fPush(value: Float) {
  *
  * @param value the value to push
  */
-fun ScopeBuilder.dPush(value: Double) {
+fun ScopeBuilder.dConst(value: Double) {
     when (value) {
         0.0 -> dConst_0()
         1.0 -> dConst_1()
