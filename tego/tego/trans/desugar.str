@@ -10,9 +10,11 @@ rules
 
   desugar-all = topdown(try(desugar))
 
-  desugar: StrategyDeclNoParams(name, typeParams, type) -> StrategyDecl(name, typeParams, [], type)
-  desugar: StrategyDeclNoTypeParams(name, params, type) -> StrategyDecl(name, [], params, type)
-  desugar: StrategyDeclNoParamsOrTypeParams(name, type) -> StrategyDecl(name, [], [], type)
+  desugar: StrategyDeclNoParams(name, typeParams, inType, outType) -> StrategyDecl(name, typeParams, [], inType, outType)
+  desugar: StrategyDeclNoTypeParams(name, params, inType, outType) -> StrategyDecl(name, [], params, inType, outType)
+  desugar: StrategyDeclNoParamsOrTypeParams(name, inType, outType) -> StrategyDecl(name, [], [], inType, outType)
 
   desugar: StrategyDefNoParams(name, body) -> StrategyDef(name, [], body)
   desugar: RuleDefNoParams(name, inExp, outExp) -> RuleDef(name, [], inExp, outExp)
+
+  desugar: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)

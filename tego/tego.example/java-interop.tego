@@ -1,0 +1,22 @@
+module javainterop
+
+fun f(): Int
+ = 10
+
+fun g(a: Int): Int
+ = a
+
+fun h<T>(t: T): T
+ = t
+
+fun f2(): Int
+ = g(10)
+
+//fun f3(): Int
+// = <g(10)> 1
+
+
+class type Object
+
+  def equals(Object): Object -> Bool
+  //equals(that) = ?that

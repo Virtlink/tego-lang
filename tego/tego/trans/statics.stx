@@ -51,23 +51,24 @@ rules declOk : scope * Decl
     declareDecl(s, name, T),
     @d.type := T.
 
-  declOk(s, d@StrategyDecl(name, typeParams, params, type)) :- {T PTs RT}
+  declOk(s, d@StrategyDecl(name, typeParams, params, inType, outType)) :- {T PTs IT OT}
     typeParamDeclsOk(s, typeParams),
     typesOfTypes(s, params) == PTs,
-    typeOfType(s, type) == RT,
-    T == FUNCTION(PTs, RT),
+    typeOfType(s, inType) == IT,
+    typeOfType(s, outType) == OT,
+    T == STRATEGY(PTs, IT, OT),
     declareDecl(s, name, T),
     @d.type := T.
 
-  declOk(s, d@StrategyDef(name, paramDefs, body)) :- {T PTs RT ss}
-    typeOfType(s, TypeRef(name)) == T@FUNCTION(PTs, RT),
+  declOk(s, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
+    typeOfType(s, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
     new ss, ss -P-> s,
     paramDefsOk(ss, paramDefs, PTs),
-    typeOfExp(ss, body) == RT,
+    typeOfExp(ss, body) == STRATEGY([], IT, OT),
     @d.type := T.
 
   declOk(s, d@RuleDef(name, paramDefs, inExp, outExp)) :- {T PTs IT OT ss}
-    typeOfType(s, TypeRef(name)) == T@FUNCTION(PTs, STRATEGY(IT, OT)),
+    typeOfType(s, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
     new ss, ss -P-> s,
     paramDefsOk(ss, paramDefs, PTs),
     typeOfExp(ss, inExp) == IT,
@@ -85,27 +86,25 @@ rules declOk : scope * Decl
 rules typeOfType : scope * Type -> TYPE
   typesOfTypes maps typeOfType(*, list(*)) = list(*)
 
-  typeOfType(s, t@StrategyType(inputType, outputType)) = T@STRATEGY(IT, OT) :-
+  typeOfType(s, t@StrategyType(paramTypes, inputType, outputType)) = T@STRATEGY(PTs, IT, OT) :-
+    typesOfTypes(s, paramTypes) == PTs,
     typeOfType(s, inputType) == IT,
     typeOfType(s, outputType) == OT,
     @t.type := T.
 
-  typeOfType(s, t@FunctionType(paramTypes, retType)) = T@FUNCTION(PTs, RT) :-
-    typesOfTypes(s, paramTypes) == PTs,
-    typeOfType(s, retType) == RT,
+  typeOfType(s, t@AnyType()) = T@ANY() :-
     @t.type := T.
 
-  typeOfType(s, t@AnyType()) = T@ANY() :-
+  typeOfType(s, t@UnitType()) = T@UNIT() :-
+    @t.type := T.
+
+  typeOfType(s, t@BoolType()) = T@BOOL() :-
     @t.type := T.
 
   typeOfType(s, t@IntType()) = T@INT() :-
     @t.type := T.
 
   typeOfType(s, t@ListType(type)) = T@LIST(ET) :-
-    typeOfType(s, type) == ET,
-    @t.type := T.
-
-  typeOfType(s, t@SetType(type)) = T@SET(ET) :-
     typeOfType(s, type) == ET,
     @t.type := T.
 
@@ -127,6 +126,14 @@ rules typeParamDeclOk : scope * TypeParamDecl
 
   typeParamDeclOk(s, TypeParamDecl-Plhdr()).
 
+rules typeOfParamDecl : scope * scope * ParamDecl -> TYPE
+  typesOfParamDecls maps typeOfParamDecl(*, *, list(*)) = list(*)
+
+  typeOfParamDecl(s, fs, p@ParamDecl(name, type)) = T :-
+    typeOfType(s, type) == T,
+    declareDecl(fs, name, T),
+    @p.type := T.
+
 rules paramDefOk : scope * ParamDef * TYPE
   paramDefsOk maps paramDefOk(*, list(*), list(*))
 
@@ -142,23 +149,24 @@ rules typeOfExp : scope * Exp -> TYPE
   typeOfExp(s, e@Seq(e1, e2)) = T :- {T1 T2 IT MT OT}
     typeOfExp(s, e1) == T1,
     typeOfExp(s, e2) == T2,
-    T1 == STRATEGY(IT, MT),
-    T2 == STRATEGY(MT, OT),
-    T == STRATEGY(IT, OT),
+    T1 == STRATEGY([], IT, MT),
+    T2 == STRATEGY([], MT, OT),
+    T == STRATEGY([], IT, OT),
     @e.type := T.
 
-  typeOfExp(s, e@Id()) = T@STRATEGY(a, a) :-
+  typeOfExp(s, e@Id()) = T@STRATEGY([], a, a) :-
     @e.type := T.
 
-  typeOfExp(s, e@Apply(rcv, args)) = RT :- {PTs}
-    typeOfExp(s, rcv) == FUNCTION(PTs, RT),
+  typeOfExp(s, e@Apply(rcv, args)) = T :- {PTs IT OT}
+    typeOfExp(s, rcv) == STRATEGY(PTs, IT, OT),
     typesOfExps(s, args) == PTs,
-    @e.type := RT.
+    T == STRATEGY([], IT, OT),
+    @e.type := T.
 
-  typeOfExp(s, e@Eval(rcv, input)) = OT :- {IT}
-    typeOfExp(s, rcv) == STRATEGY(IT, OT),
-    typeOfExp(s, input) == IT,
-    @e.type := OT.
+//  typeOfExp(s, e@Eval(rcv, input)) = OT :- {IT}
+//    typeOfExp(s, rcv) == STRATEGY(IT, OT),
+//    typeOfExp(s, input) == IT,
+//    @e.type := OT.
 
   typeOfExp(s, e@Var(name)) = T :-
     resolveDecl(s, name) == T,
@@ -174,7 +182,14 @@ rules typeOfExp : scope * Exp -> TYPE
   typeOfExp(s, e@Object()) = T@ANY() :-
     @e.type := T.
 
-  typeOfExp(s, e@Build(exp)) = T@STRATEGY(_, TEXP) :-
+  typeOfExp(s, e@True()) = T@BOOL() :-
+    @e.type := T.
+
+  typeOfExp(s, e@False()) = T@BOOL() :-
+    @e.type := T.
+
+  // TODO: Accept ANY() as input type
+  typeOfExp(s, e@Build(exp)) = T@STRATEGY([], _, TEXP) :-
     typeOfExp(s, exp) == TEXP,
     @e.type := T.
 
@@ -207,8 +222,7 @@ signature
   sorts TYPE
   constructors
     MODULE   : scope -> TYPE
-    STRATEGY : TYPE * TYPE -> TYPE
-    FUNCTION : list(TYPE) * TYPE -> TYPE
+    STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
     CLASS    : string -> TYPE
     LIST     : TYPE -> TYPE
 
@@ -223,6 +237,8 @@ signature
     ULONG    : TYPE
 
     ANY      : TYPE
+    BOOL     : TYPE
+    UNIT     : TYPE
     STRING   : TYPE
   sorts
     DECL = (path * (occurrence * TYPE))

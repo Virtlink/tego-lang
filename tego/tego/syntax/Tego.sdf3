@@ -23,20 +23,20 @@ context-free syntax
 context-free sorts Decl
 context-free syntax
 
-  Decl.ValDef                   = [val [ID]: [Type] = [Exp].]
+  Decl.ValDef                   = [val [ID]: [Type] = [Exp]]
 
-  Decl.StrategyDecl             = [decl [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type]] // desugared
-  Decl.StrategyDeclNoParams     = [decl [ID]<[{TypeParamDecl ", "}*]>: [Type]] // desugared
-  Decl.StrategyDeclNoTypeParams = [decl [ID]([{Type ", "}*]): [Type]] // desugared
-  Decl.StrategyDeclNoParamsOrTypeParams = [decl [ID]: [Type]]		// desugared
+  Decl.StrategyDecl             = [def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
+  Decl.StrategyDeclNoParams     = [def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]] // desugared
+  Decl.StrategyDeclNoTypeParams = [def [ID]([{Type ", "}*]): [Type] -> [Type]] // desugared
+  Decl.StrategyDeclNoParamsOrTypeParams = [def [ID]: [Type] -> [Type]]        // desugared
 
-  Decl.StrategyDef              = [[ID]([{ParamDef ", "}*]) = [Exp].]
-  Decl.StrategyDefNoParams      = [[ID] = [Exp].]		// desugared
+  Decl.StrategyDef              = [[ID]([{ParamDef ", "}*]) = [Exp]]
+  Decl.StrategyDefNoParams      = [[ID] = [Exp]]        // desugared
 
-  Decl.RuleDef                  = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp].]
-  Decl.RuleDefNoParams          = [[ID] :- [Exp] -> [Exp].]
+  Decl.RuleDef                  = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp]]
+  Decl.RuleDefNoParams          = [[ID] :- [Exp] -> [Exp]]
 
-  Decl.ClassDecl	            = [class type [ID]]
+  Decl.ClassDecl                = [class type [ID]]
 
 
 context-free sorts ParamDef
@@ -47,29 +47,37 @@ context-free sorts TypeParamDecl
 context-free syntax
   TypeParamDecl.TypeParamDecl = <<ID>>
 
+context-free sorts ParamDecl
+context-free syntax
+  ParamDecl.ParamDecl = <<ID>: <Type>>
+
 context-free sorts Type
 context-free syntax
 
-  Type.TypeRef = <<ID>>
-  Type.ListType = <[<Type>]>
-  Type.SetType  = <{<Type>}>
-  Type.FunctionType = [([{Type ", "}*]) [Type]]
-  Type.StrategyType   = [[Type] -> [Type]] {right}
-  Type.AnyType     = <Any>	// FIXME: Make built-in
-  Type.IntType     = <Int>  // FIXME: Make built-in
-  Type = <(<Type>)> {bracket}
+  Type.TypeRef              = <<ID>>
+  Type.ListType             = <[<Type>]>
+  Type.StrategyType         = [([{Type ", "}*]) [Type] -> [Type]] {right}
+  Type.StrategyTypeNoParams = [[Type] -> [Type]] {right} // desugared
+  Type.AnyType              = <Any>     // FIXME: Make built-in
+  Type.UnitType             = <Unit>    // FIXME: Make built-in
+  Type.IntType              = <Int>     // FIXME: Make built-in
+  Type.BoolType             = <Bool>    // FIXME: Make built-in
+  Type                      = <(<Type>)> {bracket}
 
 context-free sorts Exp Arg
 context-free syntax
 
   Exp.Seq = <<Exp>;
     <Exp>> {right}
+  Exp.Pipe = [[Exp] |> [Exp]] {left}
   Exp.Id = <id>
   Exp.Apply = <<Exp>(<{Exp ", "}*>)>
-  Exp.Eval = [<[Exp]> [Exp]]
+//  Exp.Eval = [<[Exp]> [Exp]]
   Exp.Var = <<ID>>
   Exp.Int = <<INT>>
   Exp.Object = <object>
+  Exp.True = <true>
+  Exp.False = <false>
   Exp.String = <<STRING>>
   Exp.Build = <!<Exp>>
   Exp = <(<Exp>)> {bracket}
@@ -86,9 +94,10 @@ context-free syntax
 
 context-free priorities
   {
-    Exp.Eval
     Exp.Apply
     Exp.Build
+  } > {
+    Exp.Pipe
   } > {
     Exp.Seq
   }
@@ -96,8 +105,6 @@ context-free priorities
 context-free priorities
   {
     Type.StrategyType
-  } > {
-    Type.FunctionType
   }
 
 template options
