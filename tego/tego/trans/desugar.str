@@ -28,4 +28,3 @@ rules
   desugar-exp: LambdaRuleNoParams(inExp, outExp) -> LambdaRule([], inExp, outExp)
   desugar-exp: LambdaStrategyNoParams(exp) -> LambdaStrategy([], exp)
 
-  desugar-exp: ApplyNoTypeArgs(str, params) -> Apply(str, [], params)

@@ -66,20 +66,23 @@ context-free syntax
   Type.UnitType             = <Unit>    // FIXME: Make built-in
   Type.IntType              = <Int>     // FIXME: Make built-in
   Type.BoolType             = <Bool>    // FIXME: Make built-in
+  Type.WldType              = <_>
   Type.TupleType            = <(<{Type ", "}+>)>
   Type                      = <(<Type>)> {bracket}
 
 context-free sorts Exp Arg
 context-free syntax
 
-  Exp.Seq = <<Exp>;
-    <Exp>> {right}
-  Exp.Pipe                      = [[Exp] |> [Exp]] {left}
-  Exp.Id = <id>
-  Exp.Apply                     = [[Exp]<[{Type ", "}+]>([{Exp ", "}*])]
-  Exp.ApplyNoTypeArgs           = [[Exp]([{Exp ", "}*])]        // desugared
+  Exp.Seq                       = <<Exp>; <Exp>> {right}
+  Exp.Map                       = [[Exp] |> [Exp]] {right}
+  Exp.FlatMap                   = [[Exp] ||> [Exp]] {right}
+  Exp.Id                        = <id>
+  Exp.Fail                      = <fail>
+  Exp.Apply                     = [[Exp]([{Exp ", "}*])]
 //  Exp.Eval = [<[Exp]> [Exp]]
   Exp.Var = <<ID>>
+  Exp.Inst                      = [[Exp]<[{Type ", "}+]>]
+  //Exp.InstInfer                 = [[Exp]<[]>]
   Exp.Int = <<INT>>
   Exp.Object = <object>
   Exp.True = <true>
@@ -106,10 +109,12 @@ context-free syntax
 context-free priorities
   {
     Exp.Apply
-    Exp.ApplyNoTypeArgs
+    Exp.Inst
+    //Exp.InstInfer
     Exp.Build
   } > {
-    Exp.Pipe
+    Exp.Map
+    Exp.FlatMap
   } > {
     Exp.Seq
   }

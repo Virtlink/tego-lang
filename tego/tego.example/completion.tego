@@ -7,36 +7,43 @@ class type Class
 
 def complete(Var): SolverState -> [SolverState]
 complete(v) =
-  expandAllPredicates(v);
-  expandAllInjections(v);
-  expandAllQueries(v);
+  expandAllPredicates(v) ||>
+  expandAllInjections(v) ||>
+  expandAllQueries(v)    ||>
   expandDeterministic(v).
 
 def expandAllPredicates(Var): SolverState -> [SolverState]
-expandAllPredicates(v) =
-  repeat(
-    limit(1, selectConstraints(CUser, \(constraint, state) -> containsVar(v, constraint, state).\));
-    expandPredicateConstraint(v);
-    assertValid(v)
-  ).
+//expandAllPredicates(v) = fail.
+expandAllPredicates(v) = try2<SolverState>(fail).
+//  repeat(fail
+////    limit(1, selectConstraints(CUser, \(constraint, state) -> containsVar(v, constraint, state).\));
+////    expandPredicateConstraint(v);
+////    assertValid(v)
+//  ).
+//
+def expandAllInjections(Var): SolverState -> [SolverState]
+//expandAllInjections(v) =
+//  fixSet(try(
+//    expandInjection(v)
+//  ));
+//  assertValid(v).
+//
+def expandAllQueries(Var): SolverState -> [SolverState]
+//
+def expandDeterministic(Var): SolverState -> [SolverState]
 
-def expandAllInjections(Var): [SolverState] -> [SolverState]
-expandAllInjections(v) =
-  fixSet(try(
-    expandInjection(v)
-  ));
-  assertValid(v).
+def x: Int -> Int
+x = id2.
+def y: Int -> Int
+y = id2.
 
-def expandAllQueries(Var): [SolverState] -> [SolverState]
-
-def expandDeterministic(Var): [SolverState] -> [SolverState]
-
-
+extern def id2<T>: T -> T
 extern def repeat<T>(T -> T): T -> T
 extern def limit<T, R>(Int, T -> [R]): T -> R
 extern def selectConstraints(Class, (Constraint, SolverState) -> Bool): SolverState -> [SolverState]
 extern def assertValid(Var): SolverState -> [SolverState]
 extern def fixSet<T>(T -> T): T -> T
 extern def try<T>(T -> T): T -> T
+extern def try2<T>(T -> [T]): T -> [T]
 extern def expandPredicateConstraint(Var): SolverState -> [SolverState]
 extern def expandInjection(Var): SolverState -> [SolverState]
