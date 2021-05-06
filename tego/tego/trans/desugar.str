@@ -6,15 +6,26 @@ imports
 
 rules
 
-  // NOTE: Desugar to existing constructors defined in the syntax
+  // Desugar to existing constructors defined in the syntax
+  desugar-all = topdown(try(
+    desugar-decl +
+    desugar-exp
+  ))
 
-  desugar-all = topdown(try(desugar))
+rules
 
-  desugar: StrategyDeclNoParams(name, typeParams, inType, outType) -> StrategyDecl(name, typeParams, [], inType, outType)
-  desugar: StrategyDeclNoTypeParams(name, params, inType, outType) -> StrategyDecl(name, [], params, inType, outType)
-  desugar: StrategyDeclNoParamsOrTypeParams(name, inType, outType) -> StrategyDecl(name, [], [], inType, outType)
+  desugar-decl: StrategyDeclNoParams(mods, name, typeParams, inType, outType) -> StrategyDecl(mods, name, typeParams, [], inType, outType)
+  desugar-decl: StrategyDeclNoTypeParams(mods, name, params, inType, outType) -> StrategyDecl(mods, name, [], params, inType, outType)
+  desugar-decl: StrategyDeclNoParamsOrTypeParams(mods, name, inType, outType) -> StrategyDecl(mods, name, [], [], inType, outType)
 
-  desugar: StrategyDefNoParams(name, body) -> StrategyDef(name, [], body)
-  desugar: RuleDefNoParams(name, inExp, outExp) -> RuleDef(name, [], inExp, outExp)
+  desugar-decl: StrategyDefNoParams(name, body) -> StrategyDef(name, [], body)
+  desugar-decl: RuleDefNoParams(name, inExp, outExp) -> RuleDef(name, [], inExp, outExp)
 
-  desugar: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)
+  desugar-decl: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)
+
+rules
+
+  desugar-exp: LambdaRuleNoParams(inExp, outExp) -> LambdaRule([], inExp, outExp)
+  desugar-exp: LambdaStrategyNoParams(exp) -> LambdaStrategy([], exp)
+
+  desugar-exp: ApplyNoTypeArgs(str, params) -> Apply(str, [], params)
