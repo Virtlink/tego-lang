@@ -14,7 +14,7 @@ complete(v) =
 
 def expandAllPredicates(Var): SolverState -> [SolverState]
 //expandAllPredicates(v) = fail.
-expandAllPredicates(v) = try2<SolverState>(fail).
+expandAllPredicates(v) = try2($Exp).
 //  repeat(fail
 ////    limit(1, selectConstraints(CUser, \(constraint, state) -> containsVar(v, constraint, state).\));
 ////    expandPredicateConstraint(v);
