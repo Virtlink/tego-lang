@@ -44,10 +44,20 @@ rules moduleDeclOk : scope * ModuleDecl * scope
 rules declOk : scope * Decl
   declsOk maps declOk(*, list(*))
 
-  declOk(s, d@ValDef(name, type, body)) :- {T TBODY}
+  declOk(s, d@ValDef(mods, name, type, body)) :- {T TBODY}
     typeOfType(s, type) == T,
     typeOfExpInst(s, body) == TBODY,
     subtypeOf(TBODY, T),
+    declareDecl(s, name, T),
+    @d.type := T.
+
+  declOk(s, d@ValDefNoType(mods, name, body)) :- {T TBODY}
+    typeOfExpInst(s, body) == T,
+    declareDecl(s, name, T),
+    @d.type := T.
+
+  declOk(s, d@ValDecl(mods, name, type)) :- {T}
+    typeOfType(s, type) == T,
     declareDecl(s, name, T),
     @d.type := T.
 
@@ -79,7 +89,7 @@ rules declOk : scope * Decl
     typeOfExpInst(ss, outExp) == OT,
     @d.type := T.
 
-  declOk(s, d@ClassDecl(name)) :- {T}
+  declOk(s, d@ClassDecl(mods, name)) :- {T}
     T == CLASS(name),
     declareDecl(s, name, T),
     @d.type := T.
@@ -295,12 +305,7 @@ rules instantiateType : TYPE * list(TYPE) -> TYPE
 rules typeOfInstantiatedType : scope * TYPE -> TYPE
   typesOfInstantiatedTypes maps typeOfInstantiatedType(*, list(*)) = list(*)
 
-  typeOfInstantiatedType(ts, VAR(name)) = T :-
-    query type
-      filter P*
-      and { d' :- d' == TypeParam{name@_} }
-      min $ < P
-      in ts |-> [(_, (_, T))|_].
+//  typeOfInstantiatedType(ts, T@MODULE(_)) = T.
 
   typeOfInstantiatedType(ts, STRATEGY(PTs, IT, OT))
     = STRATEGY(typesOfInstantiatedTypes(ts, PTs), typeOfInstantiatedType(ts, IT), typeOfInstantiatedType(ts, OT)).
@@ -308,8 +313,38 @@ rules typeOfInstantiatedType : scope * TYPE -> TYPE
     = LIST(typeOfInstantiatedType(ts, T)).
   typeOfInstantiatedType(ts, TUPLE(Ts))
     = TUPLE(typesOfInstantiatedTypes(ts, Ts)).
+
   typeOfInstantiatedType(ts, T@GENERIC(_, _))
     = _ :- false | error $[An uninstantiated generic type cannot occur in an uninstantiated generic type: [T]].
+
+// typeOfInstantiatedType(_, ?) = num
+// only if ? == VAR(_) then pick the VAR alternative
+
+
+  // TODO: Don't pick this one if we don't know the lhs
+  typeOfInstantiatedType(ts, VAR(name)) = T :-
+    query type
+      filter P*
+      and { d' :- d' == TypeParam{name@_} }
+      min $ < P
+      in ts |-> [(_, (_, T))].
+
+//  typeOfInstantiatedType(ts, T@CLASS(_)) = T.
+//
+//  typeOfInstantiatedType(ts, T@BYTE()) = T.
+//  typeOfInstantiatedType(ts, T@SHORT()) = T.
+//  typeOfInstantiatedType(ts, T@INT()) = T.
+//  typeOfInstantiatedType(ts, T@LONG()) = T.
+//
+//  typeOfInstantiatedType(ts, T@UBYTE()) = T.
+//  typeOfInstantiatedType(ts, T@USHORT()) = T.
+//  typeOfInstantiatedType(ts, T@UINT()) = T.
+//  typeOfInstantiatedType(ts, T@ULONG()) = T.
+//
+//  typeOfInstantiatedType(ts, T@ANY()) = T.
+//  typeOfInstantiatedType(ts, T@BOOL()) = T.
+//  typeOfInstantiatedType(ts, T@UNIT()) = T.
+//  typeOfInstantiatedType(ts, T@STRING()) = T.
 
   // Else:
   typeOfInstantiatedType(_, T) = T.

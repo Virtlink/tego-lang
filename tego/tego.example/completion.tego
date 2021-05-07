@@ -5,16 +5,24 @@ class type Constraint
 class type SolverState
 class type Class
 
-def complete(Var): SolverState -> [SolverState]
-complete(v) =
-  expandAllPredicates(v) ||>
-  expandAllInjections(v) ||>
-  expandAllQueries(v)    ||>
-  expandDeterministic(v).
 
-def expandAllPredicates(Var): SolverState -> [SolverState]
-//expandAllPredicates(v) = fail.
-expandAllPredicates(v) = try2($Exp).
+//def complete(Var): SolverState -> [SolverState]
+//complete(v) =
+//  expandAllPredicates(v) ||>
+//  expandAllInjections(v) ||>
+//  expandAllQueries(v)    ||>
+//  expandDeterministic(v).
+
+val cls: Class
+val i: Int -> [Int]
+def test<T>: T -> [T]
+val f = fail.
+val t = test.
+
+def expandAllPredicates(Var): Int -> [Int]
+expandAllPredicates(v) = fail.
+expandAllPredicates(v) = try2(f).
+//expandAllPredicates(v) = repeatSS(limitSS(1, selectConstraints(cls, fail))).
 //  repeat(fail
 ////    limit(1, selectConstraints(CUser, \(constraint, state) -> containsVar(v, constraint, state).\));
 ////    expandPredicateConstraint(v);
@@ -47,3 +55,7 @@ extern def try<T>(T -> T): T -> T
 extern def try2<T>(T -> [T]): T -> [T]
 extern def expandPredicateConstraint(Var): SolverState -> [SolverState]
 extern def expandInjection(Var): SolverState -> [SolverState]
+
+extern def trySS(SolverState -> [SolverState]): SolverState -> [SolverState]
+extern def repeatSS(SolverState -> [SolverState]): SolverState -> [SolverState]
+extern def limitSS(Int, SolverState -> [SolverState]): SolverState -> [SolverState]

@@ -23,12 +23,14 @@ context-free syntax
 context-free sorts Decl
 context-free syntax
 
-  Decl.ValDef                   = [val [ID]: [Type] = [Exp].]
+  Decl.ValDef                   = [[{DeclMod " "}*] val [ID]: [Type] = [Exp].]
+  Decl.ValDecl                  = [[{DeclMod " "}*] val [ID]: [Type]]
+  Decl.ValDefNoType             = [[{DeclMod " "}*] val [ID] = [Exp].]
 
-  Decl.StrategyDecl             = [[{StrategyDeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
-  Decl.StrategyDeclNoParams     = [[{StrategyDeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]] // desugared
-  Decl.StrategyDeclNoTypeParams = [[{StrategyDeclMod " "}*] def [ID]([{Type ", "}*]): [Type] -> [Type]] // desugared
-  Decl.StrategyDeclNoParamsOrTypeParams = [[{StrategyDeclMod " "}*] def [ID]: [Type] -> [Type]]        // desugared
+  Decl.StrategyDecl             = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
+  Decl.StrategyDeclNoParams     = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]] // desugared
+  Decl.StrategyDeclNoTypeParams = [[{DeclMod " "}*] def [ID]([{Type ", "}*]): [Type] -> [Type]] // desugared
+  Decl.StrategyDeclNoParamsOrTypeParams = [[{DeclMod " "}*] def [ID]: [Type] -> [Type]]        // desugared
 
   Decl.StrategyDef              = [[ID]([{ParamDef ", "}*]) = [Exp].]
   Decl.StrategyDefNoParams      = [[ID] = [Exp].]        // desugared
@@ -36,12 +38,12 @@ context-free syntax
   Decl.RuleDef                  = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp].]
   Decl.RuleDefNoParams          = [[ID] :- [Exp] -> [Exp].]
 
-  Decl.ClassDecl                = [class type [ID]]
+  Decl.ClassDecl                = [[{DeclMod " "}*] class type [ID]]
 
 
-context-free sorts StrategyDeclMod
+context-free sorts DeclMod
 context-free syntax
-  StrategyDeclMod.Extern = <extern>
+  DeclMod.Extern = <extern>
 
 context-free sorts ParamDef
 context-free syntax
