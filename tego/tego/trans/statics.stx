@@ -46,13 +46,13 @@ rules declOk : scope * Decl
 
   declOk(s, d@ValDef(mods, name, type, body)) :- {T TBODY}
     typeOfType(s, type) == T,
-    typeOfExpInst(s, body) == TBODY,
+    typeOfExp(s, body) == TBODY,
     subtypeOf(TBODY, T),
     declareDecl(s, name, T),
     @d.type := T.
 
   declOk(s, d@ValDefNoType(mods, name, body)) :- {T TBODY}
-    typeOfExpInst(s, body) == T,
+    typeOfExp(s, body) == T,
     declareDecl(s, name, T),
     @d.type := T.
 
@@ -61,32 +61,29 @@ rules declOk : scope * Decl
     declareDecl(s, name, T),
     @d.type := T.
 
-  declOk(s, d@StrategyDecl(mods, name, typeParams, params, inType, outType)) :- {ds TPs T PTs IT OT}
+  declOk(s, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
     // Create strategy declaration scope in which the type variables are declared
     new ds, ds -P-> s,
-    typeParamDeclsOk(ds, typeParams),
     typesOfTypes(ds, params) == PTs,
     typeOfType(ds, inType) == IT,
     typeOfType(ds, outType) == OT,
-    T == GENERIC(typeParams, STRATEGY(PTs, IT, OT)),
+    T == STRATEGY(PTs, IT, OT),
     declareDecl(s, name, T),
     @d.type := T.
 
   declOk(s, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
-    // TODO: instantiate the generic type to its bounds
-    typeOfType(s, TypeRef(name)) == T@GENERIC(_, STRATEGY(PTs, IT, OT)),
+    typeOfType(s, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
     new ss, ss -P-> s,
     paramDefsOk(ss, paramDefs, PTs),
-    typeOfExpInst(ss, body) == STRATEGY([], IT, OT),
+    typeOfExp(s, body) == STRATEGY([], IT, OT),
     @d.type := T.
 
   declOk(s, d@RuleDef(name, paramDefs, inExp, outExp)) :- {T PTs IT OT ss}
-    // TODO: instantiate the generic type to its bounds
-    typeOfType(s, TypeRef(name)) == T@GENERIC(_, STRATEGY(PTs, IT, OT)),
+    typeOfType(s, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
     new ss, ss -P-> s,
     paramDefsOk(ss, paramDefs, PTs),
-    typeOfExpInst(ss, inExp) == IT,
-    typeOfExpInst(ss, outExp) == OT,
+    typeOfExp(ss, inExp) == IT,
+    typeOfExp(ss, outExp) == OT,
     @d.type := T.
 
   declOk(s, d@ClassDecl(mods, name)) :- {T}
@@ -135,38 +132,6 @@ rules typeOfType : scope * Type -> TYPE
 
   typeOfType(s, Type-Plhdr()) = _.
 
-//rules typeParamDeclOk : scope * TypeParamDecl
-//  typeParamDeclsOk maps typeParamDeclOk(*, list(*))
-//
-//  // FIXME: This is incorrect because we use the same constraint variable
-//  // for all instantiations
-//  typeParamDeclOk(s, p@TypeParamDecl(name)) :- {T}
-//    // A type parameter, unconstrained
-//    declareDecl(s, name, T),
-//    @p.type := T.
-//
-//  typeParamDeclOk(s, TypeParamDecl-Plhdr()).
-
-// Declares each type parameter p as having type VAR(p).
-rules typeParamDeclOk : scope * TypeParamDecl
-  typeParamDeclsOk maps typeParamDeclOk(*, list(*))
-
-  typeParamDeclOk(ds, p@TypeParamDecl(name)) :- {T}
-    T == VAR(name),
-    declareDecl(ds, name, T),
-    @p.type := T.
-
-//rules typeOfTypeParamDecl : scope * TypeParamDecl -> TYPE
-//  typesOfTypeParamDecls maps typeOfTypeParamDecl(*, list(*)) = list(*)
-//
-//  // This creates a unconstrained type variable T
-//  typeOfTypeParamDecl(s, p@TypeParamDecl(name)) = T :-
-//    // A type parameter, unconstrained
-//    T == VAR(name),
-//    declareDecl(s, name, T),
-//    @p.type := T.
-//
-//  typeOfTypeParamDecl(s, TypeParamDecl-Plhdr()) = _.
 
 rules typeOfParamDecl : scope * scope * ParamDecl -> TYPE
   typesOfParamDecls maps typeOfParamDecl(*, *, list(*)) = list(*)
@@ -189,39 +154,34 @@ rules typeOfExp : scope * Exp -> TYPE
   typesOfExps maps typeOfExp(*, list(*)) = list(*)
 
   typeOfExp(s, e@Seq(e1, e2)) = T :- {IT MT OT}
-    typeOfExpInst(s, e1) == STRATEGY([], IT, MT),
-    typeOfExpInst(s, e2) == STRATEGY([], MT, OT),
+    typeOfExp(s, e1) == STRATEGY([], IT, MT),
+    typeOfExp(s, e2) == STRATEGY([], MT, OT),
     T == STRATEGY([], IT, OT),
     @e.type := T.
 
   typeOfExp(s, e@Map(e1, e2)) = T :- {IT MT OT}
-    typeOfExpInst(s, e1) == STRATEGY([], IT, LIST(MT)),
-    typeOfExpInst(s, e2) == STRATEGY([], MT, OT),
+    typeOfExp(s, e1) == STRATEGY([], IT, LIST(MT)),
+    typeOfExp(s, e2) == STRATEGY([], MT, OT),
     T == STRATEGY([], IT, LIST(OT)),
     @e.type := T.
 
   typeOfExp(s, e@FlatMap(e1, e2)) = T :- {IT MT OT}
-    typeOfExpInst(s, e1) == STRATEGY([], IT, LIST(MT)),
-    typeOfExpInst(s, e2) == STRATEGY([], MT, LIST(OT)),
+    typeOfExp(s, e1) == STRATEGY([], IT, LIST(MT)),
+    typeOfExp(s, e2) == STRATEGY([], MT, LIST(OT)),
     T == STRATEGY([], IT, LIST(OT)),
     @e.type := T.
 
-  typeOfExp(s, e@Id()) = T@GENERIC([TypeParamDecl("T")], STRATEGY([], VAR("T"), VAR("T"))) :-
+  typeOfExp(s, e@Id()) = T@STRATEGY([], ANY(), ANY()) :-
     @e.type := T.
 
-  typeOfExp(s, e@Fail()) = T@GENERIC([TypeParamDecl("T"), TypeParamDecl("R")], STRATEGY([], VAR("T"), VAR("R"))) :-
+  typeOfExp(s, e@Fail()) = T@STRATEGY([], ANY(), ANY()) :-
     @e.type := T.
 
   typeOfExp(s, e@Apply(rcv, args)) = T :- {ET TAs PTs IT OT}
-    typeOfExpInst(s, rcv) == STRATEGY(PTs, IT, OT),
-    typesOfExpsInst(s, args) == PTs,
+    typeOfExp(s, rcv) == STRATEGY(PTs, IT, OT),
+    typesOfExps(s, args) == PTs,
     T == STRATEGY([], IT, OT),
     @e.type := T.
-
-//  typeOfExp(s, e@Eval(rcv, input)) = OT :- {IT}
-//    typeOfExpInst(s, rcv) == STRATEGY(IT, OT),
-//    typeOfExpInst(s, input) == IT,
-//    @e.type := OT.
 
   typeOfExp(s, e@Var(name)) = T :-
     resolveDecl(s, name) == T,
@@ -245,116 +205,39 @@ rules typeOfExp : scope * Exp -> TYPE
 
   // TODO: Accept ANY() as input type
   typeOfExp(s, e@Build(exp)) = T@STRATEGY([], _, TEXP) :-
-    typeOfExpInst(s, exp) == TEXP,
+    typeOfExp(s, exp) == TEXP,
     @e.type := T.
 
   typeOfExp(s, e@Tuple(exps)) = T@TUPLE(Ts) :-
     typesOfExps(s, exps) == Ts,
     @e.type := T.
 
-  typeOfExp(s, e@Inst(exp, typeArgs)) = T :- {ET TAs}
-    typeOfExpInst(s, exp) == ET,
-    typesOfTypes(s, typeArgs) == TAs,
-    instantiateType(ET, TAs) == T.
-
-//  typeOfExp(s, e@InstInfer(exp)) = T :- {ET}
-//    typeOfExp(s, exp) == ET,
-//    instantiateType(ET, _) == T.
-
   typeOfExp(s, e@LambdaRule(paramDefs, inExp, outExp)) = T@STRATEGY(PTs, IT, OT) :- {ss}
     new ss, ss -P-> s,
     paramDefsOk(ss, paramDefs, PTs),
-    typeOfExpInst(ss, inExp) == IT,
-    typeOfExpInst(ss, outExp) == OT,
+    typeOfExp(ss, inExp) == IT,
+    typeOfExp(ss, outExp) == OT,
     T == STRATEGY(PTs, IT, OT),
     @e.type := T.
 
   typeOfExp(s, e@LambdaStrategy(paramDefs, exp)) = T@STRATEGY(PTs, IT, OT) :- {ss}
     new ss, ss -P-> s,
     paramDefsOk(ss, paramDefs, PTs),
-    typeOfExpInst(ss, exp) == STRATEGY([], IT, OT),
+    typeOfExp(ss, exp) == STRATEGY([], IT, OT),
     T == STRATEGY(PTs, IT, OT),
     @e.type := T.
 
   typeOfExp(s, Exp-Plhdr()) = T.
 
-rules typeOfExpInst : scope * Exp -> TYPE
-  typesOfExpsInst maps typeOfExpInst(*, list(*)) = list(*)
-
-  typeOfExpInst(s, exp) = T :- {ET}
-    typeOfExp(s, exp) == ET,
-    instantiateType(ET, _ /* No particular type suggestions */) == T.
-
 rules subtypeOf : TYPE * TYPE
 
   subtypeOf(T, T).
-
-rules instantiateType : TYPE * list(TYPE) -> TYPE
-
-  // If the type is generic, instantiate it
-  instantiateType(GENERIC(typeParams, T), TAs) = typeOfInstantiatedType(ts, T) :-
-    // Each type parameter is a parameter name that occurs in T
-    // By creating a scope, adding these parameters (with their corresponding TA type argument as the type),
-    // and resolving them, we obtain a type instantiation.
-    new ts,
-    declareTypeParams(ts, typeParams, TAs).
-
-  // If the type is not generic, the type arguments list must be empty
-  instantiateType(T, []) = typeOfInstantiatedType(ts, T) :- new ts.
-
-rules typeOfInstantiatedType : scope * TYPE -> TYPE
-  typesOfInstantiatedTypes maps typeOfInstantiatedType(*, list(*)) = list(*)
-
-//  typeOfInstantiatedType(ts, T@MODULE(_)) = T.
-
-  typeOfInstantiatedType(ts, STRATEGY(PTs, IT, OT))
-    = STRATEGY(typesOfInstantiatedTypes(ts, PTs), typeOfInstantiatedType(ts, IT), typeOfInstantiatedType(ts, OT)).
-  typeOfInstantiatedType(ts, LIST(T))
-    = LIST(typeOfInstantiatedType(ts, T)).
-  typeOfInstantiatedType(ts, TUPLE(Ts))
-    = TUPLE(typesOfInstantiatedTypes(ts, Ts)).
-
-  typeOfInstantiatedType(ts, T@GENERIC(_, _))
-    = _ :- false | error $[An uninstantiated generic type cannot occur in an uninstantiated generic type: [T]].
-
-// typeOfInstantiatedType(_, ?) = num
-// only if ? == VAR(_) then pick the VAR alternative
-
-
-  // TODO: Don't pick this one if we don't know the lhs
-  typeOfInstantiatedType(ts, VAR(name)) = T :-
-    query type
-      filter P*
-      and { d' :- d' == TypeParam{name@_} }
-      min $ < P
-      in ts |-> [(_, (_, T))].
-
-//  typeOfInstantiatedType(ts, T@CLASS(_)) = T.
-//
-//  typeOfInstantiatedType(ts, T@BYTE()) = T.
-//  typeOfInstantiatedType(ts, T@SHORT()) = T.
-//  typeOfInstantiatedType(ts, T@INT()) = T.
-//  typeOfInstantiatedType(ts, T@LONG()) = T.
-//
-//  typeOfInstantiatedType(ts, T@UBYTE()) = T.
-//  typeOfInstantiatedType(ts, T@USHORT()) = T.
-//  typeOfInstantiatedType(ts, T@UINT()) = T.
-//  typeOfInstantiatedType(ts, T@ULONG()) = T.
-//
-//  typeOfInstantiatedType(ts, T@ANY()) = T.
-//  typeOfInstantiatedType(ts, T@BOOL()) = T.
-//  typeOfInstantiatedType(ts, T@UNIT()) = T.
-//  typeOfInstantiatedType(ts, T@STRING()) = T.
-
-  // Else:
-  typeOfInstantiatedType(_, T) = T.
 
 rules declareTypeParam : scope * TypeParamDecl * TYPE
   declareTypeParams maps declareTypeParam(*, list(*), list(*))
 
   declareTypeParam(ts, TypeParamDecl(name), T) :-
     !type[TypeParam{name@_}, T] in ts.
-
 
 rules declareModule : scope * string * scope
 
@@ -383,9 +266,6 @@ signature
     CLASS    : string -> TYPE
     LIST     : TYPE -> TYPE
     TUPLE    : list(TYPE) -> TYPE
-
-    GENERIC  : list(TypeParamDecl) * TYPE -> TYPE
-    VAR      : string -> TYPE
 
     BYTE     : TYPE
     SHORT    : TYPE

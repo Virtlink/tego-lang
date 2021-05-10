@@ -81,10 +81,7 @@ context-free syntax
   Exp.Id                        = <id>
   Exp.Fail                      = <fail>
   Exp.Apply                     = [[Exp]([{Exp ", "}*])]
-//  Exp.Eval = [<[Exp]> [Exp]]
   Exp.Var = <<ID>>
-  Exp.Inst                      = [[Exp]<[{Type ", "}+]>]
-  //Exp.InstInfer                 = [[Exp]<[]>]
   Exp.Int = <<INT>>
   Exp.Object = <object>
   Exp.True = <true>
@@ -111,8 +108,6 @@ context-free syntax
 context-free priorities
   {
     Exp.Apply
-    Exp.Inst
-    //Exp.InstInfer
     Exp.Build
   } > {
     Exp.Map
