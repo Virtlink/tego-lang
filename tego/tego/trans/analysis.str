@@ -7,6 +7,7 @@ imports
 
   pp
   desugar
+  to-ir
   injections/-
 
   libspoofax/term/origin
@@ -58,3 +59,24 @@ rules // Debugging
     with filename := <guarantee-extension(|"type.aterm")> path
        ; result   := <get-type> selected
 
+  // Shows IR
+  debug-show-ir: (selected, _, _, path, project-path) -> (filename, result)
+    with filename := <guarantee-extension(|"ir.aterm")> path
+       ; result   := <desugar-all; to-ir-all; strip-annos> selected
+
+  // Prints IR
+  debug-pp-ir: (selected, _, _, path, project-path) -> (filename, result)
+    with ext      := <get-extension> path
+       ; filename := <guarantee-extension(|$[ir.[ext]])> path
+       ; result   := <desugar-all; to-ir-all; strip-annos; pp-debug> selected
+
+  // Shows ANF
+  debug-show-anf: (selected, _, _, path, project-path) -> (filename, result)
+    with filename := <guarantee-extension(|"anf.aterm")> path
+       ; result   := <desugar-all; to-ir-all; to-ir-anf-all; strip-annos> selected
+
+  // Prints ANF
+  debug-pp-anf: (selected, _, _, path, project-path) -> (filename, result)
+    with ext      := <get-extension> path
+       ; filename := <guarantee-extension(|$[anf.[ext]])> path
+       ; result   := <desugar-all; to-ir-all; to-ir-anf-all; strip-annos; pp-debug> selected

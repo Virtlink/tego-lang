@@ -22,7 +22,9 @@ class TegoCompiler(
      */
     fun compileExpression(expTerm: Term) {
         val exp = irBuilder.toExp(expTerm)
-        val anfExp = expNormalizer.normalize(exp)
+        //val anfExp = expNormalizer.normalize(exp)
+
+
         // TODO: Write to class
     }
 }

@@ -19,7 +19,11 @@ rules
   desugar-decl: StrategyDeclNoParamsOrTypeParams(mods, name, inType, outType) -> StrategyDecl(mods, name, [], [], inType, outType)
 
   desugar-decl: StrategyDefNoParams(name, body) -> StrategyDef(name, [], body)
-  desugar-decl: RuleDefNoParams(name, inExp, outExp) -> RuleDef(name, [], inExp, outExp)
+  desugar-decl: StrategyDefWInputNoParams(name, inputBind, body) -> StrategyDefWInput(name, [], inputBind, body)
+  desugar-decl: RuleDefNoParams(name, inExp, outExp, clauses) -> RuleDef(name, [], inExp, outExp, clauses)
+  desugar-decl: RuleDefNoClauses(name, params, inExp, outExp) -> RuleDef(name, params, inExp, outExp, [])
+  desugar-decl: RuleDefNoParamsNoClauses(name, inExp, outExp) -> RuleDef(name, [], inExp, outExp, [])
+
 
   desugar-decl: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)
 

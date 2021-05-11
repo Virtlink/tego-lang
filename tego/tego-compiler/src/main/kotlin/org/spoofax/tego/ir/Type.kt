@@ -15,14 +15,16 @@ object UIntType : Type
 object ULongType : Type
 
 object AnyType : Type
+object BoolType : Type
+object UnitType : Type
 object StringType : Type
 
-data class FunctionType(
-    val paramTypes: List<Type>,
-    val returnType: Type,
+data class TupleType(
+    val componentTypes: List<Type>
 ) : Type
 
 data class StrategyType(
+    val paramTypes: List<Type>,
     val inputType: Type,
     val outputType: Type,
 ) : Type

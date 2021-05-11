@@ -52,8 +52,9 @@ data class Let(
     val varName: String,
     val varExp: Exp,            // comp
     val body: Exp,              // anf
+    override val type: Type,
 ) : Exp {
-    override val type: Type get() = body.type
+//    override val type: Type get() = body.type
 
     override val isAnf: Boolean get() = varExp.isComp && body.isAnf
 }

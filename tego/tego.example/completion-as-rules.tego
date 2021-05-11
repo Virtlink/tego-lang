@@ -7,11 +7,77 @@ class type Class
 
 
 def complete(Var): SolverState -> [SolverState]
+// Definition
 complete(v) =
   expandAllPredicates(v) ||>
   expandAllInjections(v) ||>
   expandAllQueries(v)    ||>
   expandDeterministic(v).
+
+// Explicit flatmap
+complete(v) =
+  expandAllPredicates(v) ;
+  flatmap(expandAllInjections(v) ;
+  flatmap(expandAllQueries(v) ;
+  flatmap(expandDeterministic(v)))).
+
+// Explicit flatmap
+complete(v) =
+  expandAllPredicates(v) ;
+  flatmap(expandAllInjections(v)) ;
+  flatmap(expandAllQueries(v)) ;
+  flatmap(expandDeterministic(v)).
+
+// Explicit evaluation
+complete(v) t =
+  <expandAllPredicates(v) ;
+  flatmap(expandAllInjections(v)) ;
+  flatmap(expandAllQueries(v)) ;
+  flatmap(expandDeterministic(v))> t.
+
+// Lift evaluation through seq
+complete(v) t =
+  // Note how it is inside out
+  <flatmap(expandDeterministic(v))>
+  <flatmap(expandAllQueries(v))>
+  <flatmap(expandAllInjections(v))>
+  <expandAllPredicates(v)> t.
+
+// Seq to let
+complete(v) t =
+  let x1 = <expandAllPredicates(v)> t,                // returns a lazy list
+  let x2 = <flatmap(expandAllInjections(v))> x1,      // returns a lazy list
+  let x3 = <flatmap(expandAllQueries(v))> x2,         // returns a lazy list
+  let x4 = <flatmap(expandDeterministic(v))> x3,      // returns a lazy list
+  x4.
+
+//// Explicit evaluation and yield
+//complete(v) t = seq {
+//    yieldAll <expandAllPredicates(v) ;
+//      flatmap(expandAllInjections(v)) ;
+//      flatmap(expandAllQueries(v)) ;
+//      flatmap(expandDeterministic(v))> t.
+//  }.
+//
+//// yieldAll
+//complete(v) t = seq {
+//    let x1 = <expandAllPredicates(v) ;
+//      flatmap(expandAllInjections(v)) ;
+//      flatmap(expandAllQueries(v)) ;
+//      flatmap(expandDeterministic(v))> t,
+//    yieldAll x1.
+//  }.
+//
+//// yieldAll to loop
+//complete(v) t = seq {
+//    let x1 = <expandAllPredicates(v) ;
+//      flatmap(expandAllInjections(v)) ;
+//      flatmap(expandAllQueries(v)) ;
+//      flatmap(expandDeterministic(v))> t,
+//    foreach (x in x1) {
+//      yield x.
+//    }.
+//  }.
 
 val cls: Class // TODO: Write specific class
 
@@ -56,6 +122,7 @@ extern def orSS(SolverState -> [SolverState], SolverState -> [SolverState]): Sol
 extern def idSS: SolverState -> [SolverState]
 extern def ifSS(SolverState -> [SolverState], SolverState -> [SolverState], SolverState -> [SolverState]): SolverState -> [SolverState]
 extern def singleSS(SolverState -> [SolverState]): SolverState -> [SolverState]
+extern def flatmap(SolverState -> [SolverState]): [SolverState] -> [SolverState]
 
 // Core generics
 extern def fixset<T>(T -> [T]): T -> [T]

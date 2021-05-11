@@ -13,40 +13,20 @@ complete(v) =
   expandAllQueries(v)    ||>
   expandDeterministic(v).
 
-val cls: Class // TODO: Write specific class
+//val cls: Class // TODO: Write specific class
 
-def expandAllPredicates(Var): SolverState -> [SolverState]
-expandAllPredicates(v) = repeatSS(
-    limitSS(1, selectConstraints(cls, \(constraint) = containsVar(v, constraint).\)) ||>
-    expandPredicateConstraint(v) ||>
-    assertValid(v)
-  ).
+extern def expandAllPredicates(Var): SolverState -> [SolverState]
 
-def expandAllInjections(Var): SolverState -> [SolverState]
-expandAllInjections(v) =
-  fixsetSS(trySS(
-    expandInjection(v)
-  )) ||>
-  assertValid(v).
+extern def expandAllInjections(Var): SolverState -> [SolverState]
 
-def expandAllQueries(Var): SolverState -> [SolverState]
-expandAllQueries(v) = distinctSS(orSS(idSS, fixsetSS(
-  ifSS(
-    limitSS(1, selectConstraints(cls, \(constraint) = fail /*TODO*/.\)),
-    expandQueryConstraint(v),
-    idSS
-  )
-))).
+extern def expandAllQueries(Var): SolverState -> [SolverState]
 
-def expandDeterministic(Var): SolverState -> [SolverState]
-expandDeterministic(v) = singleSS(
-  expandPredicateConstraint(v) ||>
-  assertValid(v) ||>
-  filterPlaceholders(v)
-).
+extern def expandDeterministic(Var): SolverState -> [SolverState]
 
 
 // Core
+extern def flatMap(SolverState -> [SolverState]): [SolverState] -> [SolverState]
+
 extern def fixsetSS(SolverState -> [SolverState]): SolverState -> [SolverState]
 extern def trySS(SolverState -> [SolverState]): SolverState -> [SolverState]
 extern def repeatSS(SolverState -> [SolverState]): SolverState -> [SolverState]

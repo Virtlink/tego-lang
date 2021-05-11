@@ -1,0 +1,85 @@
+module to-ir
+
+imports
+
+  signatures/Tego-sig
+
+rules
+
+  // Desugar to existing constructors defined in the syntax
+//  desugar-all = topdown(try(
+//    desugar-decl +
+//    desugar-exp
+//  ))
+
+rules
+
+  to-ir-all = innermost(
+    to-ir +
+    to-ir-flatmap
+  )
+
+  // lhs ||> rhs -> lhs ; flatMap(lhs)
+  to-ir-flatmap: FlatMap(lhs, rhs) -> Seq(lhs, Apply(Var("flatMap"), [rhs]))
+  // flatMap(lhs, flatMap(rhs)) -> flatMap(lhs) ; flatMap(rhs)
+  to-ir-flatmap: Apply(Var("flatMap"), [Seq(lhs, Apply(Var("flatMap"), [rhs]))]) ->
+    Seq(Apply(Var("flatMap"), [lhs]), Apply(Var("flatMap"), [rhs]))
+  // flatMap(lhs; rhs@(flatMap(_) ; _)) -> flatMap(lhs) ; rhs@(flatMap(_) ; _)
+  to-ir-flatmap: Apply(Var("flatMap"), [Seq(lhs, rhs@Seq(Apply(Var("flatMap"), [_]), _))]) ->
+    Seq(Apply(Var("flatMap"), [lhs]), rhs)
+
+  // Makes a strategy with an implicit input argument using an explicit input argument
+  to-ir: StrategyDef(name, params, body) -> StrategyDefWInput(name, params, inputVar, Eval(body, Var(inputVar)))
+  with inputVar := "__input"    // TODO: Generate unique var
+
+  // <a; b> x -> <b> <a> x
+  to-ir: Eval(Seq(lhs, rhs), exp) -> Eval(rhs, Eval(lhs, exp))
+
+rules
+
+  to-ir-anf-all = topdown(try(
+    to-ir-anf
+  ))
+
+  // ANF
+  to-ir-anf = StrategyDefWInput(id, id, id, to-anf)
+
+rules
+  to-anf: exp -> newExp
+  with (ansCmp, ansCtx) := <to-cmp> exp
+     ; newExp := <foldr(!ansCmp, \((bind, exp), body) -> Let(bind, exp, body)\)> ansCtx
+
+// Ensures the given expression is a compound expression in ANF
+rules
+
+  to-cmp = to-cmp-only <+ to-imm-only
+
+  to-cmp-only = to-cmp-only1 + to-cmp-only2 + to-cmp-only3
+
+  to-cmp-only1: Let(bndVar, bnd, bdy) -> (bdyCmp, <flatten-list> [bndCtx, bdyCtx, (bndVar, bndCmp)])
+  with (bndCmp, bndCtx) := <to-cmp> bnd
+     ; (bdyCmp, bdyCtx) := <to-cmp> bdy
+
+  to-cmp-only2: Apply(rcv, args) -> (Apply(rcvImm, argImms), <flatten-list> [rcvCtx, argCtxs])
+  with (rcvImm, rcvCtx) := <to-imm> rcv
+     ; (argImms, argCtxs) := <map(to-imm); unzip> args
+
+  to-cmp-only3: Eval(rcv, inp) -> (Eval(rcvImm, inpImm), <flatten-list> [rcvCtx, inpCtx])
+  with (rcvImm, rcvCtx) := <to-imm> rcv
+     ; (inpImm, inpCtx) := <to-imm> inp
+
+// Ensures the given expression is an immediate expression in ANF
+rules
+
+  to-imm = to-imm-only <+ to-imm-wrap
+
+  to-imm-only: e@Var(_)          -> (e, [])
+  to-imm-only: e@Int(_)          -> (e, [])
+  to-imm-only: e@Object()        -> (e, [])
+  to-imm-only: e@True()          -> (e, [])
+  to-imm-only: e@False()         -> (e, [])
+  to-imm-only: e@String(_)       -> (e, [])
+
+  to-imm-wrap: exp -> (Var(tmpVar), <flatten-list> [expCtx, (tmpVar, expCmp)])
+  with tmpVar := <newname> "x"
+     ; (expCmp, expCtx) := <to-cmp-only> exp

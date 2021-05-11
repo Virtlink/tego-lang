@@ -32,30 +32,41 @@ context-free syntax
   Decl.StrategyDeclNoTypeParams = [[{DeclMod " "}*] def [ID]([{Type ", "}*]): [Type] -> [Type]] // desugared
   Decl.StrategyDeclNoParamsOrTypeParams = [[{DeclMod " "}*] def [ID]: [Type] -> [Type]]        // desugared
 
-  Decl.StrategyDef              = [[ID]([{ParamDef ", "}*]) = [Exp].]
-  Decl.StrategyDefNoParams      = [[ID] = [Exp].]        // desugared
+  Decl.StrategyDef              = [[ID]([{ParamDef ", "}*]) =
+  [Exp].]
+  Decl.StrategyDefNoParams      = [[ID] =
+  [Exp].]        // desugared
 
-  Decl.RuleDef                  = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp].]
-  Decl.RuleDefNoParams          = [[ID] :- [Exp] -> [Exp].]
+  Decl.StrategyDefWInput        = [[ID]([{ParamDef ", "}*]) [ID] =
+  [Exp].]
+  Decl.StrategyDefWInputNoParams= [[ID] [ID] =
+  [Exp].] // desugared
+
+  Decl.RuleDef                  = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp],
+  [{RuleClause ", "}+].]
+  Decl.RuleDefNoClauses         = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp].]        // desugared
+  Decl.RuleDefNoParams          = [[ID] :- [Exp] -> [Exp],
+  [{RuleClause ", "}+].]    // desugared
+  Decl.RuleDefNoParamsNoClauses = [[ID] :- [Exp] -> [Exp].]    // desugared
 
   Decl.ClassDecl                = [[{DeclMod " "}*] class type [ID]]
 
+context-free sorts RuleClause
+context-free syntax
+  RuleClause.WhereClause = <where <Exp>>
 
 context-free sorts DeclMod
 context-free syntax
   DeclMod.Extern = <extern>
 
-context-free sorts ParamDef
-context-free syntax
-  ParamDef.ParamDef = <<ID>>
-
 context-free sorts TypeParamDecl
 context-free syntax
   TypeParamDecl.TypeParamDecl = <<ID>>
 
-context-free sorts ParamDecl
+context-free sorts ParamDef
 context-free syntax
-  ParamDecl.ParamDecl = <<ID>: <Type>>
+  ParamDef.ParamDef = <<ID>: <Type>>
+  ParamDef.ParamDefNoType = <<ID>>
 
 context-free sorts Type
 context-free syntax
@@ -76,11 +87,14 @@ context-free sorts Exp Arg
 context-free syntax
 
   Exp.Seq                       = <<Exp>; <Exp>> {right}
-  Exp.Map                       = [[Exp] |> [Exp]] {right}
-  Exp.FlatMap                   = [[Exp] ||> [Exp]] {right}
+  Exp.Map                       = [[Exp] |> [Exp]] {right}        // desugared
+  Exp.FlatMap                   = [[Exp] ||> [Exp]] {right}        // desugared
   Exp.Id                        = <id>
   Exp.Fail                      = <fail>
   Exp.Apply                     = [[Exp]([{Exp ", "}*])]
+  Exp.Eval                      = [<[Exp]> [Exp]]
+  Exp.Let = [let [ID] = [Exp],
+[Exp]]
   Exp.Var = <<ID>>
   Exp.Int = <<INT>>
   Exp.Object = <object>
