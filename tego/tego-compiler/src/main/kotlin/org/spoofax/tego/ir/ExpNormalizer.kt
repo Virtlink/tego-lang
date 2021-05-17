@@ -41,7 +41,7 @@ class ExpNormalizer {
      */
     fun normalize(exp: Exp): Exp {
         val (ans, ansCtx) = toComp(exp)
-        val newExp = ansCtx.foldRight(ans) { (bind, exp), body -> Let(bind, exp, body) }
+        val newExp = ansCtx.foldRight(ans) { (bind, exp), body -> Let(bind, exp, body, body.type) }
         assert(newExp.isAnf)
         return newExp
     }
@@ -63,7 +63,7 @@ class ExpNormalizer {
                 R(bdy, (bndCtx + bdyCtx + (exp.varName to bnd)))
             }
             is Apply -> {
-                val (fnc, fncCtx) = toImm(exp.function)
+                val (fnc, fncCtx) = toImm(exp.strategy)
                 val (args, argCtxs) = exp.arguments.map { toImm(it) }.unzip()
                 R(Apply(fnc, args, exp.type), (fncCtx + argCtxs.flatten()))
             }

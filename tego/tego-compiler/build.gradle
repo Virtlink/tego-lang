@@ -6,4 +6,7 @@ plugins {
 dependencies {
     // Code Generation
     implementation "com.virtlink:kasm:0.1-SNAPSHOT"
+
+    // Runtime
+    implementation project(":tego-runtime")
 }

@@ -3,7 +3,7 @@ package org.spoofax.tego.ir
 /**
  * An IR expression.
  */
-interface Exp {
+sealed interface Exp {
 
     /** Whether this subtree of the AST is an ANF top-level, compound, or immediate expression. */
     val isAnf: Boolean get() = isComp
@@ -63,15 +63,15 @@ data class Let(
  * Applies one or more arguments to a function.
  *
  * ```
- * $function($arguments)
+ * $strategy($arguments)
  * ```
  */
 data class Apply(
-    val function: Exp,          // imm
+    val strategy: Exp,          // imm
     val arguments: List<Exp>,   // [imm]
     override val type: Type,
 ) : Exp {
-    override val isComp: Boolean get() = function.isImm && arguments.all { it.isImm }
+    override val isComp: Boolean get() = strategy.isImm && arguments.all { it.isImm }
 }
 
 /**
@@ -93,7 +93,7 @@ data class Eval(
  * Gets a value from the environment.
  *
  * ```
- * name
+ * $name
  * ```
  */
 data class Var(
@@ -119,7 +119,7 @@ data class IntLit(
  * A literal string.
  *
  * ```
- * $value
+ * "$value"
  * ```
  */
 data class StringLit(

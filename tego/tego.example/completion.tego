@@ -5,6 +5,8 @@ class type Constraint
 class type SolverState
 class type Class
 
+val cls: Class // TODO: Write specific class
+
 
 def complete(Var): SolverState -> [SolverState]
 complete(v) =
@@ -12,8 +14,6 @@ complete(v) =
   expandAllInjections(v) ||>
   expandAllQueries(v)    ||>
   expandDeterministic(v).
-
-val cls: Class // TODO: Write specific class
 
 def expandAllPredicates(Var): SolverState -> [SolverState]
 expandAllPredicates(v) = repeatSS(

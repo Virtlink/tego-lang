@@ -1,6 +1,5 @@
 package org.spoofax.tego.ir
 
-import org.spoofax.tego.InvalidFormatException
 import org.spoofax.tego.aterm.*
 
 /**
@@ -167,6 +166,37 @@ class IrBuilder {
        )
      }
      */
+
+    /**
+     * Compiles a strategy declaration term into an IR strategy declaration.
+     */
+    fun toStrategyDecl(decl: Term): StrategyTypeDecl {
+        require(decl is ApplTerm) { "Expected constructor application term, got: $decl"}
+
+        return when (decl.constructor) {
+            "StrategyDecl" -> StrategyTypeDecl(QName("", decl[1].toJavaString()), StrategyType(decl[3].toList().map { toType(it) }, toType(decl[4]), toType(decl[5])))
+            "StrategyDeclNoParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $decl")
+            "StrategyDeclNoTypeParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $decl")
+            "StrategyDeclNoParamsOrTypeParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $decl")
+            else -> TODO("Unsupported declaration: $decl")
+        }
+    }
+
+    /**
+     * Compiles a strategy definition term into an IR strategy definition.
+     */
+    fun toStrategyDef(def: Term): StrategyDef {
+        require(def is ApplTerm) { "Expected constructor application term, got: $def"}
+
+        return when (def.constructor) {
+            "StrategyDefWInput" -> StrategyDef(QName("", def[0].toJavaString()), def[1].toList().map { it.toJavaString() }, def[2].toJavaString(), toExp(def[3]))
+            "StrategyDefWInputNoParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $def")
+            "StrategyDef" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $def")
+            "StrategyDefNoParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $def")
+            else -> TODO("Unsupported declaration: $def")
+        }
+    }
+
     /**
      * Compiles an expression term into an IR expression.
      */
@@ -202,24 +232,34 @@ class IrBuilder {
         require(type is ApplTerm) { "Expected constructor application term, got: $type"}
 
         return when (type.constructor) {
-            "STRATEGY" -> StrategyType(type[0].toList().map { toType(it) }, toType(type[1]), toType(type[2]))
-            "CLASS" -> ClassType(type[0].toJavaString())
-            "LIST" -> ListType(toType(type[0]))
-            "TUPLE" -> TupleType(type[0].toList().map { toType(it) })
+            "BOOL" -> BoolType
+            "CHAR" -> CharType
 
             "BYTE" -> ByteType
             "SHORT" -> ShortType
             "INT" -> IntType
             "LONG" -> LongType
+
             "UBYTE" -> UByteType
             "USHORT" -> UShortType
             "UINT" -> UIntType
             "ULONG" -> ULongType
 
+            "FLOAT" -> FloatType
+            "DOUBLE" -> DoubleType
+
             "ANY" -> AnyType
-            "BOOL" -> BoolType
+            "NOTHING" -> NothingType
+
             "UNIT" -> UnitType
             "STRING" -> StringType
+
+            "STRATEGY" -> StrategyType(type[0].toList().map { toType(it) }, toType(type[1]), toType(type[2]))
+            "TUPLE" -> TupleType(type[0].toList().map { toType(it) })
+            "CLASS" -> ClassTypeRef(QName("", type[0].toJavaString()))
+            "LIST" -> ListType(toType(type[0]))
+
+            "ERROR" -> TypeError("Type error")
 
             else -> TODO("Unsupported type: $type")
         }
