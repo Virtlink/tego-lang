@@ -143,7 +143,7 @@ class ExpAssembler(
         when (decl) {
             is StrategyTypeDecl -> {
                 // MyStrategy.getInstance()
-                val strategyJvmType = typeManager[decl.type]
+                val strategyJvmType = typeManager[decl]
                 invokeStatic(strategyJvmType, "getInstance", JvmMethodSignature.of(strategyJvmType, emptyList()))
             }
             is ClassTypeDecl -> TODO("Cannot load class")

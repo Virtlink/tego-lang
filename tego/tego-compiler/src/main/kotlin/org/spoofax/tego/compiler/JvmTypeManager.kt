@@ -18,6 +18,7 @@ class JvmTypeManager(
 ) {
 
     operator fun get(type: Type): JvmType = getJvmType(type)
+    operator fun get(decl: TypeDecl): JvmType = getJvmType(decl)
 
     /**
      * Gets the JVM type for the given type specification.
@@ -98,7 +99,7 @@ class JvmTypeManager(
      */
     fun getJvmType(decl: TypeDecl): JvmType = when(decl) {
         is ClassTypeDecl -> JvmType.of(decl.name)
-        is StrategyTypeDecl -> TODO("Strategy type decl not yet supported.")
+        is StrategyTypeDecl -> JvmType.of(decl.name)
         else -> TODO("Unsupported declaration of type ${decl::class.java}: $decl")
     }
 
