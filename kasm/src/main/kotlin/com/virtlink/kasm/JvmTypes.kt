@@ -10,4 +10,6 @@ object JvmTypes {
     val NotNull: JvmType = JvmType.of("org.jetbrains.annotations.NotNull")
     val AssertionError: JvmType = JvmType.of(java.lang.AssertionError::class.java)
     val NullPointerException: JvmType = JvmType.of(java.lang.NullPointerException::class.java)
+
+    val List: JvmType = JvmType.of(java.util.List::class.java)
 }

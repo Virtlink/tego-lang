@@ -3,7 +3,6 @@ package org.spoofax.tego.compiler
 import org.junit.jupiter.api.Test
 import org.spoofax.tego.aterm.TermFactoryImpl
 import org.spoofax.tego.aterm.io.ATermReader
-import org.spoofax.tego.aterm.io.ATermReaderTests
 import org.spoofax.tego.ir.IrBuilder
 
 /**
@@ -19,7 +18,7 @@ class TegoCompilerTests {
         val classWriter = TegoClassWriter.none()
         val compiler = TegoCompiler(
             IrBuilder(),
-            StrategyAssembler.Factory(ExpWriter.Factory()),
+            StrategyAssembler.Factory(ExpAssembler.Factory()),
             classWriter
         )
 

@@ -33,7 +33,7 @@ class TegoCompiler(
         }
         val symbolTable: SymbolTable = gatherer.symbolTable
 
-        val compiler = Compiler(symbolTable, strategyAssemblerFactory.create(JvmTypeManager(symbolTable)))
+        val compiler = Compiler(symbolTable, strategyAssemblerFactory.create(JvmTypeManager(symbolTable), symbolTable))
         for (module in project.modules) {
             for (def in module.definitions) {
                 compiler.compileDefinition(def)

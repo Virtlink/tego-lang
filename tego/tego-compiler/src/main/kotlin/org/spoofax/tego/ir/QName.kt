@@ -16,5 +16,10 @@ data class QName(
         require(simpleName.matches(Regex("^[a-zA-Z_$][a-zA-Z0-9_$]*$"))) { "Simple name is illegal: $simpleName" }
     }
 
+    /**
+     * Gets the JVM class name for this class.
+     */
+    fun toJvmClassName(): String = "$packageName.$simpleName"
+
     override fun toString(): String = "$packageName::$simpleName"
 }

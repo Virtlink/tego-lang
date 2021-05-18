@@ -5,7 +5,7 @@ package org.spoofax.tego.ir
  */
 data class StrategyDef(
     val name: QName,
-    val paramNames: List<String>,
+    val params: List<ParamDef>,
     val inputName: String,
     val body: Exp,
 ) : Def

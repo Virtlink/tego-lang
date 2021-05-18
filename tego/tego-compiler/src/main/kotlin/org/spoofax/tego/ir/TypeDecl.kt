@@ -1,5 +1,7 @@
 package org.spoofax.tego.ir
 
+import java.util.*
+
 /**
  * A type declaration.
  */
@@ -7,6 +9,8 @@ sealed interface TypeDecl : Decl {
 
     /** The fully-qualified name of the declaration. */
     val name: QName
+    /** The modifiers of the declaration. */
+    val modifiers: TypeModifiers
 
 }
 
@@ -19,6 +23,7 @@ sealed interface TypeDecl : Decl {
 data class StrategyTypeDecl(
     override val name: QName,
     val type: StrategyType,
+    override val modifiers: TypeModifiers,
 ) : TypeDecl {
 
     override fun toString(): String  = StringBuilder().apply {
@@ -30,22 +35,41 @@ data class StrategyTypeDecl(
 }
 
 /**
- * A class declaration.
+ * A class type declaration.
  *
  * @property name The fully-qualified name of the class.
- * @property superClass The super class of the class; or [Type.Any] by default.
- * @property superInterfaces The super interfaces of the class.
- * @property typeParameters The type parameters of the class.
  */
-data class ClassDecl(
+data class ClassTypeDecl(
     override val name: QName,
-    val superClass: Type = AnyType,
-    val superInterfaces: List<Type> = emptyList(),
-) : TypeDecl {
+    override val modifiers: TypeModifiers,
+) : TypeDecl
 
-    init {
-        require(superClass is TypeRef || superClass === AnyType) { "Only a type reference or 'Any' is allowed as a superclass." }
-        require(superInterfaces.all { it is TypeRef }) { "Only type references are allowed as superinterfaces."}
-    }
+typealias TypeModifiers = EnumSet<TypeModifier>
 
+/**
+ * Specifies a type modifier.
+ */
+enum class TypeModifier {
+    Extern
 }
+
+
+///**
+// * A class type declaration.
+// *
+// * @property name The fully-qualified name of the class.
+// * @property superClass The super class of the class; or [Type.Any] by default.
+// * @property superInterfaces The super interfaces of the class.
+// */
+//data class ClassTypeDecl(
+//    override val name: QName,
+//    val superClass: Type = AnyType,
+//    val superInterfaces: List<Type> = emptyList(),
+//) : TypeDecl {
+//
+//    init {
+//        require(superClass is TypeRef || superClass === AnyType) { "Only a type reference or 'Any' is allowed as a superclass." }
+//        require(superInterfaces.all { it is TypeRef }) { "Only type references are allowed as superinterfaces."}
+//    }
+//
+//}

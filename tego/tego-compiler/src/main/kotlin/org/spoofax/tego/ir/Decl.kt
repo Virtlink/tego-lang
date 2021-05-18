@@ -6,3 +6,8 @@ package org.spoofax.tego.ir
 sealed interface Decl
 
 sealed interface Def : Decl
+
+data class ParamDef(
+    val name: String,
+    val type: Type?
+)

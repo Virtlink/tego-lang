@@ -28,7 +28,7 @@ fun Term.toJavaInt(): Int {
  *
  * @return the elements
  */
-fun Term.toList(): List<Term> {
+fun Term.asList(): List<Term> {
     require(this is ListTerm) { "Expected ${describeTermType(ListTerm::class)}, got ${describeTermType(this)}: $this"}
     return this.elements
 }

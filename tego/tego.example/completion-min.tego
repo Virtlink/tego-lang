@@ -38,14 +38,14 @@ extern def ifSS(SolverState -> [SolverState], SolverState -> [SolverState], Solv
 extern def singleSS(SolverState -> [SolverState]): SolverState -> [SolverState]
 
 // Core generics
-extern def fixset<T>(T -> [T]): T -> [T]
-extern def try<T>(T -> [T]): T -> [T]
-extern def repeat<T>(T -> [T]): T -> [T]
-extern def limit<T, R>(Int, T -> [R]): T -> [R]
-extern def distinct<T, R>(T -> [R]): T -> [R]
-extern def or<T, R>(T -> [R], T -> [R]): T -> [R]
-extern def if<T, M, R>(T -> [M], M -> [R], T -> [R]): T -> [R]
-extern def single<T, R>(T -> [R]): T -> [R]
+//extern def fixset<T>(T -> [T]): T -> [T]
+//extern def try<T>(T -> [T]): T -> [T]
+//extern def repeat<T>(T -> [T]): T -> [T]
+//extern def limit<T, R>(Int, T -> [R]): T -> [R]
+//extern def distinct<T, R>(T -> [R]): T -> [R]
+//extern def or<T, R>(T -> [R], T -> [R]): T -> [R]
+//extern def if<T, M, R>(T -> [M], M -> [R], T -> [R]): T -> [R]
+//extern def single<T, R>(T -> [R]): T -> [R]
 
 // Built-ins
 extern def selectConstraints(Class, (Constraint) SolverState -> [SolverState]): SolverState -> [SolverState]

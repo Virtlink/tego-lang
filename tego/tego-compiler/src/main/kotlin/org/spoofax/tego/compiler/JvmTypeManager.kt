@@ -7,6 +7,7 @@ import com.virtlink.tego.strategies.Strategy1
 import com.virtlink.tego.strategies.Strategy2
 import com.virtlink.tego.strategies.Strategy3
 import org.spoofax.tego.ir.*
+import org.spoofax.tego.utils.of
 
 
 /**
@@ -72,8 +73,11 @@ class JvmTypeManager(
         }
 
         is TupleType -> TODO("Tuple types not supported")
-        is ListType -> TODO("List types not supported")
-        is ClassTypeRef -> TODO("Class type references not supported")
+        is ListType -> JvmTypes.List.parameterizedBy(JvmTypeArg.invariant(getJvmType(type.elementsType)))
+        is ClassTypeRef -> {
+            val decl = symbolTable[type.name] ?: throw NoSuchElementException("No type declaration found for reference $type")
+            getJvmType(decl)
+        }
         is StrategyTypeRef -> TODO("Strategy type references not supported")
 
 //        is Type.Ref -> {
@@ -84,19 +88,19 @@ class JvmTypeManager(
         else -> TODO("Unsupported type of type ${type::class.java}: $type")
     }
 
-//    /**
-//     * Gets the JVM type for the given type declaration.
-//     *
-//     * This method is thread-safe.
-//     *
-//     * @param decl the type declaration
-//     * @return the JVM type
-//     */
-//    fun getJvmType(decl: TypeDecl): JvmType = when(decl) {
-//        is ClassDecl -> TODO("Not yet supported.")
-//        is StrategyTypeDecl -> TODO("Not yet supported.")
-//        else -> TODO("Unsupported declaration of type ${decl::class.java}: $decl")
-//    }
+    /**
+     * Gets the JVM type for the given type declaration.
+     *
+     * This method is thread-safe.
+     *
+     * @param decl the type declaration
+     * @return the JVM type
+     */
+    fun getJvmType(decl: TypeDecl): JvmType = when(decl) {
+        is ClassTypeDecl -> JvmType.of(decl.name)
+        is StrategyTypeDecl -> TODO("Strategy type decl not yet supported.")
+        else -> TODO("Unsupported declaration of type ${decl::class.java}: $decl")
+    }
 
     /**
      * Gets the JVM class signature for the given strategy type declaration.

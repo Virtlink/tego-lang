@@ -10,3 +10,8 @@ dependencies {
     // Runtime
     implementation project(":tego-runtime")
 }
+
+tasks.withType(Test.class) {
+    //debug true
+    maxHeapSize "3g"
+}

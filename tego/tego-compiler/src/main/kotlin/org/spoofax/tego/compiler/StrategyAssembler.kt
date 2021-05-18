@@ -2,24 +2,24 @@ package org.spoofax.tego.compiler
 
 import com.virtlink.kasm.*
 import com.virtlink.kasm.JvmType.Companion.asRawType
-import org.spoofax.tego.ir.Exp
 import org.spoofax.tego.ir.StrategyDef
 import org.spoofax.tego.ir.StrategyTypeDecl
+import org.spoofax.tego.ir.SymbolTable
 import java.util.*
 
 /**
- * Writes a strategy to Java bytecode.
+ * Assembles a strategy into Java bytecode.
  */
 class StrategyAssembler(
     private val typeManager: JvmTypeManager,
-    private val expWriter: ExpWriter,
+    private val expAssembler: ExpAssembler,
 ) {
 
     class Factory(
-        private val expWriterFactory: ExpWriter.Factory
+        private val expAssemblerFactory: ExpAssembler.Factory
     ) {
-        fun create(typeManager: JvmTypeManager): StrategyAssembler
-            = StrategyAssembler(typeManager, expWriterFactory.create(typeManager))
+        fun create(typeManager: JvmTypeManager, symbolTable: SymbolTable): StrategyAssembler
+            = StrategyAssembler(typeManager, expAssemblerFactory.create(typeManager, symbolTable))
     }
 
     /**
@@ -60,8 +60,8 @@ class StrategyAssembler(
             }) {
                 val `this` = localVar("this", declJvmType)
                 val ctx = localVar("ctx", JvmTypes.Object)
-                val params = (def.paramNames zip decl.type.paramTypes).map { (name, type) ->
-                    localVar(name, typeManager[type])
+                val params = (def.params zip decl.type.paramTypes).map { (param, type) ->
+                    localVar(param.name, typeManager[type])
                 }
                 val input = localVar(def.inputName, typeManager[decl.type.inputType])
 
@@ -69,8 +69,8 @@ class StrategyAssembler(
                 params.forEach { p: LocalVar -> requireNotNull(p, declJvmType, "eval") }
                 requireNotNull(input, declJvmType, "eval")
 
-                expWriter.apply {
-                    writeExp(def.body, Environment.empty().withAll(
+                expAssembler.apply {
+                    assembleExp(def.body, Environment.empty().withAll(
                         `this`, ctx, *params.toTypedArray(), input
                     ))
                 }
@@ -198,6 +198,7 @@ class StrategyAssembler(
         }
 
         val cls = JvmClass.fromType(declJvmType, classWriter.toByteArray())
+        println(cls)
         cls.check()
         return cls
     }

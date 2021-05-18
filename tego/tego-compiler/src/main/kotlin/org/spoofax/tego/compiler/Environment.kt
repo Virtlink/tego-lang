@@ -2,10 +2,11 @@ package org.spoofax.tego.compiler
 
 import com.virtlink.kasm.JvmType
 import com.virtlink.kasm.LocalVar
+import org.spoofax.tego.ir.SymbolTable
 import kotlin.jvm.Throws
 
 class Environment private constructor(
-    private val env: Map<String, LocalVar>
+    private val env: Map<String, LocalVar>,
 ) {
 
     companion object {
@@ -25,12 +26,22 @@ class Environment private constructor(
      *
      * @param name the name of the local variable
      * @return the local variable
-     * @throws NoSuchElementException if no local variable with the specified name is in this environment
      */
-    @Throws(NoSuchElementException::class)
-    operator fun get(name: String): LocalVar {
-        return env[name] ?: throw NoSuchElementException("Environment contains no variable with name '$name'.")
+    operator fun get(name: String): LocalVar? {
+        return env[name]
     }
+
+//    /**
+//     * Gets the local variable with the specified name.
+//     *
+//     * @param name the name of the local variable
+//     * @return the local variable
+//     * @throws NoSuchElementException if no local variable with the specified name is in this environment
+//     */
+//    @Throws(NoSuchElementException::class)
+//    operator fun get(name: String): LocalVar {
+//        return env[name] ?: throw NoSuchElementException("Environment contains no variable with name '$name'.")
+//    }
 
     /**
      * Returns a copy of this environment with the specified local variable added to it.

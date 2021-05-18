@@ -31,7 +31,7 @@ class IrBuilder {
             QName("tego", moduleDecl[0].toJavaString())
         }
 
-        val allDecls = module[1].toList().mapNotNull { toDecl(it) }
+        val allDecls = module[1].asList().mapNotNull { toDecl(it) }
         val decls = allDecls.filterIsInstance<TypeDecl>()
         val defs = allDecls.filterIsInstance<Def>()
 
@@ -54,10 +54,20 @@ class IrBuilder {
 
             "RuleDef" -> /* TODO: Support this. */ null
 
-            "ClassDecl" -> /* TODO: Support this. */ null
+            "ClassDecl" -> toClassDecl(decl)
 
             else -> TODO("Unsupported declaration: $decl")
         }
+    }
+
+    /**
+     * Transforms a class declaration term into an IR class declaration.
+     */
+    fun toClassDecl(decl: Term): ClassTypeDecl {
+        require(decl is ApplTerm && decl.constructor == "ClassDecl") { "Expected ClassDecl() term, got: $decl"}
+
+        // TODO: Fix package name
+        return ClassTypeDecl(QName("tego", decl[1].toJavaString()), toTypeModifiers(decl[0]))
     }
 
     /**
@@ -68,7 +78,7 @@ class IrBuilder {
 
         val type = typeOf(decl) as StrategyType
         // TODO: Fix package name
-        return StrategyTypeDecl(QName("tego", decl[1].toJavaString()), type)
+        return StrategyTypeDecl(QName("tego", decl[1].toJavaString()), type, toTypeModifiers(decl[0]))
     }
 
     /**
@@ -78,7 +88,20 @@ class IrBuilder {
         require(def is ApplTerm && def.constructor == "StrategyDefWInput") { "Expected StrategyDefWInput() term, got: $def"}
 
         // TODO: Fix package name
-        return StrategyDef(QName("tego", def[0].toJavaString()), def[1].toList().map { it.toJavaString() }, def[2].toJavaString(), toExp(def[3]))
+        return StrategyDef(QName("tego", def[0].toJavaString()), def[1].asList().map { toParamDef(it) }, def[2].toJavaString(), toExp(def[3]))
+    }
+
+    /**
+     * Transforms a param definition term into an IR param definition.
+     */
+    fun toParamDef(paramDef: Term): ParamDef {
+        require(paramDef is ApplTerm) { "Expected constructor application term, got: $paramDef"}
+
+        return when (paramDef.constructor) {
+            "ParamDef" -> ParamDef(paramDef[0].toJavaString(), toType(paramDef[1]))
+            "ParamDefNoType" -> ParamDef(paramDef[0].toJavaString(), null)
+            else -> TODO("Unsupported expression: $paramDef")
+        }
     }
 
     /**
@@ -90,7 +113,7 @@ class IrBuilder {
         val type = typeOf(exp)
         return when (exp.constructor) {
             "Let" -> Let(exp[0].toJavaString(), toExp(exp[1]), toExp(exp[2]), type)
-            "Apply" -> Apply(toExp(exp[0]), exp[1].toList().map { toExp(it) }, type)
+            "Apply" -> Apply(toExp(exp[0]), exp[1].asList().map { toExp(it) }, type)
             "Eval" -> Eval(toExp(exp[0]), toExp(exp[1]), type)
             "Var" -> Var(exp[0].toJavaString(), type)
 
@@ -105,7 +128,7 @@ class IrBuilder {
     }
 
     private fun typeOf(t: Term): Type {
-        return toType(t.annotations["OfType", 1])
+        return toType(t.annotations["OfType", 1]?.get(0))
     }
 
     /**
@@ -138,8 +161,8 @@ class IrBuilder {
             "UNIT" -> UnitType
             "STRING" -> StringType
 
-            "STRATEGY" -> StrategyType(type[0].toList().map { toType(it) }, toType(type[1]), toType(type[2]))
-            "TUPLE" -> TupleType(type[0].toList().map { toType(it) })
+            "STRATEGY" -> StrategyType(type[0].asList().map { toType(it) }, toType(type[1]), toType(type[2]))
+            "TUPLE" -> TupleType(type[0].asList().map { toType(it) })
             // TODO: Fix package name
             "CLASS" -> ClassTypeRef(QName("tego", type[0].toJavaString()))
             "LIST" -> ListType(toType(type[0]))
@@ -148,5 +171,21 @@ class IrBuilder {
 
             else -> TODO("Unsupported type: $type")
         }
+    }
+
+    fun toTypeModifiers(mods: Term): TypeModifiers {
+        require(mods is ListTerm) { "Expected a list term, got: $mods"}
+
+        val ms = TypeModifiers.noneOf(TypeModifier::class.java)
+        for (modTerm in mods.asList()) {
+            check(modTerm is ApplTerm) { "Expected constructor application term, got: $modTerm"}
+
+            val m = when (modTerm.constructor) {
+                "Extern" -> TypeModifier.Extern
+                else -> TODO("Unsupported type modifier: $modTerm")
+            }
+            ms.add(m)
+        }
+        return ms
     }
 }
