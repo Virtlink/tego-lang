@@ -12,6 +12,11 @@ class ExpWriter(
     private val typeManager: JvmTypeManager
 ) {
 
+    class Factory {
+        fun create(typeManager: JvmTypeManager): ExpWriter
+                = ExpWriter(typeManager)
+    }
+
     /**
      * Writes the expression to this scope.
      *

@@ -33,7 +33,7 @@ context-free syntax
   Decl.StrategyDeclNoParamsOrTypeParams = [[{DeclMod " "}*] def [ID]: [Type] -> [Type]]        // desugared
 
   Decl.StrategyDef              = [[ID]([{ParamDef ", "}*]) =
-  [Exp].]
+  [Exp].]         // desugared
   Decl.StrategyDefNoParams      = [[ID] =
   [Exp].]        // desugared
 

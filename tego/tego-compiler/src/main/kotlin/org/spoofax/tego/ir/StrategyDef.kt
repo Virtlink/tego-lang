@@ -8,4 +8,4 @@ data class StrategyDef(
     val paramNames: List<String>,
     val inputName: String,
     val body: Exp,
-)
+) : Def

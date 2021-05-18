@@ -24,7 +24,6 @@ class JvmTypeManager(
      * This method is thread-safe.
      *
      * @param type the type specification
-     * @param symbolTable the symbol table
      * @return the JVM type
      */
     private fun getJvmType(type: Type): JvmType = when(type) {

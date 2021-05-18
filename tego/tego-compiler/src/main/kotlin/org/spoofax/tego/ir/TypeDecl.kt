@@ -3,7 +3,7 @@ package org.spoofax.tego.ir
 /**
  * A type declaration.
  */
-sealed interface TypeDecl {
+sealed interface TypeDecl : Decl {
 
     /** The fully-qualified name of the declaration. */
     val name: QName

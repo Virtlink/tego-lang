@@ -118,7 +118,7 @@ class ATermReaderTests {
         val reader = ATermReader(factory)
 
         // Act
-        val term = reader.readFromResource(ATermReaderTests::class, "/example1.tego.aterm")
+        val term = reader.readFromResource(ATermReaderTests::class, "/org/spoofax/tego/aterm/io/example1.tego.aterm")
 
         // Assert
         assertEquals(factory.run {

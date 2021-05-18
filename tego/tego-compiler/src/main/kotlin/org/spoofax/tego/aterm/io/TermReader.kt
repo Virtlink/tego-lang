@@ -17,7 +17,7 @@ interface TermReader {
      * Reads a term from a string.
      *
      * @param s the string to read from
-     * @return the read term
+     * @return the read term; or `null` if there was no term to be read
      */
     @Throws(IOException::class)
     fun readFromString(s: String): Term?
@@ -29,6 +29,7 @@ interface TermReader {
      * @param cls the class whose classloader can find the resource
      * @param path the absolute path to the resource
      * @param charset the character set to use
+     * @return the read term; or `null` if there was no term to be read
      */
     @Throws(IOException::class)
     fun readFromResource(cls: KClass<*>, path: String, charset: Charset = Charsets.UTF_8): Term?
@@ -40,6 +41,7 @@ interface TermReader {
      * @param cls the class whose classloader can find the resource
      * @param path the absolute path to the resource
      * @param charset the character set to use
+     * @return the read term; or `null` if there was no term to be read
      */
     @Throws(IOException::class)
     fun readFromResource(cls: Class<*>, path: String, charset: Charset = Charsets.UTF_8): Term?
@@ -51,6 +53,7 @@ interface TermReader {
      * @param cl the classloader that can find the resource
      * @param path the absolute path to the resource
      * @param charset the character set to use
+     * @return the read term; or `null` if there was no term to be read
      */
     @Throws(IOException::class)
     fun readFromResource(cl: ClassLoader, path: String, charset: Charset = Charsets.UTF_8): Term? {
@@ -63,7 +66,7 @@ interface TermReader {
      *
      * @param path the path to read from
      * @param charset the character set to use
-     * @return the read term
+     * @return the read term; or `null` if there was no term to be read
      */
     @Throws(IOException::class)
     fun read(path: Path, charset: Charset = Charsets.UTF_8): Term?
@@ -74,7 +77,7 @@ interface TermReader {
      *
      * @param stream the input stream to read from
      * @param charset the character set to use
-     * @return the read term
+     * @return the read term; or `null` if there was no term to be read
      */
     @Throws(IOException::class)
     fun read(stream: InputStream, charset: Charset = Charsets.UTF_8): Term?

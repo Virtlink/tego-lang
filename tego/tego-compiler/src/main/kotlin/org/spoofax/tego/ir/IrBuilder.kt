@@ -7,198 +7,82 @@ import org.spoofax.tego.aterm.*
  */
 class IrBuilder {
 
-    /*
-    StrategyDecl(
-      []
-    , "complete"
-    , []
-    , [TypeRef("Var")]
-    , TypeRef("SolverState")
-    , ListType(TypeRef("SolverState"))
-    )
-  , StrategyDefWInput(
-      "complete"
-    , [ParamDefNoType("v")]
-    , "__input"
-    , Let("x_x1", Apply(Var("expandDeterministic"), [Var("v")])
-    , Let("x_x1", Apply(Var("flatMap"), [Var("x_x1")])
-    , Let("x_x1", Apply(Var("expandAllQueries"), [Var("v")])
-    , Let("x_x1", Apply(Var("flatMap"), [Var("x_x1")])
-    , Let("x_x1", Apply(Var("expandAllInjections"), [Var("v")])
-    , Let("x_x1", Apply(Var("flatMap"), [Var("x_x1")])
-    , Let("x_x1", Apply(Var("expandAllPredicates"), [Var("v")])
-    , Let("x_x1", Eval(Var("x_x1"), Var("__input"))
-    , Let("x_x1", Eval(Var("x_x1"), Var("x_x1"))
-    , Let("x_x1", Eval(Var("x_x1"), Var("x_x1"))
-    , Eval(Var("x_x1"), Var("x_x1"))
-    ))))))))))
-    )
-
-    ===================
-
-    StrategyDecl(
-      []
-    , "complete"
-    , []
-    , [TypeRef("Var")]
-    , TypeRef("SolverState")
-    , ListType(TypeRef("SolverState"))
-    ){ OfType(
-         STRATEGY(
-           [CLASS("Var")]
-         , CLASS("SolverState")
-         , LIST(CLASS("SolverState"))
-         )
-       )
-     }
-  , StrategyDefWInput(
-      "complete"
-    , [ParamDefNoType("v")]
-    , "__input"
-    , Let(
-        "x22"
-      , Apply(Var("expandDeterministic"){ OfType(
-                                            STRATEGY(
-                                              [CLASS("Var")]
-                                            , CLASS("SolverState")
-                                            , LIST(CLASS("SolverState"))
-                                            )
-                                          )
-                                        }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
-      , Let(
-          "x21"
-        , Apply(Var("flatMap"){ OfType(
-                                  STRATEGY(
-                                    [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
-                                  , LIST(CLASS("SolverState"))
-                                  , LIST(CLASS("SolverState"))
-                                  )
-                                )
-                              }, [Var("x22"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}]){OfType(
-                                                                                                                         STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
-                                                                                                                       )}
-        , Let(
-            "x25"
-          , Apply(Var("expandAllQueries"){ OfType(
-                                             STRATEGY(
-                                               [CLASS("Var")]
-                                             , CLASS("SolverState")
-                                             , LIST(CLASS("SolverState"))
-                                             )
-                                           )
-                                         }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
-          , Let(
-              "x24"
-            , Apply(Var("flatMap"){ OfType(
-                                      STRATEGY(
-                                        [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
-                                      , LIST(CLASS("SolverState"))
-                                      , LIST(CLASS("SolverState"))
-                                      )
-                                    )
-                                  }, [Var("x25"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}]){OfType(
-                                                                                                                             STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
-                                                                                                                           )}
-            , Let(
-                "x28"
-              , Apply(Var("expandAllInjections"){ OfType(
-                                                    STRATEGY(
-                                                      [CLASS("Var")]
-                                                    , CLASS("SolverState")
-                                                    , LIST(CLASS("SolverState"))
-                                                    )
-                                                  )
-                                                }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
-              , Let(
-                  "x27"
-                , Apply(Var("flatMap"){ OfType(
-                                          STRATEGY(
-                                            [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
-                                          , LIST(CLASS("SolverState"))
-                                          , LIST(CLASS("SolverState"))
-                                          )
-                                        )
-                                      }, [Var("x28"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}]){OfType(
-                                                                                                                                 STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
-                                                                                                                               )}
-                , Let(
-                    "x30"
-                  , Apply(Var("expandAllPredicates"){ OfType(
-                                                        STRATEGY(
-                                                          [CLASS("Var")]
-                                                        , CLASS("SolverState")
-                                                        , LIST(CLASS("SolverState"))
-                                                        )
-                                                      )
-                                                    }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
-                  , Let(
-                      "x29"
-                    , Eval(Var("x30"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}, Var("__input"){OfType(CLASS("SolverState"))}){OfType(LIST(CLASS("SolverState")))}
-                    , Let(
-                        "x26"
-                      , Eval(Var("x27"){OfType(
-                                          STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
-                                        )}, Var("x29"){OfType(LIST(CLASS("SolverState")))}){OfType(LIST(CLASS("SolverState")))}
-                      , Let(
-                          "x23"
-                        , Eval(Var("x24"){OfType(
-                                            STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
-                                          )}, Var("x26"){OfType(LIST(CLASS("SolverState")))}){OfType(LIST(CLASS("SolverState")))}
-                        , Eval(Var("x21"){OfType(
-                                            STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
-                                          )}, Var("x23"){OfType(LIST(CLASS("SolverState")))}){OfType(LIST(CLASS("SolverState")))}
-                        ){OfType(LIST(CLASS("SolverState")))}
-                      ){OfType(LIST(CLASS("SolverState")))}
-                    ){OfType(LIST(CLASS("SolverState")))}
-                  ){OfType(LIST(CLASS("SolverState")))}
-                ){OfType(LIST(CLASS("SolverState")))}
-              ){OfType(LIST(CLASS("SolverState")))}
-            ){OfType(LIST(CLASS("SolverState")))}
-          ){OfType(LIST(CLASS("SolverState")))}
-        ){OfType(LIST(CLASS("SolverState")))}
-      ){OfType(LIST(CLASS("SolverState")))}
-    ){ OfType(
-         STRATEGY(
-           [CLASS("Var")]
-         , CLASS("SolverState")
-         , LIST(CLASS("SolverState"))
-         )
-       )
-     }
+    /**
+     * Transforms a Tego project term into an IR Tego project.
      */
+    fun toProject(project: Term): Project {
+        require(project is ApplTerm) { "Expected constructor application term, got: $project"}
+
+        return Project(
+            // TODO: Support multi-module
+            listOf(toModule(project))
+        )
+    }
 
     /**
-     * Compiles a strategy declaration term into an IR strategy declaration.
+     * Transforms a Tego module term into an IR Tego module.
      */
-    fun toStrategyDecl(decl: Term): StrategyTypeDecl {
+    fun toModule(module: Term): Module {
+        require(module is ApplTerm && module.constructor == "Module") { "Expected Module() term, got: $module"}
+
+        val name: QName = module[0].let { moduleDecl: Term ->
+            require(moduleDecl is ApplTerm && moduleDecl.constructor == "ModuleDecl") { "Expected ModuleDecl() term, got: $moduleDecl"}
+            // TODO: Better way to get the QName from a module name / fix package name
+            QName("tego", moduleDecl[0].toJavaString())
+        }
+
+        val allDecls = module[1].toList().mapNotNull { toDecl(it) }
+        val decls = allDecls.filterIsInstance<TypeDecl>()
+        val defs = allDecls.filterIsInstance<Def>()
+
+        return Module(name, decls, defs)
+    }
+
+    /**
+     * Transforms a declaration term into an IR declaration.
+     */
+    fun toDecl(decl: Term): Decl? {
         require(decl is ApplTerm) { "Expected constructor application term, got: $decl"}
 
         return when (decl.constructor) {
-            "StrategyDecl" -> StrategyTypeDecl(QName("", decl[1].toJavaString()), StrategyType(decl[3].toList().map { toType(it) }, toType(decl[4]), toType(decl[5])))
-            "StrategyDeclNoParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $decl")
-            "StrategyDeclNoTypeParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $decl")
-            "StrategyDeclNoParamsOrTypeParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $decl")
+            "ValDef" -> /* TODO: Support this. */ null
+            "ValDecl" -> /* TODO: Support this. */ null
+            "ValDefNoType" -> /* TODO: Support this. */ null
+
+            "StrategyDecl" -> toStrategyDecl(decl)
+            "StrategyDefWInput" -> toStrategyDef(decl)
+
+            "RuleDef" -> /* TODO: Support this. */ null
+
+            "ClassDecl" -> /* TODO: Support this. */ null
+
             else -> TODO("Unsupported declaration: $decl")
         }
     }
 
     /**
-     * Compiles a strategy definition term into an IR strategy definition.
+     * Transforms a strategy declaration term into an IR strategy declaration.
      */
-    fun toStrategyDef(def: Term): StrategyDef {
-        require(def is ApplTerm) { "Expected constructor application term, got: $def"}
+    fun toStrategyDecl(decl: Term): StrategyTypeDecl {
+        require(decl is ApplTerm && decl.constructor == "StrategyDecl") { "Expected StrategyDecl() term, got: $decl"}
 
-        return when (def.constructor) {
-            "StrategyDefWInput" -> StrategyDef(QName("", def[0].toJavaString()), def[1].toList().map { it.toJavaString() }, def[2].toJavaString(), toExp(def[3]))
-            "StrategyDefWInputNoParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $def")
-            "StrategyDef" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $def")
-            "StrategyDefNoParams" -> throw UnsupportedOperationException("Unsupported declaration, should have been desugared: $def")
-            else -> TODO("Unsupported declaration: $def")
-        }
+        val type = typeOf(decl) as StrategyType
+        // TODO: Fix package name
+        return StrategyTypeDecl(QName("tego", decl[1].toJavaString()), type)
     }
 
     /**
-     * Compiles an expression term into an IR expression.
+     * Transforms a strategy definition term into an IR strategy definition.
+     */
+    fun toStrategyDef(def: Term): StrategyDef {
+        require(def is ApplTerm && def.constructor == "StrategyDefWInput") { "Expected StrategyDefWInput() term, got: $def"}
+
+        // TODO: Fix package name
+        return StrategyDef(QName("tego", def[0].toJavaString()), def[1].toList().map { it.toJavaString() }, def[2].toJavaString(), toExp(def[3]))
+    }
+
+    /**
+     * Transforms an expression term into an IR expression.
      */
     fun toExp(exp: Term): Exp {
         require(exp is ApplTerm) { "Expected constructor application term, got: $exp"}
@@ -225,7 +109,7 @@ class IrBuilder {
     }
 
     /**
-     * Compiles a type term into an IR type.
+     * Transforms a type term into an IR type.
      */
     fun toType(type: Term?): Type {
         requireNotNull(type) { "Expected a type, not nothing." }
@@ -256,7 +140,8 @@ class IrBuilder {
 
             "STRATEGY" -> StrategyType(type[0].toList().map { toType(it) }, toType(type[1]), toType(type[2]))
             "TUPLE" -> TupleType(type[0].toList().map { toType(it) })
-            "CLASS" -> ClassTypeRef(QName("", type[0].toJavaString()))
+            // TODO: Fix package name
+            "CLASS" -> ClassTypeRef(QName("tego", type[0].toJavaString()))
             "LIST" -> ListType(toType(type[0]))
 
             "ERROR" -> TypeError("Type error")

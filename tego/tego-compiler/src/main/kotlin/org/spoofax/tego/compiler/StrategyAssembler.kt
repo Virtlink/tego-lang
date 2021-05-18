@@ -10,21 +10,28 @@ import java.util.*
 /**
  * Writes a strategy to Java bytecode.
  */
-class StrategyWriter(
+class StrategyAssembler(
     private val typeManager: JvmTypeManager,
     private val expWriter: ExpWriter,
 ) {
 
+    class Factory(
+        private val expWriterFactory: ExpWriter.Factory
+    ) {
+        fun create(typeManager: JvmTypeManager): StrategyAssembler
+            = StrategyAssembler(typeManager, expWriterFactory.create(typeManager))
+    }
+
     /**
-     * Writes the strategy to a class.
+     * Assembles the strategy into a class.
      *
-     * Multiple definitions are merged into one, like in Stratego.
+     * Multiple definitions should have been merged into one, like in Stratego.
      *
      * @param decl the strategy's declaration
      * @param def the strategy's definition
-     * @return the compiled JVM class
+     * @return the assembled JVM class
      */
-    fun writeStrategy(decl: StrategyTypeDecl, def: StrategyDef): JvmClass {
+    fun assembleStrategy(decl: StrategyTypeDecl, def: StrategyDef): JvmClass {
         val declJvmType: JvmType = typeManager[decl.type]
         val strategyJvmClassSignature: JvmClassSignature = typeManager.getJvmClassSignature(decl)
 
@@ -196,7 +203,7 @@ class StrategyWriter(
     }
 
     /**
-     * Requires that an argument is not `null`.
+     * Emits code that requires that an argument is not `null`.
      *
      * @param v the local variable for the argument
      * @param cls the class that contains the method (for debugging)

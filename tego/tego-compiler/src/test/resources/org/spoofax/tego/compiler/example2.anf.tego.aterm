@@ -1,0 +1,536 @@
+Module(
+  ModuleDecl("example1")
+, [ ClassDecl([], "Var"){OfType(CLASS("Var"))}
+  , ClassDecl([], "Constraint"){OfType(CLASS("Constraint"))}
+  , ClassDecl([], "SolverState"){OfType(CLASS("SolverState"))}
+  , ClassDecl([], "Class"){OfType(CLASS("Class"))}
+  , StrategyDecl(
+      []
+    , "complete"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDefWInput(
+      "complete"
+    , [ParamDefNoType("v")]
+    , "__input"
+    , Let(
+        "x20"
+      , Apply(Var("expandDeterministic"){ OfType(
+                                            STRATEGY(
+                                              [CLASS("Var")]
+                                            , CLASS("SolverState")
+                                            , LIST(CLASS("SolverState"))
+                                            )
+                                          )
+                                        }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
+      , Let(
+          "x19"
+        , Apply(Var("flatMap"){ OfType(
+                                  STRATEGY(
+                                    [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+                                  , LIST(CLASS("SolverState"))
+                                  , LIST(CLASS("SolverState"))
+                                  )
+                                )
+                              }, [Var("x20"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}]){OfType(
+                                                                                                                         STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
+                                                                                                                       )}
+        , Let(
+            "x23"
+          , Apply(Var("expandAllQueries"){ OfType(
+                                             STRATEGY(
+                                               [CLASS("Var")]
+                                             , CLASS("SolverState")
+                                             , LIST(CLASS("SolverState"))
+                                             )
+                                           )
+                                         }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
+          , Let(
+              "x22"
+            , Apply(Var("flatMap"){ OfType(
+                                      STRATEGY(
+                                        [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+                                      , LIST(CLASS("SolverState"))
+                                      , LIST(CLASS("SolverState"))
+                                      )
+                                    )
+                                  }, [Var("x23"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}]){OfType(
+                                                                                                                             STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
+                                                                                                                           )}
+            , Let(
+                "x26"
+              , Apply(Var("expandAllInjections"){ OfType(
+                                                    STRATEGY(
+                                                      [CLASS("Var")]
+                                                    , CLASS("SolverState")
+                                                    , LIST(CLASS("SolverState"))
+                                                    )
+                                                  )
+                                                }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
+              , Let(
+                  "x25"
+                , Apply(Var("flatMap"){ OfType(
+                                          STRATEGY(
+                                            [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+                                          , LIST(CLASS("SolverState"))
+                                          , LIST(CLASS("SolverState"))
+                                          )
+                                        )
+                                      }, [Var("x26"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}]){OfType(
+                                                                                                                                 STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
+                                                                                                                               )}
+                , Let(
+                    "x28"
+                  , Apply(Var("expandAllPredicates"){ OfType(
+                                                        STRATEGY(
+                                                          [CLASS("Var")]
+                                                        , CLASS("SolverState")
+                                                        , LIST(CLASS("SolverState"))
+                                                        )
+                                                      )
+                                                    }, [Var("v"){OfType(CLASS("Var"))}]){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
+                  , Let(
+                      "x27"
+                    , Eval(Var("x28"){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}, Var("__input"){OfType(CLASS("SolverState"))}){OfType(LIST(CLASS("SolverState")))}
+                    , Let(
+                        "x24"
+                      , Eval(Var("x25"){OfType(
+                                          STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
+                                        )}, Var("x27"){OfType(LIST(CLASS("SolverState")))}){OfType(LIST(CLASS("SolverState")))}
+                      , Let(
+                          "x21"
+                        , Eval(Var("x22"){OfType(
+                                            STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
+                                          )}, Var("x24"){OfType(LIST(CLASS("SolverState")))}){OfType(LIST(CLASS("SolverState")))}
+                        , Eval(Var("x19"){OfType(
+                                            STRATEGY([], LIST(CLASS("SolverState")), LIST(CLASS("SolverState")))
+                                          )}, Var("x21"){OfType(LIST(CLASS("SolverState")))}){OfType(LIST(CLASS("SolverState")))}
+                        ){OfType(LIST(CLASS("SolverState")))}
+                      ){OfType(LIST(CLASS("SolverState")))}
+                    ){OfType(LIST(CLASS("SolverState")))}
+                  ){OfType(LIST(CLASS("SolverState")))}
+                ){OfType(LIST(CLASS("SolverState")))}
+              ){OfType(LIST(CLASS("SolverState")))}
+            ){OfType(LIST(CLASS("SolverState")))}
+          ){OfType(LIST(CLASS("SolverState")))}
+        ){OfType(LIST(CLASS("SolverState")))}
+      ){OfType(LIST(CLASS("SolverState")))}
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "expandAllPredicates"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "expandAllInjections"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "expandAllQueries"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "expandDeterministic"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "flatMap"
+    , []
+    , [StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))]
+    , ListType(TypeRef("SolverState"))
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+         , LIST(CLASS("SolverState"))
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "fixsetSS"
+    , []
+    , [StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "trySS"
+    , []
+    , [StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "repeatSS"
+    , []
+    , [StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "limitSS"
+    , []
+    , [IntType(), StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [INT(), STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "distinctSS"
+    , []
+    , [StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "orSS"
+    , []
+    , [ StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))
+      , StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))
+      ]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [ STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))
+           , STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))
+           ]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "idSS"
+    , []
+    , []
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){OfType(STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState"))))}
+  , StrategyDecl(
+      [Extern()]
+    , "ifSS"
+    , []
+    , [ StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))
+      , StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))
+      , StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))
+      ]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [ STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))
+           , STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))
+           , STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))
+           ]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "singleSS"
+    , []
+    , [StrategyType([], TypeRef("SolverState"), ListType(TypeRef("SolverState")))]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [STRATEGY([], CLASS("SolverState"), LIST(CLASS("SolverState")))]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "fixset"
+    , [TypeParamDecl("T")]
+    , [StrategyType([], TypeRef("T"), ListType(TypeRef("T")))]
+    , TypeRef("T")
+    , ListType(TypeRef("T"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "try"
+    , [TypeParamDecl("T")]
+    , [StrategyType([], TypeRef("T"), ListType(TypeRef("T")))]
+    , TypeRef("T")
+    , ListType(TypeRef("T"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "repeat"
+    , [TypeParamDecl("T")]
+    , [StrategyType([], TypeRef("T"), ListType(TypeRef("T")))]
+    , TypeRef("T")
+    , ListType(TypeRef("T"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "limit"
+    , [TypeParamDecl("T"), TypeParamDecl("R")]
+    , [IntType(), StrategyType([], TypeRef("T"), ListType(TypeRef("R")))]
+    , TypeRef("T")
+    , ListType(TypeRef("R"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "distinct"
+    , [TypeParamDecl("T"), TypeParamDecl("R")]
+    , [StrategyType([], TypeRef("T"), ListType(TypeRef("R")))]
+    , TypeRef("T")
+    , ListType(TypeRef("R"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "or"
+    , [TypeParamDecl("T"), TypeParamDecl("R")]
+    , [ StrategyType([], TypeRef("T"), ListType(TypeRef("R")))
+      , StrategyType([], TypeRef("T"), ListType(TypeRef("R")))
+      ]
+    , TypeRef("T")
+    , ListType(TypeRef("R"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "if"
+    , [TypeParamDecl("T"), TypeParamDecl("M"), TypeParamDecl("R")]
+    , [ StrategyType([], TypeRef("T"), ListType(TypeRef("M")))
+      , StrategyType([], TypeRef("M"), ListType(TypeRef("R")))
+      , StrategyType([], TypeRef("T"), ListType(TypeRef("R")))
+      ]
+    , TypeRef("T")
+    , ListType(TypeRef("R"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "single"
+    , [TypeParamDecl("T"), TypeParamDecl("R")]
+    , [StrategyType([], TypeRef("T"), ListType(TypeRef("R")))]
+    , TypeRef("T")
+    , ListType(TypeRef("R"))
+    )
+  , StrategyDecl(
+      [Extern()]
+    , "selectConstraints"
+    , []
+    , [ TypeRef("Class")
+      , StrategyType(
+          [TypeRef("Constraint")]
+        , TypeRef("SolverState")
+        , ListType(TypeRef("SolverState"))
+        )
+      ]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [ CLASS("Class")
+           , STRATEGY(
+               [CLASS("Constraint")]
+             , CLASS("SolverState")
+             , LIST(CLASS("SolverState"))
+             )
+           ]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "assertValid"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "expandPredicateConstraint"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "expandQueryConstraint"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "expandInjection"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "filterPlaceholders"
+    , []
+    , [TypeRef("Var")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  , StrategyDecl(
+      [Extern()]
+    , "containsVar"
+    , []
+    , [TypeRef("Var"), TypeRef("Constraint")]
+    , TypeRef("SolverState")
+    , ListType(TypeRef("SolverState"))
+    ){ OfType(
+         STRATEGY(
+           [CLASS("Var"), CLASS("Constraint")]
+         , CLASS("SolverState")
+         , LIST(CLASS("SolverState"))
+         )
+       )
+     }
+  ]
+)
