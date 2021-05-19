@@ -25,13 +25,24 @@ rules fileOk : scope * File
 
 rules init : scope
 
-  init(s) :- true.
+  init(s) :-
+    // java/lang
+    {s_java_lang} new s_java_lang,
+    declareModule(s, "java/lang", s_java_lang),
+    declareDecl(s_java_lang, "Class", CLASS("Class")).
+
+rules module_init : scope * scope
+
+  module_init(s, ms) :-
+    // default imports
+    declareImportAll(ms, resolveModule(s, "java/lang")).
 
 rules moduleOk : scope * Module
   modulesOk maps moduleOk(*, list(*))
 
   moduleOk(s, Module(name, imports, decls)) :- {ms is}
     new ms, ms -P-> s,
+    module_init(s, ms),
     declareModule(s, name, ms),
     importsOk(s, ms, imports),
     declsOk(ms, decls).

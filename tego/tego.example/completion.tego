@@ -5,10 +5,7 @@ import mb/statix/constraints::*
 class type Var
 class type Constraint
 class type SolverState
-class type Class
-
-class type CQuery
-class type CRule
+//class type Class
 
 
 def complete(Var): SolverState -> [SolverState]
@@ -20,7 +17,7 @@ complete(v) =
 
 def expandAllPredicates(Var): SolverState -> [SolverState]
 expandAllPredicates(v) = repeatSS(
-    limitSS(1, selectConstraints(CRule::class, \(constraint) = containsVar(v, constraint).\)) ||>
+    limitSS(1, selectConstraints(CUser::class, \(constraint) = containsVar(v, constraint).\)) ||>
     expandPredicateConstraint(v) ||>
     assertValid(v)
   ).
@@ -81,3 +78,5 @@ extern def containsVar(Var, Constraint): SolverState -> [SolverState]
 
 module mb/statix/constraints
 class type CResolveQuery
+class type CUser
+
