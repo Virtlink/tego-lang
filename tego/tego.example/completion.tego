@@ -75,14 +75,14 @@ extern def containsVar(ITermVar, IConstraint): SolverState -> [SolverState]
 
 // Statix & NaBL
 extern module mb/statix/constraints
-extern class type CResolveQuery
-extern class type CUser
+public public class type CResolveQuery
+class type CUser
 
 extern module mb/statix/common
-extern class type SolverState
+class type SolverState
 
 extern module mb/statix/solver
-extern class type IConstraint
+class type IConstraint
 
 extern module mb/nabl2/terms
-extern class type ITermVar
+class type ITermVar

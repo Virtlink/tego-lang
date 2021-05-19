@@ -10,6 +10,8 @@ rules
   desugar-all = topdown(try(
     desugar-decl +
     desugar-exp
+  )); topdown(try(
+    desugar-module
   ))
 
 rules
@@ -32,3 +34,22 @@ rules
   desugar-exp: LambdaRuleNoParams(inExp, outExp) -> LambdaRule([], inExp, outExp)
   desugar-exp: LambdaStrategyNoParams(exp) -> LambdaStrategy([], exp)
 
+rules
+
+  desugar-module: Module(mods, name, imports, decls) -> Module(mods, name, imports, decls')
+  where <fetch(?ExternModule())> mods
+  with decls' := <topdown(try(make-decl-extern); try(make-decl-public))> decls
+
+  make-decl-extern: ValDecl(mods, name, type) -> ValDecl([ExternDecl()|mods], name, type)
+  where <not(fetch(?ExternDecl()))> mods
+  make-decl-extern: StrategyDecl(mods, name, typeParams, paramTypes, inType, outType) -> StrategyDecl([ExternDecl()|mods], name, typeParams, paramTypes, inType, outType)
+  where <not(fetch(?ExternDecl()))> mods
+  make-decl-extern: ClassDecl(mods, name) -> ClassDecl([ExternDecl()|mods], name)
+  where <not(fetch(?ExternDecl()))> mods
+
+  make-decl-public: ValDecl(mods, name, type) -> ValDecl([PublicDecl()|mods], name, type)
+  where <not(fetch(?PublicDecl()))> mods
+  make-decl-public: StrategyDecl(mods, name, typeParams, paramTypes, inType, outType) -> StrategyDecl([PublicDecl()|mods], name, typeParams, paramTypes, inType, outType)
+  where <not(fetch(?PublicDecl()))> mods
+  make-decl-public: ClassDecl(mods, name) -> ClassDecl([PublicDecl()|mods], name)
+  where <not(fetch(?PublicDecl()))> mods

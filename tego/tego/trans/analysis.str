@@ -7,6 +7,7 @@ imports
 
   pp
   desugar
+  check
   to-ir
   injections/-
 
@@ -21,8 +22,9 @@ rules // Analysis
   // multi-file analysis
 //  editor-analyze = stx-editor-analyze(pre-analyze, post-analyze|"statics", "projectOk", "fileOk")
 
-  pre-analyze  = origin-track-forced(desugar-all; explicate-injections-Tego)
+  pre-analyze  = origin-track-forced(where(check; debug); desugar-all; explicate-injections-Tego)
   //pre-analyze  = origin-track-forced(desugar-all; to-ir-all; to-ir-anf-all; explicate-injections-Tego)
+  // TODO: Incorporate `check` messages into resulting messages
   post-analyze = origin-track-forced(implicate-injections-Tego)
 
   get-type: exp -> <strip-annos> type

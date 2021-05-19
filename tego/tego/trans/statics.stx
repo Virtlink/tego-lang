@@ -337,13 +337,9 @@ rules declareDeclWithMods : scope * scope * string * TYPE * list(DeclMod)
     // public
     declareDecl(s_pub, name, T).
 
-  declareDeclWithMods(s_priv, s_pub, name, T, [ExternDecl()|_]) :-
-    // extern
-    declareDecl(s_pub, name, T).
-
   declareDeclWithMods(s_priv, s_pub, name, T, [_|mods]) :-
     // unknown
-    declareDeclWithMods(s_pub, s_priv, name, T, mods).
+    declareDeclWithMods(s_priv, s_pub, name, T, mods).
 
   declareDeclWithMods(s_priv, s_pub, name, T, []) :-
     // private

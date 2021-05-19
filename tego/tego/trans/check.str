@@ -1,0 +1,98 @@
+module check
+
+imports
+
+  signatures/Tego-sig
+
+rules
+
+  // Check works on the undesugared AST
+
+  check: ast -> (errors, warnings, infos)
+  with errors   := <collect-all(check-error)> ast
+     ; warnings := <collect-all(check-warn)> ast
+     ; infos    := <collect-all(check-info)> ast
+
+  check-error = fail
+  check-warn = fail
+  check-info = fail
+
+rules
+
+  // Errors if definitions are provided in external modules
+  check-error: Module(mods, _, _, decls) -> msgs
+  where <fetch(?ExternModule())> mods
+      ; msgs := <collect-all(check-error-decl-not-def); ?[_|_]> decls
+
+  check-error-decl-not-def: ValDef(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: ValDefNoType(_, _, _) -> <msg-error-decl-not-def>
+
+  check-error-decl-not-def: StrategyDef(_, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefNoParams(_, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefWInput(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefWInputNoParams(_, _, _) -> <msg-error-decl-not-def>
+
+  check-error-decl-not-def: RuleDef(_, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoClauses(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoParams(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoParamsNoClauses(_, _, _) -> <msg-error-decl-not-def>
+
+  msg-error-decl-not-def: d -> (d, $[Definitions are not allowed in external module declarations.])
+
+rules
+
+  // Warns if there are duplicate modifiers
+  check-warn: ValDef(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: ValDecl(mods, _, _) -> <check-mods-duplicates> mods
+  check-warn: ValDefNoType(mods, _, _) -> <check-mods-duplicates> mods
+
+  check-warn: StrategyDecl(mods, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDeclNoParams(mods, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDeclNoTypeParams(mods, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDeclNoParamsOrTypeParams(mods, _, _, _) -> <check-mods-duplicates> mods
+
+  check-warn: ClassDecl(mods, _) -> <check-mods-duplicates> mods
+
+  check-mods-duplicates: mods -> (mod, $[Duplicate `public` modifier.])
+  where mod := <fetch-duplicates(?PublicDecl())> mods
+  check-mods-duplicates: mods -> (mod, $[Duplicate `extern` modifier.])
+  where mod := <fetch-duplicates(?ExternDecl())> mods
+
+  //has-duplicates(s) = rec x([s | fetch(s)] <+ [id | x])
+  fetch-duplicates(s) = retain-all(s); ?[<id>, _|_]
+
+rules
+
+  // Warns if `public` or `extern` is applied to a declaration in an `extern module`
+  check-warn: Module(mods, _, _, decls) -> msgs
+  where <fetch(?ExternModule())> mods
+      ; msgs := <collect-all(check-warn-decl-not-extern + check-warn-decl-not-public); ?[_|_]> decls
+
+  check-warn-decl-not-extern: ValDef(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: ValDecl(mods, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: ValDefNoType(mods, _, _) -> <check-warn-mod-not-extern> mods
+
+  check-warn-decl-not-extern: StrategyDecl(mods, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDeclNoParams(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDeclNoTypeParams(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDeclNoParamsOrTypeParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+
+  check-warn-decl-not-extern: ClassDecl(mods, _) -> <check-warn-mod-not-extern> mods
+
+  check-warn-mod-not-extern: mods -> (mod, $[Declarations in extern modules are implicitly `extern`.])
+  where mod := <fetch(?ExternDecl())> mods
+
+
+  check-warn-decl-not-public: ValDef(mods, _, _, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: ValDecl(mods, _, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: ValDefNoType(mods, _, _) -> <check-warn-mods-not-public> mods
+
+  check-warn-decl-not-public: StrategyDecl(mods, _, _, _, _, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: StrategyDeclNoParams(mods, _, _, _, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: StrategyDeclNoTypeParams(mods, _, _, _, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: StrategyDeclNoParamsOrTypeParams(mods, _, _, _) -> <check-warn-mods-not-public> mods
+
+  check-warn-decl-not-public: ClassDecl(mods, _) -> <check-warn-mods-not-public> mods
+
+  check-warn-mods-not-public: mods -> (mod, $[Declarations in extern modules are implicitly `public`.])
+  where mod := <fetch(?PublicDecl())> mods
