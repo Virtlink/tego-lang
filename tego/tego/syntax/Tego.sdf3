@@ -16,7 +16,7 @@ context-free syntax
 context-free sorts Module
 context-free syntax
 
-  Module.Module = <module <MOD_ID>
+  Module.Module = <<{ModuleMod " "}*> module <MOD_ID>
 
     <{Import "\n"}*>
 
@@ -63,9 +63,19 @@ context-free sorts RuleClause
 context-free syntax
   RuleClause.WhereClause = <where <Exp>>
 
+context-free sorts ModuleMod
+context-free syntax
+  // TODO: An external module may only contain external declarations
+  // TODO: An external module should implicitly add `external` to its declarations
+  ModuleMod.ExternModule = <extern>
+
 context-free sorts DeclMod
 context-free syntax
-  DeclMod.Extern = <extern>
+  // TODO: An external declaration cannot have a definition
+  // TODO: An external declaration is implicitly public
+  DeclMod.ExternDecl = <extern>
+  // TODO: A public declaration cannot be imported
+  DeclMod.PublicDecl = <public>
 
 context-free sorts TypeParamDecl
 context-free syntax

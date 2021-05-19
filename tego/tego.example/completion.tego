@@ -1,35 +1,32 @@
 module example1
 
+import mb/nabl2/terms::*
+import mb/statix/common::*
+import mb/statix/solver::*
 import mb/statix/constraints::*
 
-class type Var
-class type Constraint
-class type SolverState
-//class type Class
-
-
-def complete(Var): SolverState -> [SolverState]
+public def complete(ITermVar): SolverState -> [SolverState]
 complete(v) =
   expandAllPredicates(v) ||>
   expandAllInjections(v) ||>
   expandAllQueries(v)    ||>
   expandDeterministic(v).
 
-def expandAllPredicates(Var): SolverState -> [SolverState]
+def expandAllPredicates(ITermVar): SolverState -> [SolverState]
 expandAllPredicates(v) = repeatSS(
     limitSS(1, selectConstraints(CUser::class, \(constraint) = containsVar(v, constraint).\)) ||>
     expandPredicateConstraint(v) ||>
     assertValid(v)
   ).
 
-def expandAllInjections(Var): SolverState -> [SolverState]
+def expandAllInjections(ITermVar): SolverState -> [SolverState]
 expandAllInjections(v) =
   fixsetSS(trySS(
     expandInjection(v)
   )) ||>
   assertValid(v).
 
-def expandAllQueries(Var): SolverState -> [SolverState]
+def expandAllQueries(ITermVar): SolverState -> [SolverState]
 expandAllQueries(v) = distinctSS(orSS(idSS, fixsetSS(
   ifSS(
     limitSS(1, selectConstraints(CResolveQuery::class, \(constraint) = fail /*TODO*/.\)),
@@ -38,7 +35,7 @@ expandAllQueries(v) = distinctSS(orSS(idSS, fixsetSS(
   )
 ))).
 
-def expandDeterministic(Var): SolverState -> [SolverState]
+def expandDeterministic(ITermVar): SolverState -> [SolverState]
 expandDeterministic(v) = singleSS(
   expandPredicateConstraint(v) ||>
   assertValid(v) ||>
@@ -68,15 +65,24 @@ extern def if<T, M, R>(T -> [M], M -> [R], T -> [R]): T -> [R]
 extern def single<T, R>(T -> [R]): T -> [R]
 
 // Built-ins
-extern def selectConstraints(Class, (Constraint) SolverState -> [SolverState]): SolverState -> [SolverState]
-extern def assertValid(Var): SolverState -> [SolverState]
-extern def expandPredicateConstraint(Var): SolverState -> [SolverState]
-extern def expandQueryConstraint(Var): SolverState -> [SolverState]
-extern def expandInjection(Var): SolverState -> [SolverState]
-extern def filterPlaceholders(Var): SolverState -> [SolverState]
-extern def containsVar(Var, Constraint): SolverState -> [SolverState]
+extern def selectConstraints(Class, (IConstraint) SolverState -> [SolverState]): SolverState -> [SolverState]
+extern def assertValid(ITermVar): SolverState -> [SolverState]
+extern def expandPredicateConstraint(ITermVar): SolverState -> [SolverState]
+extern def expandQueryConstraint(ITermVar): SolverState -> [SolverState]
+extern def expandInjection(ITermVar): SolverState -> [SolverState]
+extern def filterPlaceholders(ITermVar): SolverState -> [SolverState]
+extern def containsVar(ITermVar, IConstraint): SolverState -> [SolverState]
 
-module mb/statix/constraints
-class type CResolveQuery
-class type CUser
+// Statix & NaBL
+extern module mb/statix/constraints
+extern class type CResolveQuery
+extern class type CUser
 
+extern module mb/statix/common
+extern class type SolverState
+
+extern module mb/statix/solver
+extern class type IConstraint
+
+extern module mb/nabl2/terms
+extern class type ITermVar

@@ -40,12 +40,13 @@ rules module_init : scope * scope
 rules moduleOk : scope * Module
   modulesOk maps moduleOk(*, list(*))
 
-  moduleOk(s, Module(name, imports, decls)) :- {ms is}
-    new ms, ms -P-> s,
-    module_init(s, ms),
-    declareModule(s, name, ms),
+  moduleOk(s, Module(mods, name, imports, decls)) :- {ms_pub ms is}
+    new ms_pub, ms_pub -P-> s,
+    new ms, ms -P-> ms_pub,
+    module_init(s, ms_pub),
+    declareModule(s, name, ms_pub),
     importsOk(s, ms, imports),
-    declsOk(ms, decls).
+    declsOk(ms, ms_pub, decls).
 
   moduleOk(s, Module-Plhdr()).
 
@@ -65,71 +66,71 @@ rules importOk : scope * scope * Import
 
   importOk(s, ms, Import-Plhdr()).
 
-rules declOk : scope * Decl
-  declsOk maps declOk(*, list(*))
+rules declOk : scope * scope * Decl
+  declsOk maps declOk(*, *, list(*))
 
-  declOk(s, d@ValDef(mods, name, type, body)) :- {T TBODY}
-    typeOfType(s, type) == T,
-    typeOfExp(s, body) == TBODY,
+  declOk(ms, ms_pub, d@ValDef(mods, name, type, body)) :- {T TBODY}
+    typeOfType(ms, type) == T,
+    typeOfExp(ms, body) == TBODY,
     TBODY == T,
-    declareDecl(s, name, T),
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
     @d.type := T.
 
-  declOk(s, d@ValDefNoType(mods, name, body)) :- {T TBODY}
-    typeOfExp(s, body) == T,
-    declareDecl(s, name, T),
+  declOk(ms, ms_pub, d@ValDefNoType(mods, name, body)) :- {T TBODY}
+    typeOfExp(ms, body) == T,
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
     @d.type := T.
 
-  declOk(s, d@ValDecl(mods, name, type)) :- {T}
-    typeOfType(s, type) == T,
-    declareDecl(s, name, T),
+  declOk(ms, ms_pub, d@ValDecl(mods, name, type)) :- {T}
+    typeOfType(ms, type) == T,
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
     @d.type := T.
 
-  declOk(s, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
+  declOk(ms, ms_pub, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
     // Create strategy declaration scope in which the type variables are declared
-    new ds, ds -P-> s,
+    new ds, ds -P-> ms,
     typesOfTypes(ds, params) == PTs,
     typeOfType(ds, inType) == IT,
     typeOfType(ds, outType) == OT,
     T == STRATEGY(PTs, IT, OT),
-    declareDecl(s, name, T),
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
     @d.type := T.
 
   // TODO: Support generics
-  declOk(s, d@StrategyDecl(_, _, _, _, _, _)).
+  declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
 
-  declOk(s, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
-    typeOfType(s, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
-    new ss, ss -P-> s,
+  declOk(ms, ms_pub, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
+    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
+    new ss, ss -P-> ms,
     typesOfParamDefs(ss, paramDefs) == PTs,
     typeOfExp(ss, body) == STRATEGY([], IT, OT),
     @d.type := T.
 
-  declOk(s, d@StrategyDefWInput(name, paramDefs, bindInput, body)) :- {T PTs IT OT ss}
-    typeOfType(s, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
-    new ss, ss -P-> s,
+  declOk(ms, ms_pub, d@StrategyDefWInput(name, paramDefs, bindInput, body)) :- {T PTs IT OT ss}
+    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
+    new ss, ss -P-> ms,
     typesOfParamDefs(ss, paramDefs) == PTs,
     declareDecl(ss, bindInput, IT),
     @bindInput.type := IT,
     typeOfExp(ss, body) == OT,
     @d.type := T.
 
-  declOk(s, d@RuleDef(name, paramDefs, inExp, outExp, clauses)) :- {T PTs IT OT ss}
-    typeOfType(s, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
-    new ss, ss -P-> s,
+  declOk(ms, ms_pub, d@RuleDef(name, paramDefs, inExp, outExp, clauses)) :- {T PTs IT OT ss}
+    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
+    new ss, ss -P-> ms,
     typesOfParamDefs(ss, paramDefs) == PTs,
     typeOfExp(ss, inExp) == IT,
     typeOfExp(ss, outExp) == OT,
     clausesOk(ss, clauses),
     @d.type := T.
 
-  declOk(s, d@ClassDecl(mods, name)) :- {T}
+  declOk(ms, ms_pub, d@ClassDecl(mods, name)) :- {T}
     T == CLASS(name),
-    declareDecl(s, name, T),
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
     @d.type := T.
 
 
-  declOk(s, Decl-Plhdr()).
+  declOk(ms, ms_pub, Decl-Plhdr()).
 
 rules typeOfType : scope * Type -> TYPE
   typesOfTypes maps typeOfType(*, list(*)) = list(*)
@@ -330,6 +331,24 @@ rules declareDecl : scope * string * TYPE
   declareDecl(s, name, T) :-
     !type[Decl{name@name}, T] in s.
 
+rules declareDeclWithMods : scope * scope * string * TYPE * list(DeclMod)
+
+  declareDeclWithMods(s_priv, s_pub, name, T, [PublicDecl()|_]) :-
+    // public
+    declareDecl(s_pub, name, T).
+
+  declareDeclWithMods(s_priv, s_pub, name, T, [ExternDecl()|_]) :-
+    // extern
+    declareDecl(s_pub, name, T).
+
+  declareDeclWithMods(s_priv, s_pub, name, T, [_|mods]) :-
+    // unknown
+    declareDeclWithMods(s_pub, s_priv, name, T, mods).
+
+  declareDeclWithMods(s_priv, s_pub, name, T, []) :-
+    // private
+    declareDecl(s_priv, name, T).
+
 rules resolveDecl : scope * string -> TYPE
 
   resolveDecl(s, name) = T :-
@@ -342,6 +361,11 @@ rules resolveDecl : scope * string -> TYPE
 rules getScope : TYPE -> scope
 
   getScope(MODULE(s)) = s.
+
+rules isPublicDecl : list(DeclMod)
+
+  isPublicDecl([PublicDecl()|_]).
+  isPublicDecl([_|mods]) :- isPublicDecl(mods).
 
 signature
   sorts TYPE
