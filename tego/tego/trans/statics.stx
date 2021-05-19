@@ -149,6 +149,12 @@ rules typeOfType : scope * Type -> TYPE
     resolveDecl(s, name) == T,
     @t.type := T.
 
+  typeOfType(s, t@MemberTypeRef(rcv, name)) = T :- {T_rcv s_rcv}
+    typeOfType(s, rcv) == T_rcv,
+    getScope(T_rcv) == s_rcv,
+    resolveDecl(s_rcv, name) == T,
+    @t.type := T.
+
   typeOfType(s, t@TupleType(types)) = T@TUPLE(Ts) :-
     typesOfTypes(s, types) == Ts,
     @t.type := T.
@@ -213,11 +219,13 @@ rules typeOfExp : scope * Exp -> TYPE
   typeOfExp(s, e@Member(rcv, name)) = T :- {T_rcv s_rcv}
     typeOfExp(s, rcv) == T_rcv,
     getScope(T_rcv) == s_rcv,
-    resolveDecl(s_rcv, name) == T.
+    resolveDecl(s_rcv, name) == T,
+    @e.type := T.
 
-//  typeOfExp(s, e@ClassRef(name)) = T@CLASS("Class") :-
-//    resolveDecl(s, name) == CLASS(_),
-//    @e.type := T.
+  // FIXME: Should be Class<T> where T is the type
+  typeOfExp(s, e@ClassRef(type)) = T@CLASS("Class") :-
+    typeOfType(s, type) == CLASS(_),
+    @e.type := T.
 
   // FIXME: This is incorrect since we want to be able to cast literals to any of the integer types
   typeOfExp(s, e@Int(_)) = T@INT() :-

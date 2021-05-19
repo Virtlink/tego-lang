@@ -79,7 +79,8 @@ context-free syntax
 context-free sorts Type
 context-free syntax
 
-  Type.TypeRef              = <<ID>>
+  Type.TypeRef              = <<MOD_ID>>
+  Type.MemberTypeRef        = <<Type>::<ID>>
   Type.ListType             = <[<Type>]>
   Type.StrategyType         = [([{Type ", "}*]) [Type] -> [Type]] {right}
   Type.StrategyTypeNoParams = [[Type] -> [Type]] {right} // desugared
@@ -105,7 +106,7 @@ context-free syntax
 [Exp]]
   Exp.Var                       = <<MOD_ID>>
   Exp.Member                    = <<Exp>::<ID>>
-  //Exp.ClassRef                  = <<ID>::class>    // TODO: Implement semantics, code generation
+  Exp.ClassRef                  = <<Type>::<>class>
   Exp.Int = <<INT>>
   Exp.Object = <object>
   Exp.True = <true>

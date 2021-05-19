@@ -1,11 +1,14 @@
 module example1
 
+import mb/statix/constraints::*
+
 class type Var
 class type Constraint
 class type SolverState
 class type Class
 
-val cls: Class // TODO: Write specific class
+class type CQuery
+class type CRule
 
 
 def complete(Var): SolverState -> [SolverState]
@@ -17,7 +20,7 @@ complete(v) =
 
 def expandAllPredicates(Var): SolverState -> [SolverState]
 expandAllPredicates(v) = repeatSS(
-    limitSS(1, selectConstraints(cls, \(constraint) = containsVar(v, constraint).\)) ||>
+    limitSS(1, selectConstraints(CRule::class, \(constraint) = containsVar(v, constraint).\)) ||>
     expandPredicateConstraint(v) ||>
     assertValid(v)
   ).
@@ -32,7 +35,7 @@ expandAllInjections(v) =
 def expandAllQueries(Var): SolverState -> [SolverState]
 expandAllQueries(v) = distinctSS(orSS(idSS, fixsetSS(
   ifSS(
-    limitSS(1, selectConstraints(cls, \(constraint) = fail /*TODO*/.\)),
+    limitSS(1, selectConstraints(CResolveQuery::class, \(constraint) = fail /*TODO*/.\)),
     expandQueryConstraint(v),
     idSS
   )
@@ -75,3 +78,6 @@ extern def expandQueryConstraint(Var): SolverState -> [SolverState]
 extern def expandInjection(Var): SolverState -> [SolverState]
 extern def filterPlaceholders(Var): SolverState -> [SolverState]
 extern def containsVar(Var, Constraint): SolverState -> [SolverState]
+
+module mb/statix/constraints
+class type CResolveQuery
