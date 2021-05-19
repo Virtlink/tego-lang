@@ -4,12 +4,12 @@ imports
   signatures/Tego-sig
 
 // Single-file entry point
-rules programOk : Module
+rules programOk : File
 
-  programOk(module) :- {s}
+  programOk(file) :- {s}
     new s,
     init(s),
-    moduleOk(s, module).
+    fileOk(s, file).
 
 // Multi-file entry point
 rules projectOk : scope
@@ -17,29 +17,42 @@ rules projectOk : scope
   projectOk(s) :-
     init(s).
 
-rules fileOk : scope * Module
+rules fileOk : scope * File
 
-  fileOk(s, module) :- moduleOk(s, module).
+  fileOk(s, File(modules)) :- modulesOk(s, modules).
+
+  fileOk(s, File-Plhdr()).
 
 rules init : scope
 
   init(s) :- true.
 
 rules moduleOk : scope * Module
+  modulesOk maps moduleOk(*, list(*))
 
-  moduleOk(s, Module(moduleDecl, decls)) :- {ms}
+  moduleOk(s, Module(name, imports, decls)) :- {ms is}
     new ms, ms -P-> s,
-    moduleDeclOk(s, moduleDecl, ms),
+    declareModule(s, name, ms),
+    importsOk(s, ms, imports),
     declsOk(ms, decls).
 
   moduleOk(s, Module-Plhdr()).
 
-rules moduleDeclOk : scope * ModuleDecl * scope
+rules importOk : scope * scope * Import
+  importsOk maps importOk(*, *, list(*))
 
-  moduleDeclOk(s, ModuleDecl(name), ms) :-
-    declareModule(s, name, ms).
+  importOk(s, ms, d@Import(moduleName, name)) :- {ims is T}
+    resolveModule(s, moduleName) == ims,
+    resolveDecl(ims, name) == T,
+    new is, ms -I-> is,
+    declareImportDecl(is, name, T),
+    @d.type := T.
 
-  moduleDeclOk(s, ModuleDecl-Plhdr(), ms).
+  importOk(s, ms, d@ImportAll(moduleName)) :- {ims}
+    resolveModule(s, moduleName) == ims,
+    declareImportAll(ms, ims).
+
+  importOk(s, ms, Import-Plhdr()).
 
 rules declOk : scope * Decl
   declsOk maps declOk(*, list(*))
@@ -197,6 +210,15 @@ rules typeOfExp : scope * Exp -> TYPE
     resolveDecl(s, name) == T,
     @e.type := T.
 
+  typeOfExp(s, e@Member(rcv, name)) = T :- {T_rcv s_rcv}
+    typeOfExp(s, rcv) == T_rcv,
+    getScope(T_rcv) == s_rcv,
+    resolveDecl(s_rcv, name) == T.
+
+//  typeOfExp(s, e@ClassRef(name)) = T@CLASS("Class") :-
+//    resolveDecl(s, name) == CLASS(_),
+//    @e.type := T.
+
   // FIXME: This is incorrect since we want to be able to cast literals to any of the integer types
   typeOfExp(s, e@Int(_)) = T@INT() :-
     @e.type := T.
@@ -267,7 +289,22 @@ rules declareTypeParam : scope * TypeParamDecl * TYPE
 rules declareModule : scope * string * scope
 
   declareModule(s, name, ms) :-
-    !type[Module{name@name}, MODULE(ms)] in s.
+    !type[Decl{name@name}, MODULE(ms)] in s.
+
+rules resolveModule : scope * string -> scope
+
+  resolveModule(s, name) = ms :-
+    resolveDecl(s, name) == MODULE(ms).
+
+rules declareImportAll : scope * scope
+
+  declareImportAll(s, s2) :-
+    s -I-> s2.
+
+rules declareImportDecl : scope * string * TYPE
+
+  declareImportDecl(is, name, T) :-
+    !type[Decl{name@name}, T] in is.
 
 rules declareDecl : scope * string * TYPE
 
@@ -278,10 +315,14 @@ rules resolveDecl : scope * string -> TYPE
 
   resolveDecl(s, name) = T :-
     query type
-      filter P*
+      filter P* I?
       and { d' :- d' == Decl{name@_} }
-      min $ < P
+      min $ < P, $ < I
       in s |-> [(_, (_, T))].
+
+rules getScope : TYPE -> scope
+
+  getScope(MODULE(s)) = s.
 
 signature
   sorts TYPE
@@ -311,7 +352,7 @@ signature
 
 signature
   namespaces
-    Module    : ID
+    //Module    : ID
     Decl      : ID
     TypeParam : ID
   relations
@@ -319,3 +360,4 @@ signature
   name-resolution
     labels
       P      // laxical parent
+      I      // import edge

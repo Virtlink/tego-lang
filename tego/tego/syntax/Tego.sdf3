@@ -6,19 +6,27 @@ imports
 
 context-free start-symbols
 
-  Module
+  File
+
+context-free sorts File
+context-free syntax
+
+  File.File = <<{Module "\n\n"}*>>
 
 context-free sorts Module
 context-free syntax
 
-  Module.Module = <<ModuleDecl>
+  Module.Module = <module <MOD_ID>
+
+    <{Import "\n"}*>
 
     <{Decl "\n"}*>>
 
-context-free sorts ModuleDecl
+context-free sorts Import
 context-free syntax
 
-  ModuleDecl.ModuleDecl = <module <ID>>
+  Import.Import                 = [import [MOD_ID]::[ID]]
+  Import.ImportAll              = [import [MOD_ID]::[]*]
 
 context-free sorts Decl
 context-free syntax
@@ -88,14 +96,16 @@ context-free syntax
 
   Exp.Seq                       = <<Exp>; <Exp>> {right}
   Exp.Map                       = [[Exp] |> [Exp]] {right}        // desugared
-  Exp.FlatMap                   = [[Exp] ||> [Exp]] {right}        // desugared
+  Exp.FlatMap                   = [[Exp] ||> [Exp]] {right}       // desugared
   Exp.Id                        = <id>
   Exp.Fail                      = <fail>
   Exp.Apply                     = [[Exp]([{Exp ", "}*])]
   Exp.Eval                      = [<[Exp]> [Exp]]
-  Exp.Let = [let [ID] = [Exp],
+  Exp.Let                       = [let [ID] = [Exp],
 [Exp]]
-  Exp.Var = <<ID>>
+  Exp.Var                       = <<MOD_ID>>
+  Exp.Member                    = <<Exp>::<ID>>
+  //Exp.ClassRef                  = <<ID>::class>    // TODO: Implement semantics, code generation
   Exp.Int = <<INT>>
   Exp.Object = <object>
   Exp.True = <true>
@@ -109,6 +119,7 @@ context-free syntax
   Exp.LambdaRuleNoParams        = [\\[Exp] -> [Exp].\\]    // desugared
   Exp.LambdaStrategy            = [\\([{ParamDef ", "}*]) = [Exp].\\]
   Exp.LambdaStrategyNoParams    = [\\= [Exp].\\]           // desugared
+
 
 //context-free sorts Exp
 //context-free syntax
@@ -137,4 +148,5 @@ context-free priorities
 
 template options
   ID = keyword {reject}
+  MOD_ID = keyword {reject}
   keyword -/- [A-Za-z0-9]

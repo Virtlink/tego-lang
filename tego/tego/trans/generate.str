@@ -11,9 +11,9 @@ signature
 
 rules
 
-  generate-typed-aterm: (_, _, m@Module(_, _), path, project-path) -> (filename, result)
+  generate-typed-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
   with filename := <guarantee-extension(|"typed.aterm")> path
-     ; result := <type-term> m
+     ; result := <type-term> f
 
   type-term = bottomup(
     where(get-type < debug(!"type: ") + debug(!"no type: ")) ;

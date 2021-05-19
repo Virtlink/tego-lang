@@ -1,7 +1,7 @@
 module Common
 
 lexical sorts
-  ID INT STRING
+  ID MOD_ID INT STRING
   STRING_CHAR BACKSLASH_CHAR
   COMMENT_CHAR INSIDE_COMMENT
   NEWLINE_EOF EOF
@@ -12,6 +12,9 @@ lexical syntax
   ID               = "_" [a-zA-Z0-9\'\-\_]+
   ID               = "`" ID_CHAR+ "`"
   ID_CHAR          = ~[\`\\\n]
+
+  MOD_ID           = (ID "/")* ID
+
   INT              = "-"? [0-9]+
   STRING           = "\"" STRING_CHAR* "\""
   STRING_CHAR      = ~[\\\"\n]
