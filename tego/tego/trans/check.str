@@ -8,14 +8,14 @@ rules
 
   // Check works on the undesugared AST
 
-  check: ast -> (errors, warnings, infos)
-  with errors   := <collect-all(check-error)> ast
-     ; warnings := <collect-all(check-warn)> ast
-     ; infos    := <collect-all(check-info)> ast
+  check: (filename, ast) -> (filename, errors, warnings, infos)
+  with errors   := <collect-all(check-error); flatten-list> ast
+     ; warnings := <collect-all(check-warn);  flatten-list> ast
+     ; infos    := <collect-all(check-info);  flatten-list> ast
 
   check-error = fail
-  check-warn = fail
-  check-info = fail
+  check-warn  = fail
+  check-info  = fail
 
 rules
 

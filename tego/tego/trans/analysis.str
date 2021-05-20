@@ -16,13 +16,26 @@ imports
 rules // Analysis
 
   // single-file analysis
-  editor-analyze = stx-editor-analyze(pre-analyze, post-analyze|"statics", "programOk")
+  editor-analyze = check-all(stx-editor-analyze(pre-analyze, post-analyze|"statics", "programOk"))
+
+  check-all(s) = where((?AnalyzeSingle(files, _, _) <+ ?AnalyzeMulti(_, files, _, _));
+    files_with_msgs := <map((id, get-ast-from-change); check)> files
+  ); s; with-msgs(|files_with_msgs)
+
+  get-ast-from-change = ?Added(<id>) + ?Changed(<id>, _) + ?Cached(<id>)
+
+  with-msgs(|files_with_msgs) = AnalysisResult(map(analysis-result-with-msgs(|files_with_msgs)))
+
+  analysis-result-with-msgs(|files_with_msgs) = (?filename, result-with-msgs(|<fetch-elem(?(filename, _, _, _))> files_with_msgs))
+
+  result-with-msgs(|(_, errors, warnings, infos)) = Full(id, id, !(<id>, errors); conc, !(<id>, warnings); conc, !(<id>, infos); conc)
+  result-with-msgs(|(_, errors, warnings, infos)) = Update(id,   !(<id>, errors); conc, !(<id>, warnings); conc, !(<id>, infos); conc)
 
   // see README.md for details on how to switch to multi-file analysis
   // multi-file analysis
 //  editor-analyze = stx-editor-analyze(pre-analyze, post-analyze|"statics", "projectOk", "fileOk")
 
-  pre-analyze  = origin-track-forced(where(check; debug); desugar-all; explicate-injections-Tego)
+  pre-analyze  = origin-track-forced(desugar-all; explicate-injections-Tego)
   //pre-analyze  = origin-track-forced(desugar-all; to-ir-all; to-ir-anf-all; explicate-injections-Tego)
   // TODO: Incorporate `check` messages into resulting messages
   post-analyze = origin-track-forced(implicate-injections-Tego)

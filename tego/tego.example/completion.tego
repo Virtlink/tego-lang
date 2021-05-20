@@ -1,5 +1,6 @@
 module example1
 
+import mb/tego/runtime::*
 import mb/nabl2/terms::*
 import mb/statix/common::*
 import mb/statix/solver::*
@@ -75,7 +76,7 @@ extern def containsVar(ITermVar, IConstraint): SolverState -> [SolverState]
 
 // Statix & NaBL
 extern module mb/statix/constraints
-public public class type CResolveQuery
+class type CResolveQuery
 class type CUser
 
 extern module mb/statix/common
@@ -86,3 +87,8 @@ class type IConstraint
 
 extern module mb/nabl2/terms
 class type ITermVar
+
+// Tego built-ins
+extern module mb/tego/runtime
+import mb/statix/common::SolverState
+extern def flatMap(SolverState -> [SolverState]): [SolverState] -> [SolverState]
