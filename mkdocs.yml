@@ -6,6 +6,7 @@ site_dir: .docs_site/
 repo_url: https://github.com/Virtlink/tego-lang
 
 nav:
+  - Home: index.md
   - Getting Started:
     - start/index.md
     - start/releases.md
@@ -16,6 +17,9 @@ nav:
     - howto/index.md
   - Reference:
     - reference/index.md
+    - reference/modules.md
+    - reference/strategies.md
+    - reference/java-interop.md
   - Background:
     - background/index.md
   - Develop:
