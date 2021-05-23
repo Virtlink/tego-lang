@@ -1,11 +1,10 @@
 # Tego
 
-
 ## Getting Started
-No documentation yet.
+To get started, read the [Getting Started](https://pelsmaeker.net/tego-lang/start/) section of the documentation.
 
 ## Documentation
-No documentation yet.
+[Here is the latest documentation](https://pelsmaeker.net/tego-lang/).
 
 ## Contributions
 Please read our [contributing guide](CONTRIBUTING.md).

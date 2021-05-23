@@ -5,6 +5,23 @@ site_dir: .docs_site/
 
 repo_url: https://github.com/Virtlink/tego-lang
 
+nav:
+  - Getting Started:
+    - start/index.md
+    - start/releases.md
+  - Tutorials:
+    - tutorial/index.md
+    - Tutorial 1: tutorial/tutorial1.md
+  - How-Tos:
+    - howto/index.md
+  - Reference:
+    - reference/index.md
+  - Background:
+    - background/index.md
+  - Develop:
+    - develop/index.md
+    - Documentation: develop/documentation.md
+
 theme:
   name: material
   language: en
@@ -12,14 +29,21 @@ theme:
     logo: fontawesome/solid/chess-rook
     repo: fontawesome/brands/github
   palette:
-    primary: orange
-    accent: indigo
+    scheme: slate
+    primary: blue grey
+    accent: orange
   font:
     code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes    # Insiders only
+    - navigation.top
     
 markdown_extensions:
   - abbr
   - admonition
+  - attr_list
   - codehilite:
       guess_lang: false
   - def_list
