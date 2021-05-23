@@ -1,0 +1,139 @@
+module statics/normalization
+
+imports
+  statics/types
+
+// Force the application of delayed projections that occur in the head position
+// to obtain a normalized type.
+rules strict: TYPE -> TYPE
+
+  strict(PROJ(s, d)) = strictA(s, d).
+
+  strict(T) = T.
+
+rules strictA: scope * occurrence -> TYPE
+
+  strictA(s, occ) = T :- {p d S}
+    query type
+      filter 0
+      and { d' :- d' == occ }
+      in s |-> [(p, (d, S))],
+    norm(scopes(p), typeOf(S)) == T.
+
+// Normalize types.
+rules norm: list(scope) * TYPE -> TYPE
+  norms maps norm(*, list(*)) = list(*)
+
+  norm([], T) = T.
+  norm(ss@[_|_], T) = normR(reverseScopes(ss), T).
+
+// Normalize types given a list of scopes ordered from far to close.
+rules normR: list(scope) * TYPE -> TYPE
+  normsR maps normR(*, list(*)) = list(*)
+
+  // When there are no scopes
+  normR([], T) = T.
+
+  // For any type without a scope, we normalize the inner types
+  normR(ss@[_|_], STRATEGY(PTs, IT, OT)) = STRATEGY(normsR(ss, PTs), normR(ss, IT), normR(ss, OT)).
+  normR(ss@[_|_], CLASS(name)) = CLASS(name).
+  normR(ss@[_|_], LIST(T)) = LIST(normR(ss, T)).
+  normR(ss@[_|_], TUPLE(Ts)) = TUPLE(normsR(ss, Ts)).
+
+  // FIXME: Can we write these as `normR([_|_], T) = T.`?
+  normR([_|_], T@BYTE()) = T.
+  normR([_|_], T@SHORT()) = T.
+  normR([_|_], T@INT()) = T.
+  normR([_|_], T@LONG()) = T.
+
+  normR([_|_], T@UBYTE()) = T.
+  normR([_|_], T@USHORT()) = T.
+  normR([_|_], T@UINT()) = T.
+  normR([_|_], T@ULONG()) = T.
+
+  normR([_|_], T@ANY()) = T.
+  normR([_|_], T@BOOL()) = T.
+  normR([_|_], T@UNIT()) = T.
+  normR([_|_], T@STRING()) = T.
+
+  // For any type with a scope, we instantiate the type variables in the scope
+  normR([s|ss], FORALL(typeParams, typeScope)) = T :- {ps decls Ts}
+    query subst filter e in s |-> ps,                                        // find all substitutions in the current scope
+    unzipPDTs(ps) == (decls, Ts),                                            // unzip into a tuple of a list of names and list of types, one for each substitution
+    normR(ss, FORALL(typeParams, instWith(typeScope, decls, Ts))) == T.
+
+  // ?
+  normR(ss@[_|_], T@PROJ(_, _)) = normR(ss, strict(T)).
+
+  // ?
+  normR([s|ss], TVAR(occ)) = normVar(s, ss, occ).
+
+// Normalizes a variable
+rules normVar: scope * list(scope) * occurrence -> TYPE
+
+  normVar(s, ss, occ) = U :- {Ts}
+    hasSubst(s, occ) == Ts,
+    normVar2(s, ss, occ, Ts) == U.
+
+rules normVar2: scope * list(scope) * occurrence * list(TYPE) -> TYPE
+
+  normVar2(s, ss, occ, []) = normR(ss, TVAR(occ)).
+  normVar2(s, ss, occ, [T]) = normR(ss, T).
+
+// Finds all substitutions for the given occurrence in the given scope
+rules hasSubst: scope * occurrence -> list(TYPE)
+
+  hasSubst(s, d) = Ts :- {ps}
+    query subst
+      filter e
+      and { d' :- d' == d } in s |-> ps,
+    substValues(ps) == Ts.
+
+// Gets the TYPE from a query resolution
+rules substValue: (path * (occurrence * TYPE)) -> TYPE
+  substValues maps substValue(list(*)) = list(*)
+
+  // Wouldn't `substValue((_, (_, T))) = T.` work?
+  substValue((_, (_, T))) = T' :- T == T'.
+
+// Instantiate
+// Invariant: list(occurrence) and list(TYPE) have the same length
+rules instWith: scope * list(occurrence) * list(TYPE) -> scope
+
+  instWith(s, [], []) = s.
+  instWith(s, decls@[_|_], Ts@[_|_]) = s_inst :-
+    new s_inst, s_inst -I-> s,        // create a new scope for the type instantiation
+    instWithA(s_inst, decls, Ts).    // instantiate each type variable
+
+rules instWithA: scope * list(occurrence) * list(TYPE)
+
+  instWithA(_, [], []).
+  instWithA(s, [decl|decls], [T|Ts]) :-
+    !subst[decl, T] in s,
+    instWithA(s, decls, Ts).
+
+// Gets the scopes from the path
+rules scopes : path -> list(scope)
+  scopes(p) = scopes_acc(p, []).
+
+rules scopes_acc : path * list(scope) -> list(scope)
+  scopes_acc(_PathEmpty(s), acc) = [s|acc].
+  scopes_acc(_PathStep(p, _, s), acc) = scopes_acc(p, [s|acc]).
+
+// Reverses a list of scopes from a path.
+// The scopes will be ordered from far to close to the use site.
+rules reverseScopes: list(scope) -> list(scope)
+
+  reverseScopes(ss) = reverseScopesR(ss, []).
+
+rules reverseScopesR: list(scope) * list(scope) -> list(scope)
+
+  reverseScopesR([], acc) = acc.
+  reverseScopesR([s|ss], acc) =  reverseScopesR(ss, [s|acc]).
+
+// Unzip a list of path+declaration+type tuples into a tuple of list of declarations and list of types.
+rules unzipPDTs: list((path * (occurrence * TYPE))) -> (list(occurrence) * list(TYPE))
+
+  unzipPDTs([]) = ([], []).
+  unzipPDTs([(_, (X, T))|PDTs]) = ([X|Xs], [T|Ts]) :-
+    unzipPDTs(PDTs) == (Xs, Ts).

@@ -2,6 +2,8 @@ module statics
 
 imports
   signatures/Tego-sig
+  statics/types
+  statics/normalization
 
 // Single-file entry point
 rules programOk : File
@@ -22,6 +24,11 @@ rules fileOk : scope * File
   fileOk(s, File(modules)) :- modulesOk(s, modules).
 
   fileOk(s, File-Plhdr()).
+
+rules test : scope * string * TYPE
+
+//  test(s, name, T) :-
+//    s -> Decl{name@name} with type T.
 
 rules init : scope
 
@@ -86,18 +93,24 @@ rules declOk : scope * scope * Decl
     declareDeclWithMods(ms, ms_pub, name, T, mods),
     @d.type := T.
 
-  declOk(ms, ms_pub, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
-    // Create strategy declaration scope in which the type variables are declared
-    new ds, ds -P-> ms,
-    typesOfTypes(ds, params) == PTs,
-    typeOfType(ds, inType) == IT,
-    typeOfType(ds, outType) == OT,
-    T == STRATEGY(PTs, IT, OT),
-    declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+//  declOk(ms, ms_pub, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
+//    typesOfTypes(ms, params) == PTs,
+//    typeOfType(ms, inType) == IT,
+//    typeOfType(ms, outType) == OT,
+//    T == STRATEGY(PTs, IT, OT),
+//    declareDeclWithMods(ms, ms_pub, name, T, mods),
+//    @d.type := T.
 
   // TODO: Support generics
-  declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
+  declOk(ms, ms_pub, d@StrategyDecl(mods, name, typeParams, params, inType, outType)) :- {s_all tVars T PTs IT OT}
+    new s_all, s_all -P-> ms,        // create scope in which type parameters are declared
+    typesOfTypeParamDecls(s_all, typeParams) == tVars,
+    typesOfTypes(ms, params) == PTs,
+    typeOfType(ms, inType) == IT,
+    typeOfType(ms, outType) == OT,
+    T == FORALL(tVars, STRATEGY(PTs, IT, OT)),
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    @d.type := T.
 
   declOk(ms, ms_pub, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
     typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
@@ -190,6 +203,14 @@ rules typeOfParamDef : scope * ParamDef -> TYPE
     @p.type := T.
 
   typeOfParamDef(s, ParamDef-Plhdr()) = T.
+
+// Declares the type parameter in the scope and returns the occurrence
+rules typeOfTypeParamDecl : scope * TypeParamDecl -> occurrence
+  typesOfTypeParamDecls maps typeOfTypeParamDecl(*, list(*)) = list(*)
+
+  typeOfTypeParamDecl(ts, p@TypeParamDecl(name)) = occ :-
+    declareTypeParam(ts, p) == occ.
+
 
 rules typeOfExp : scope * Exp -> TYPE
   typesOfExps maps typeOfExp(*, list(*)) = list(*)
@@ -300,11 +321,12 @@ rules clauseOk : scope * RuleClause
   clauseOk(s, WhereClause(exp)) :-
     typeOfExp(s, exp) == UNIT().
 
-rules declareTypeParam : scope * TypeParamDecl * TYPE
-  declareTypeParams maps declareTypeParam(*, list(*), list(*))
+rules declareTypeParam : scope * TypeParamDecl -> occurrence
+  declareTypeParams maps declareTypeParam(*, list(*)) = list(*)
 
-  declareTypeParam(ts, TypeParamDecl(name), T) :-
-    !type[TypeParam{name@_}, T] in ts.
+  declareTypeParam(ts, TypeParamDecl(name)) = occ :-
+    occ == TypeVar{name@name},
+    !var[occ] in ts.
 
 rules declareModule : scope * string * scope
 
@@ -363,40 +385,4 @@ rules isPublicDecl : list(DeclMod)
   isPublicDecl([PublicDecl()|_]).
   isPublicDecl([_|mods]) :- isPublicDecl(mods).
 
-signature
-  sorts TYPE
-  constructors
-    MODULE   : scope -> TYPE
-    STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
-    CLASS    : string -> TYPE
-    LIST     : TYPE -> TYPE
-    TUPLE    : list(TYPE) -> TYPE
 
-    BYTE     : TYPE
-    SHORT    : TYPE
-    INT      : TYPE
-    LONG     : TYPE
-
-    UBYTE    : TYPE
-    USHORT   : TYPE
-    UINT     : TYPE
-    ULONG    : TYPE
-
-    ANY      : TYPE
-    BOOL     : TYPE
-    UNIT     : TYPE
-    STRING   : TYPE
-  sorts
-    DECL = (path * (occurrence * TYPE))
-
-signature
-  namespaces
-    //Module    : ID
-    Decl      : ID
-    TypeParam : ID
-  relations
-    type     : occurrence -> TYPE
-  name-resolution
-    labels
-      P      // laxical parent
-      I      // import edge

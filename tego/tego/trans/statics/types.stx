@@ -1,0 +1,65 @@
+module statics/types
+
+imports
+  signatures/Tego-sig
+
+signature
+  sorts TYPE
+  constructors
+    MODULE   : scope -> TYPE
+    STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
+    CLASS    : string -> TYPE
+    LIST     : TYPE -> TYPE
+    TUPLE    : list(TYPE) -> TYPE
+
+    BYTE     : TYPE
+    SHORT    : TYPE
+    INT      : TYPE
+    LONG     : TYPE
+
+    UBYTE    : TYPE
+    USHORT   : TYPE
+    UINT     : TYPE
+    ULONG    : TYPE
+
+    ANY      : TYPE
+    BOOL     : TYPE
+    UNIT     : TYPE
+    STRING   : TYPE
+
+    FORALL   : list(occurrence) * scope -> TYPE  // generic type
+    PROJ     : scope * occurrence -> TYPE        // delayed projection
+    TVAR     : occurrence -> TYPE                // type variable
+
+  sorts
+    DECL = (path * (occurrence * TYPE))
+
+signature
+  namespaces
+    //Module    : ID
+    Decl      : ID
+    TypeVar   : ID
+  relations
+    type     : occurrence -> TYPE
+    var      : -> occurrence
+    subst    : occurrence -> TYPE        // substitution
+    typeOf   : -> TYPE
+  name-resolution
+    labels
+      P      // laxical parent
+      I      // import edge
+
+// Returns a new scope that has a `typeOf` relation to the given type.
+rules withType: TYPE -> scope
+
+  withType(T) = s :-
+    new s, !typeOf[T] in s.
+
+// Get the type of the scope as given by the `typeOf` relation.
+rules typeOf: scope -> TYPE
+
+  typeOf(s) = T :-
+    query typeOf
+      filter e and true
+      min /* */ and true
+      in s |-> [(_, T)].
