@@ -18,32 +18,53 @@ rules
     ; result   := <pp-debug> node
 
 rules
-  
+
   pp-Tego-string =
     parenthesize-Tego
     ; prettyprint-Tego-start-symbols
     ; !V([], <id>)
     ; box2text-string(|120)
-      
+
   pp-partial-Tego-string =
     parenthesize-Tego
     ; prettyprint-Tego
     ; !V([], <id>)
     ; box2text-string(|120)
-    
+
   pp-partial-Tego-string(|sort) =
     parenthesize-Tego
     ; prettyprint-Tego(|sort)
     ; !V([], <id>)
-    ; box2text-string(|120)  
-      
+    ; box2text-string(|120)
+
+  pp-TYPE =
+    parenthesize-Tego
+    ; prettyprint-Tego-TYPE
+    ; !V([], <id>)
+    ; box2text-string(|120)
+
   pp-debug :
     ast -> result
     with
        result := <pp-Tego-string> ast
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-Tego-string); debug(!"cannot pp ")))> ast
     ;  result := ""
+    
+rules
+
+  escape-html = string-as-chars(escape-chars(Escape-html))
+
+  Escape-html
+    = Escape-quot
+    + Escape-amp
+    + Escape-lt
+    + Escape-gt
+
+  Escape-quot            : ['"' | cs ] -> ['&', 'q', 'u', 'o', 't', ';' | cs ]
+  Escape-amp             : ['&' | cs ] -> ['&', 'a', 'm', 'p', ';' | cs ]
+  Escape-lt              : ['<' | cs ] -> ['&', 'l', 't', ';' | cs ]
+  Escape-gt              : ['>' | cs ] -> ['&', 'g', 't', ';' | cs ]
 
 rules
-  
+
   construct-textual-change = construct-textual-change(pp-partial-Tego-string, parenthesize, override-reconstruction, resugar)

@@ -28,7 +28,7 @@ rules init : scope
   init(s) :-
     // java/lang
     {s_java_lang} new s_java_lang,
-    declareModule(s, "java/lang", s_java_lang),
+    declareModule(s, "java/lang", MODULE(s_java_lang)),
     declareDecl(s_java_lang, "Class", CLASS("Class")).
 
 rules module_init : scope * scope
@@ -40,13 +40,15 @@ rules module_init : scope * scope
 rules moduleOk : scope * Module
   modulesOk maps moduleOk(*, list(*))
 
-  moduleOk(s, Module(mods, name, imports, decls)) :- {ms_pub ms is}
+  moduleOk(s, m@Module(mods, name, imports, decls)) :- {ms_pub ms is T}
     new ms_pub, ms_pub -P-> s,
     new ms, ms -P-> ms_pub,
     module_init(s, ms_pub),
-    declareModule(s, name, ms_pub),
+    T == MODULE(ms_pub),
+    declareModule(s, name, T),
     importsOk(s, ms, imports),
-    declsOk(ms, ms_pub, decls).
+    declsOk(ms, ms_pub, decls),
+    @m.type := T.
 
   moduleOk(s, Module-Plhdr()).
 
@@ -306,10 +308,10 @@ rules declareTypeParam : scope * TypeParamDecl * TYPE
   declareTypeParam(ts, TypeParamDecl(name), T) :-
     !type[TypeParam{name@_}, T] in ts.
 
-rules declareModule : scope * string * scope
+rules declareModule : scope * string * TYPE
 
-  declareModule(s, name, ms) :-
-    !type[Decl{name@name}, MODULE(ms)] in s.
+  declareModule(s, name, T) :-
+    !type[Decl{name@name}, T] in s.
 
 rules resolveModule : scope * string -> scope
 
@@ -364,28 +366,9 @@ rules isPublicDecl : list(DeclMod)
   isPublicDecl([_|mods]) :- isPublicDecl(mods).
 
 signature
-  sorts TYPE
   constructors
     MODULE   : scope -> TYPE
-    STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
-    CLASS    : string -> TYPE
-    LIST     : TYPE -> TYPE
-    TUPLE    : list(TYPE) -> TYPE
-
-    BYTE     : TYPE
-    SHORT    : TYPE
-    INT      : TYPE
-    LONG     : TYPE
-
-    UBYTE    : TYPE
-    USHORT   : TYPE
-    UINT     : TYPE
-    ULONG    : TYPE
-
-    ANY      : TYPE
-    BOOL     : TYPE
-    UNIT     : TYPE
-    STRING   : TYPE
+    // Other types are defined in Tego.sdf3
   sorts
     DECL = (path * (occurrence * TYPE))
 

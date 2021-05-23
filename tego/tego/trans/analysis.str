@@ -12,6 +12,7 @@ imports
   injections/-
 
   libspoofax/term/origin
+  statix/runtime/pp
 
 rules // Analysis
 
@@ -51,7 +52,7 @@ rules // Editor Services
 
   editor-resolve = stx-editor-resolve
 
-  editor-hover = stx-editor-hover
+  editor-hover = stx-editor-hover((pp-TYPE <+ pp-Statix-ATerm); escape-html)
 
 rules // Debugging
 
