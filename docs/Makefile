@@ -3,6 +3,7 @@ SELF_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 MKDOCS_VERSION := 7.1.4
 ROOT_DIR := $(SELF_DIR)..
 CUSTOM_DOCKER_IMAGE := metaborg/mkdocs-material
+DOCKER_FILE := ${ROOT_DIR}/docs/Dockerfile
 
 # SSH Agent Socket
 ifeq ($(OS),Windows_NT)         # WSL2 (Windows)
@@ -42,7 +43,7 @@ help: build-image
 	$(BASE_COMMAND) -h
 
 build-image: Dockerfile
-	docker build --build-arg "VERSION=${MKDOCS_VERSION}" -t ${CUSTOM_DOCKER_IMAGE} -f ${ROOT_DIR}/docs/Dockerfile ${ROOT_DIR}
+	docker build --build-arg "VERSION=${MKDOCS_VERSION}" -t ${CUSTOM_DOCKER_IMAGE} -f ${DOCKER_FILE} ${ROOT_DIR}
 
 .PHONY: serve new build deploy help build-image
 SILENT:

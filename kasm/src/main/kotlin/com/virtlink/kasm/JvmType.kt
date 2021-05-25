@@ -254,7 +254,7 @@ interface JvmType {
                         // Walk through the signature
                         when (buffer[cursor]) {
                             '.' -> {
-                                // Everything before here is an enclosing class (and the next class is an innner class)
+                                // Everything before here is an enclosing class (and the next class is an inner class)
                                 // Build the enclosing class
                                 currentEnclosingType = JvmObject(currentName.toString(), currentParams, currentEnclosingType, currentIsInnerClass)
                                 // Start the next class

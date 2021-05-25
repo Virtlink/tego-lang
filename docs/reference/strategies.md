@@ -8,13 +8,13 @@ def stringLength: String -> Int
 The strategy is defined to use the `String.length()` instance method (in Java) to return the length of the string:
 
 ```tego
-stringLength = String::length.
+stringLength = String#length.
 ```
 
 A single strategy declaration can have multiple strategy definitions. Strategies are evaluated in the order they appear in the module, and the first definition that succeeds determines the final result. For example, the following strategy `inc` increments an integer or floating-point value:
 
 ```tego
-def inc<T: java/lang::Number>: T -> T?
-inc = as-Int; java/lang::Integer::sum(<id>, 1.0)
-inc = as-Float; java/lang::Float::sum(<id>, 1.0)
+def inc<T: Number>: T -> T?
+inc = as-Int; Integer#sum(<id>, 1.0)
+inc = as-Float; Float#sum(<id>, 1.0)
 ```
