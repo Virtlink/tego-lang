@@ -102,6 +102,7 @@ rules declOk : scope * scope * Decl
   declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
 
   declOk(ms, ms_pub, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
+    // FIXME: Only resolve in the current module scope
     typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
     new ss, ss -P-> ms,
     typesOfParamDefs(ss, paramDefs) == PTs,
