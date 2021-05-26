@@ -15,20 +15,24 @@ class TegoCompiler(
 
     /**
      * Compiles the project in the given term.
+     *
+     * @return a list of all compiled classes
      */
-    fun compile(term: Term) {
+    fun compile(term: Term): List<JvmClass> {
         val project = irBuilder.toProject(term)
-        compile(project)
+        return compile(project)
     }
 
     /**
      * Compiles the given project.
+     *
+     * @return a list of all compiled classes
      */
-    fun compile(project: Project) {
+    fun compile(project: Project): List<JvmClass> {
         val gatherer = Gatherer()
-        for (file in project.files) {
-            for (module in file.modules) {
-                for (decl in module.declarations) {
+        project.files.forEach { file ->
+            file.modules.forEach { module ->
+                module.declarations.forEach { decl ->
                     gatherer.addDeclaration(decl)
                 }
             }
@@ -36,9 +40,9 @@ class TegoCompiler(
         val symbolTable: SymbolTable = gatherer.symbolTable
 
         val compiler = Compiler(symbolTable, strategyAssemblerFactory.create(JvmTypeManager(symbolTable), symbolTable))
-        for (file in project.files) {
-            for (module in file.modules) {
-                for (def in module.definitions) {
+        return project.files.flatMap { file ->
+            file.modules.flatMap { module ->
+                module.definitions.map { def ->
                     compiler.compileDefinition(def)
                 }
             }

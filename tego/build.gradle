@@ -26,6 +26,11 @@ configure(allprojects.findAll {it.name != 'tego-platform'}) {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core"
 
+        // Logging
+        implementation "org.slf4j:slf4j-api"
+        implementation "org.slf4j:slf4j-simple"
+        implementation "io.github.microutils:kotlin-logging-jvm"
+
         // Testing
         testImplementation "org.junit.jupiter:junit-jupiter-api"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"

@@ -198,8 +198,12 @@ class StrategyAssembler(
         }
 
         val cls = JvmClass.fromType(declJvmType, classWriter.toByteArray())
-        println(cls)
-        cls.check()
+        try {
+            cls.check()
+        } catch (ex: Throwable) {
+            println(cls)
+            throw ex
+        }
         return cls
     }
 

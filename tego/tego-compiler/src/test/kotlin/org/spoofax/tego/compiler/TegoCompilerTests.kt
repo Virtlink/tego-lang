@@ -1,14 +1,18 @@
 package org.spoofax.tego.compiler
 
+import mu.KotlinLogging
 import org.junit.jupiter.api.Test
 import org.spoofax.tego.aterm.TermFactoryImpl
 import org.spoofax.tego.aterm.io.ATermReader
 import org.spoofax.tego.ir.IrBuilder
+import kotlin.io.path.createTempDirectory
 
 /**
  * Tests the [TegoCompiler] class.
  */
 class TegoCompilerTests {
+
+    private val log = KotlinLogging.logger {}
 
     @Test
     fun `compiles completion-min successfully`() {
@@ -21,11 +25,14 @@ class TegoCompilerTests {
             StrategyAssembler.Factory(ExpAssembler.Factory()),
             classWriter
         )
+        val tmpDir = createTempDirectory("tego")
 
         // Act
-        compiler.compile(moduleTerm)
+        val clss = compiler.compile(moduleTerm)
+        val clsPaths = clss.map { it.writeInPackage(tmpDir) }
 
         // Assert
+        log.info("Wrote generated Java classes to: $tmpDir:${clsPaths.joinToString { "\n- $it" }}")
     }
 
 }

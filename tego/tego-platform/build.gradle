@@ -17,6 +17,11 @@ dependencies {
         // Code Generation
         api     "com.virtlink:kasm:0.1-SNAPSHOT"
 
+        // Logging
+        api     "org.slf4j:slf4j-api:1.7.30"
+        api     "org.slf4j:slf4j-simple:1.7.30"
+        api     "io.github.microutils:kotlin-logging-jvm:2.0.6"
+
         // Testing
         api     "org.junit.jupiter:junit-jupiter:5.7.0"
         api     "org.junit.jupiter:junit-jupiter-api:5.7.0"

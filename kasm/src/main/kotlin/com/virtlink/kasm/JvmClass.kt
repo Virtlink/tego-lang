@@ -4,6 +4,7 @@ import org.objectweb.asm.util.TraceClassVisitor
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.util.CheckClassAdapter
+import java.io.OutputStream
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.nio.file.Files
@@ -69,6 +70,15 @@ class JvmClass(
     }
 
     /**
+     * Writes the JVM class to an output stream.
+     *
+     * @param output the output stream to write to
+     */
+    fun writeTo(output: OutputStream) {
+        output.write(classBytes)
+    }
+
+    /**
      * Writes the JVM class to a file.
      *
      * @param path the path of the file
@@ -82,12 +92,14 @@ class JvmClass(
      * corresponding to the class name and package, respectively.
      *
      * @param root the root path
+     * @return the actual path to which the class was written
      */
-    fun writeInPackage(root: Path) {
+    fun writeInPackage(root: Path): Path {
         val targetDir = root.resolve(toPackageDirectory(packageName))
         val targetFile = targetDir.resolve(toClassFilename(className))
         Files.createDirectories(targetDir)
         writeToFile(targetFile)
+        return targetFile
     }
 
     /**
