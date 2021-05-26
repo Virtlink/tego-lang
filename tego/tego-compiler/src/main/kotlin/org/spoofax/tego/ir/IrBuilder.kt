@@ -8,34 +8,43 @@ import org.spoofax.tego.aterm.*
 class IrBuilder {
 
     /**
-     * Transforms a Tego project term into an IR Tego project.
+     * Transforms a Tego project term into an IR Tego [Project].
      */
     fun toProject(project: Term): Project {
+        // NOTE: There is not a Project() term yet
         require(project is ApplTerm) { "Expected constructor application term, got: $project"}
 
         return Project(
-            // TODO: Support multi-module
-            listOf(toModule(project))
+            // TODO: Support multi-file
+            listOf(toFile(project))
         )
     }
 
     /**
-     * Transforms a Tego module term into an IR Tego module.
+     * Transforms a Tego `File` term into an IR Tego [File].
+     */
+    fun toFile(file: Term): File {
+        require(file is ApplTerm && file.constructor == "File") { "Expected File() term, got: $file"}
+
+        val modules = file[0].asList().map { toModule(it) }
+        return File(modules)
+    }
+
+    /**
+     * Transforms a Tego `Module` term into an IR Tego [Module].
      */
     fun toModule(module: Term): Module {
         require(module is ApplTerm && module.constructor == "Module") { "Expected Module() term, got: $module"}
 
-        val name: QName = module[0].let { moduleDecl: Term ->
-            require(moduleDecl is ApplTerm && moduleDecl.constructor == "ModuleDecl") { "Expected ModuleDecl() term, got: $moduleDecl"}
-            // TODO: Better way to get the QName from a module name / fix package name
-            QName("tego", moduleDecl[0].toJavaString())
-        }
-
-        val allDecls = module[1].asList().mapNotNull { toDecl(it) }
+        val modifiers = toModuleModifiers(module[0])
+        // TODO: Better way to get the QName from a module name / fix package name
+        val name = PackageName(module[1].toJavaString())
+        // We can ignore the imports (module[2])
+        val allDecls = module[3].asList().mapNotNull { toDecl(it) }
         val decls = allDecls.filterIsInstance<TypeDecl>()
         val defs = allDecls.filterIsInstance<Def>()
 
-        return Module(name, decls, defs)
+        return Module(name, decls, defs, modifiers)
     }
 
     /**
@@ -67,7 +76,9 @@ class IrBuilder {
         require(decl is ApplTerm && decl.constructor == "ClassDecl") { "Expected ClassDecl() term, got: $decl"}
 
         // TODO: Fix package name
-        return ClassTypeDecl(QName("tego", decl[1].toJavaString()), toTypeModifiers(decl[0]))
+        val modifiers = toTypeModifiers(decl[0])
+        val name = QName(PackageName("tego"), decl[1].toJavaString())
+        return ClassTypeDecl(name, modifiers)
     }
 
     /**
@@ -78,7 +89,9 @@ class IrBuilder {
 
         val type = typeOf(decl) as StrategyType
         // TODO: Fix package name
-        return StrategyTypeDecl(QName("tego", decl[1].toJavaString()), type, toTypeModifiers(decl[0]))
+        val name = QName(PackageName("tego"), decl[1].toJavaString())
+        val modifiers = toTypeModifiers(decl[0])
+        return StrategyTypeDecl(name, type, modifiers)
     }
 
     /**
@@ -88,7 +101,11 @@ class IrBuilder {
         require(def is ApplTerm && def.constructor == "StrategyDefWInput") { "Expected StrategyDefWInput() term, got: $def"}
 
         // TODO: Fix package name
-        return StrategyDef(QName("tego", def[0].toJavaString()), def[1].asList().map { toParamDef(it) }, def[2].toJavaString(), toExp(def[3]))
+        val name = QName(PackageName("tego"), def[0].toJavaString())
+        val params = def[1].asList().map { toParamDef(it) }
+        val inputName = def[2].toJavaString()
+        val body = toExp(def[3])
+        return StrategyDef(name, params, inputName, body)
     }
 
     /**
@@ -164,7 +181,7 @@ class IrBuilder {
             "STRATEGY" -> StrategyType(type[0].asList().map { toType(it) }, toType(type[1]), toType(type[2]))
             "TUPLE" -> TupleType(type[0].asList().map { toType(it) })
             // TODO: Fix package name
-            "CLASS" -> ClassTypeRef(QName("tego", type[0].toJavaString()))
+            "CLASS" -> ClassTypeRef(QName(PackageName("tego"), type[0].toJavaString()))
             "LIST" -> ListType(toType(type[0]))
 
             "ERROR" -> TypeError("Type error")
@@ -181,7 +198,24 @@ class IrBuilder {
             check(modTerm is ApplTerm) { "Expected constructor application term, got: $modTerm"}
 
             val m = when (modTerm.constructor) {
-                "Extern" -> TypeModifier.Extern
+                "PublicDecl" -> TypeModifier.Public
+                "ExternDecl" -> TypeModifier.Extern
+                else -> TODO("Unsupported type modifier: $modTerm")
+            }
+            ms.add(m)
+        }
+        return ms
+    }
+
+    fun toModuleModifiers(mods: Term): ModuleModifiers {
+        require(mods is ListTerm) { "Expected a list term, got: $mods"}
+
+        val ms = ModuleModifiers.noneOf(ModuleModifier::class.java)
+        for (modTerm in mods.asList()) {
+            check(modTerm is ApplTerm) { "Expected constructor application term, got: $modTerm"}
+
+            val m = when (modTerm.constructor) {
+                "ExternModule" -> ModuleModifier.Extern
                 else -> TODO("Unsupported type modifier: $modTerm")
             }
             ms.add(m)

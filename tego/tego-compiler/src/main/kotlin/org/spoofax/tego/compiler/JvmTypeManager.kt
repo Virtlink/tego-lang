@@ -176,7 +176,7 @@ class JvmTypeManager(
      * @return the JVM class name (with `/` as the separator)
      */
     private fun getQualifiedClassName(decl: StrategyTypeDecl): String {
-        val pkg = getPackageName(decl).replace('.', '/')
+        val pkg = getPackageName(decl).toString()
         val name = getClassName(decl)
         if (pkg.isEmpty()) return name
         return "$pkg/$name"
@@ -211,7 +211,7 @@ class JvmTypeManager(
      * @param decl the strategy type declaration
      * @return the package name
      */
-    private fun getPackageName(decl: StrategyTypeDecl): String {
+    private fun getPackageName(decl: StrategyTypeDecl): PackageName {
         if (decl.name != null) {
             // Generate package for named strategy
             return decl.name.packageName

@@ -112,7 +112,7 @@ class ExpAssembler(
                         loadLocalVar(v)
                     } else {
                         // TODO: Fix package name
-                        val d = symbolTable[QName("tego", exp.name)]
+                        val d = symbolTable[QName(PackageName("tego"), exp.name)]
                         if (d != null) {
                             loadTypeDecl(d)
                         } else {

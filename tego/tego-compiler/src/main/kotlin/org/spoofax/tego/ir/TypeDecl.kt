@@ -50,6 +50,7 @@ typealias TypeModifiers = EnumSet<TypeModifier>
  * Specifies a type modifier.
  */
 enum class TypeModifier {
+    Public,
     Extern
 }
 

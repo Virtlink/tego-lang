@@ -26,17 +26,21 @@ class TegoCompiler(
      */
     fun compile(project: Project) {
         val gatherer = Gatherer()
-        for (module in project.modules) {
-            for (decl in module.declarations) {
-                gatherer.addDeclaration(decl)
+        for (file in project.files) {
+            for (module in file.modules) {
+                for (decl in module.declarations) {
+                    gatherer.addDeclaration(decl)
+                }
             }
         }
         val symbolTable: SymbolTable = gatherer.symbolTable
 
         val compiler = Compiler(symbolTable, strategyAssemblerFactory.create(JvmTypeManager(symbolTable), symbolTable))
-        for (module in project.modules) {
-            for (def in module.definitions) {
-                compiler.compileDefinition(def)
+        for (file in project.files) {
+            for (module in file.modules) {
+                for (def in module.definitions) {
+                    compiler.compileDefinition(def)
+                }
             }
         }
     }

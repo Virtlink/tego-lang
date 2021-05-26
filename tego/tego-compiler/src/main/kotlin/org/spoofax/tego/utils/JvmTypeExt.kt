@@ -10,5 +10,6 @@ import org.spoofax.tego.ir.QName
  * @return the JVM type
  */
 fun JvmType.Companion.of(name: QName): JvmType {
-    return JvmType.of(name.toJvmClassName())
+    // TODO: This does not take generics or anything into account!
+    return JvmType.fromSignature("L${name.packageName}/${name.simpleName};")
 }
