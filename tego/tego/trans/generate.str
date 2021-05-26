@@ -7,6 +7,7 @@ imports
 
 signature
   constructors
+    OfName : Term -> Annotation
     OfType : Term -> Annotation
 
 rules
@@ -16,9 +17,20 @@ rules
   with filename := <guarantee-extension(|"typed.aterm")> path
      ; result := <type-term> f
 
+  generate-named-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
+  with filename := <guarantee-extension(|"named.aterm")> path
+     ; result := <name-term> f
+
   type-term = bottomup(
     where(get-type < debug(!"type: ") + debug(!"no type: ")) ;
     try(
         (is-Tego-Decl + is-Tego-Exp)
       ; add-annotation(|OfType(<get-type; not(?"nabl2.Var"#(_))>))
     ) ; remove-annotations(not(?OfType(_))))
+
+  name-term = bottomup(
+    where(get-name < debug(!"name: ") + debug(!"no name: ")) ;
+    try(
+        id
+      ; add-annotation(|OfName(<get-name; not(?"nabl2.Var"#(_))>))
+    ) ; remove-annotations(not(?OfName(_))))

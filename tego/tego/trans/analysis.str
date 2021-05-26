@@ -46,6 +46,11 @@ rules // Analysis
     where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> exp]])>
         ; type   := <stx-get-ast-type(|a) <+ fail-msg(|$[no type on node [<strip-annos;write-to-string> exp]])> exp
 
+  get-name: exp -> <strip-annos> name
+    where <debug(!"Debug get-type: ")> exp
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> exp]])>
+        ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[no name on node [<strip-annos;write-to-string> exp]])> exp
+
   fail-msg(|msg) = err-msg(|$[get-type: [msg]]); fail
 
 rules // Editor Services

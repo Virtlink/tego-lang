@@ -19,7 +19,9 @@ rules projectOk : scope
 
 rules fileOk : scope * File
 
-  fileOk(s, File(modules)) :- modulesOk(s, modules).
+  fileOk(s, f@File(modules)) :- {N}
+    modulesOk(s, modules),
+    @f.name := declareName(s, ROOTNAME()).        // should be declared in init(s).
 
   fileOk(s, File-Plhdr()).
 
@@ -48,7 +50,9 @@ rules moduleOk : scope * Module
     declareModule(s, name, T),
     importsOk(s, ms, imports),
     declsOk(ms, ms_pub, decls),
-    @m.type := T.
+    @m.type := T,
+    true.
+    //declareName(ms_pub, MODULENAME(resolveParentName(s), name)).
 
   moduleOk(s, Module-Plhdr()).
 
@@ -96,7 +100,8 @@ rules declOk : scope * scope * Decl
     typeOfType(ds, outType) == OT,
     T == STRATEGY(PTs, IT, OT),
     declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+    @d.type := T,
+    @d.name := STRATEGYNAME(resolveParentName(ms), name).
 
   // TODO: Support generics
   declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
@@ -357,6 +362,24 @@ rules resolveDecl : scope * string -> TYPE
       min $ < P, $ < I
       in s |-> [(_, (_, T))].
 
+///////////
+// Names //
+///////////
+rules declareName : scope * NAME -> NAME
+
+  declareName(s, N) = N :-
+    !name[N] in s.
+
+rules resolveParentName : scope -> NAME
+
+  resolveParentName(s) = N :-
+    query name
+      filter P+
+      and true
+      min $ < P
+      in s |-> [(_, N)].
+
+
 rules getScope : TYPE -> scope
 
   getScope(MODULE(s)) = s.
@@ -380,6 +403,7 @@ signature
     TypeParam : ID
   relations
     type     : occurrence -> TYPE
+    name     : -> NAME
   name-resolution
     labels
       P      // laxical parent

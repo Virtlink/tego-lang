@@ -102,6 +102,15 @@ context-free syntax
   Type.TupleType            = <(<{Type ", "}+>)>
   Type                      = <(<Type>)> {bracket}
 
+// Statix NAME representation, for pretty-printing only:
+context-free sorts NAME
+context-free syntax
+
+  NAME.ROOTNAME             = []
+  NAME.MODULENAME           = [[NAME]::[ID]]
+  NAME.STRATEGYNAME         = [[NAME]::[ID]]
+  NAME.CLASSNAME            = [[NAME]::[ID]]
+
 // Statix TYPE representation, for pretty-printing only:
 context-free sorts TYPE
 context-free syntax
