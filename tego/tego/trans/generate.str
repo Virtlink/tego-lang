@@ -11,6 +11,7 @@ signature
 
 rules
 
+  // Works on the analyzed term
   generate-typed-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
   with filename := <guarantee-extension(|"typed.aterm")> path
      ; result := <type-term> f

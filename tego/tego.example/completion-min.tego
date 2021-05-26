@@ -1,12 +1,17 @@
 module example1
 
-class type Var
-class type Constraint
-class type SolverState
-class type Class
+//import mb/tego/runtime::*
+import mb/nabl2/terms::*
+import mb/statix/common::*
+import mb/statix/solver::*
+import mb/statix/constraints::*
+
+//class type Var
+//class type Constraint
+//class type SolverState
 
 
-def complete(Var): SolverState -> [SolverState]
+def complete(ITermVar): SolverState -> [SolverState]
 complete(v) =
   expandAllPredicates(v) ||>
   expandAllInjections(v) ||>
@@ -15,13 +20,13 @@ complete(v) =
 
 //val cls: Class // TODO: Write specific class
 
-extern def expandAllPredicates(Var): SolverState -> [SolverState]
+extern def expandAllPredicates(ITermVar): SolverState -> [SolverState]
 
-extern def expandAllInjections(Var): SolverState -> [SolverState]
+extern def expandAllInjections(ITermVar): SolverState -> [SolverState]
 
-extern def expandAllQueries(Var): SolverState -> [SolverState]
+extern def expandAllQueries(ITermVar): SolverState -> [SolverState]
 
-extern def expandDeterministic(Var): SolverState -> [SolverState]
+extern def expandDeterministic(ITermVar): SolverState -> [SolverState]
 
 
 // Core
@@ -48,10 +53,24 @@ extern def singleSS(SolverState -> [SolverState]): SolverState -> [SolverState]
 //extern def single<T, R>(T -> [R]): T -> [R]
 
 // Built-ins
-extern def selectConstraints(Class, (Constraint) SolverState -> [SolverState]): SolverState -> [SolverState]
-extern def assertValid(Var): SolverState -> [SolverState]
-extern def expandPredicateConstraint(Var): SolverState -> [SolverState]
-extern def expandQueryConstraint(Var): SolverState -> [SolverState]
-extern def expandInjection(Var): SolverState -> [SolverState]
-extern def filterPlaceholders(Var): SolverState -> [SolverState]
-extern def containsVar(Var, Constraint): SolverState -> [SolverState]
+extern def selectConstraints(Class, (IConstraint) SolverState -> [SolverState]): SolverState -> [SolverState]
+extern def assertValid(ITermVar): SolverState -> [SolverState]
+extern def expandPredicateConstraint(ITermVar): SolverState -> [SolverState]
+extern def expandQueryConstraint(ITermVar): SolverState -> [SolverState]
+extern def expandInjection(ITermVar): SolverState -> [SolverState]
+extern def filterPlaceholders(ITermVar): SolverState -> [SolverState]
+extern def containsVar(ITermVar, IConstraint): SolverState -> [SolverState]
+
+// Statix & NaBL
+extern module mb/statix/constraints
+class type CResolveQuery
+class type CUser
+
+extern module mb/statix/common
+class type SolverState
+
+extern module mb/statix/solver
+class type IConstraint
+
+extern module mb/nabl2/terms
+class type ITermVar
