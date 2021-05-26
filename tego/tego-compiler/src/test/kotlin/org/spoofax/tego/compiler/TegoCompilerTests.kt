@@ -28,4 +28,22 @@ class TegoCompilerTests {
         // Assert
     }
 
+    @Test
+    fun `compiles completion-min successfully`() {
+        // Arrange
+        val reader = ATermReader(TermFactoryImpl())
+        val moduleTerm = checkNotNull(reader.readFromResource(TegoCompilerTests::class, "/org/spoofax/tego/compiler/completion-min.anf.tego.aterm"))
+        val classWriter = TegoClassWriter.none()
+        val compiler = TegoCompiler(
+            IrBuilder(),
+            StrategyAssembler.Factory(ExpAssembler.Factory()),
+            classWriter
+        )
+
+        // Act
+        compiler.compile(moduleTerm)
+
+        // Assert
+    }
+
 }
