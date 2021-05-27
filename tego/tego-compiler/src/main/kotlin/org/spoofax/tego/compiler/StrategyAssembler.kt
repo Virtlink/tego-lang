@@ -2,9 +2,11 @@ package org.spoofax.tego.compiler
 
 import com.virtlink.kasm.*
 import com.virtlink.kasm.JvmType.Companion.asRawType
+import org.spoofax.tego.ir.QName
 import org.spoofax.tego.ir.StrategyDef
 import org.spoofax.tego.ir.StrategyTypeDecl
 import org.spoofax.tego.ir.SymbolTable
+import org.spoofax.tego.utils.of
 import java.util.*
 
 /**
@@ -32,7 +34,7 @@ class StrategyAssembler(
      * @return the assembled JVM class
      */
     fun assembleStrategy(decl: StrategyTypeDecl, def: StrategyDef): JvmClass {
-        val declJvmType: JvmType = typeManager[decl.type]
+        val declJvmType: JvmType = JvmType.of(decl.name.let { QName(it.packageName, it.simpleName.capitalize() + "Strategy") })
         val strategyJvmClassSignature: JvmClassSignature = typeManager.getJvmClassSignature(decl)
 
         val strategy0JvmType: JvmType = JvmType.fromDescriptor("Lcom/virtlink/tego/strategies/Strategy;")

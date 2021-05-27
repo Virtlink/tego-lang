@@ -28,4 +28,6 @@ value class PackageName(val name: String) {
     init {
         require(name.matches(Regex("^[a-z_$][a-z0-9_$]*(/[a-z_\$][a-z0-9_\$]*)*$"))) { "Package name is illegal: $name" }
     }
+
+    override fun toString(): String = name
 }

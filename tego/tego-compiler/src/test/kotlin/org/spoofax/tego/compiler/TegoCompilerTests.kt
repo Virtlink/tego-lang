@@ -29,6 +29,9 @@ class TegoCompilerTests {
 
         // Act
         val clss = compiler.compile(moduleTerm)
+        clss.forEach { cls ->
+            println(cls)
+        }
         val clsPaths = clss.map { it.writeInPackage(tmpDir) }
 
         // Assert
