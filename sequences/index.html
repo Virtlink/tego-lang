@@ -1,0 +1,1018 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Tego language">
+      
+      
+      
+        <meta name="author" content="Daniel A. A. Pelsmaeker">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.6">
+    
+    
+      
+        <title>Sequences - Tego</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2c0c5eaf.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=:300,400,400i,700%7CJetBrains+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"";--md-code-font-family:"JetBrains Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="orange">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sequences" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Tego" class="md-header__button md-logo" aria-label="Tego" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M368 32h-56a16 16 0 0 0-16 16v48h-48V48a16 16 0 0 0-16-16h-80a16 16 0 0 0-16 16v48H88.1V48a16 16 0 0 0-16-16H16A16 16 0 0 0 0 48v176l64 32c0 48.33-1.54 95-13.21 160h282.42C321.54 351 320 303.72 320 256l64-32V48a16 16 0 0 0-16-16zM224 320h-64v-64a32 32 0 0 1 64 0zm144 128H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h352a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Tego
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sequences
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/Virtlink/tego-lang/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../start/" class="md-tabs__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../tutorial/" class="md-tabs__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../howto/" class="md-tabs__link">
+        How-Tos
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../reference/" class="md-tabs__link">
+        Reference
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../background/index.md" class="md-tabs__link">
+        Background
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../develop/" class="md-tabs__link">
+        Develop
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Tego" class="md-nav__button md-logo" aria-label="Tego" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M368 32h-56a16 16 0 0 0-16 16v48h-48V48a16 16 0 0 0-16-16h-80a16 16 0 0 0-16 16v48H88.1V48a16 16 0 0 0-16-16H16A16 16 0 0 0 0 48v176l64 32c0 48.33-1.54 95-13.21 160h282.42C321.54 351 320 303.72 320 256l64-32V48a16 16 0 0 0-16-16zM224 320h-64v-64a32 32 0 0 1 64 0zm144 128H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h352a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16z"/></svg>
+
+    </a>
+    Tego
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/Virtlink/tego-lang/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        Getting Started
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Getting Started
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../start/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../start/releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Tutorials
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/" class="md-nav__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/tutorial1/" class="md-nav__link">
+        Tutorial 1
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        How-Tos
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="How-Tos" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          How-Tos
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto/" class="md-nav__link">
+        How-Tos
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/strategies/" class="md-nav__link">
+        Strategies
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/java-interop/" class="md-nav__link">
+        Java Interop
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Background
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Background" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Background
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../background/index.md" class="md-nav__link">
+        None
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      <label class="md-nav__link" for="__nav_7">
+        Develop
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Develop" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Develop
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../develop/" class="md-nav__link">
+        Developing Tego
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../develop/documentation/" class="md-nav__link">
+        Documentation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#state-machine" class="md-nav__link">
+    State Machine
+  </a>
+  
+    <nav class="md-nav" aria-label="State Machine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimizations" class="md-nav__link">
+    Optimizations
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anf" class="md-nav__link">
+    ANF
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/Virtlink/tego-lang/edit/master/docs/sequences.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="sequences">Sequences<a class="headerlink" href="#sequences" title="Permanent link">&para;</a></h1>
+<p>A sequence is a computation that lazily produces values.</p>
+<p>For example, the following computation prints the first ten even fibonacci numbers:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">static</span> <span class="kt">void</span> <span class="nf">Main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Build the computation</span>
+    <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">tenEvenFibonacciNumbers</span> <span class="o">=</span> <span class="n">Take</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">EvenNumbersOnly</span><span class="p">(</span><span class="n">Fibonacci</span><span class="p">()));</span>
+
+    <span class="c1">// Print the results</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">Integer</span> <span class="n">e</span> <span class="p">:</span> <span class="n">tenEvenFibonacciNumbers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">static</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">Fibonacci</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">buildSequence</span><span class="p">(</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="p">{</span>
+    <span class="n">b</span><span class="p">.</span><span class="na">yield</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// First fibonacci numnber</span>
+    <span class="kt">int</span> <span class="n">currFib</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">nextFib</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">.</span><span class="na">yield</span><span class="p">(</span><span class="n">nextFib</span><span class="p">);</span>
+        <span class="kt">int</span> <span class="n">newFib</span> <span class="o">=</span> <span class="n">currFib</span> <span class="o">+</span> <span class="n">nextFib</span><span class="p">;</span>
+        <span class="n">currFib</span> <span class="o">=</span> <span class="n">nextFib</span><span class="p">;</span>
+        <span class="n">nextFib</span> <span class="o">=</span> <span class="n">newFib</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">});</span> <span class="p">}</span>
+
+<span class="kd">static</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">EvenNumbersOnly</span><span class="p">(</span><span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">sequence</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">buildSequence</span><span class="p">(</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">Integer</span> <span class="n">i</span> <span class="p">:</span> <span class="n">sequence</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">.</span><span class="na">yield</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">});</span> <span class="p">}</span>
+
+<span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">Take</span><span class="p">(</span><span class="kt">int</span> <span class="n">limit</span><span class="p">,</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">sequence</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">buildSequence</span><span class="p">(</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">T</span> <span class="n">e</span> <span class="p">:</span> <span class="n">sequence</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="n">limit</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="n">b</span><span class="p">.</span><span class="na">yield</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">});</span> <span class="p">}</span>
+</code></pre></div>
+<p>This pseudo-Java code illustrates how we would like to write a lazy computation as imperative code. The <code>buildSequence()</code> takes an imperatively written piece of code and turns it into a lazy computation, returning an <code>Iterable&lt;T&gt;</code>. The lambda argument to the <code>buildSequence()</code> method takes a computation builder <code>b</code>, which has a method <code>yield()</code> which will suspend the computation and yield the value. Note that in current Java there is no way to implement <code>buildSequence()</code> or <code>yield()</code> to make this Java code work as intended. However, we will use this to illustrate how we can transform such code into Java code that <em>is</em> executable, and performs the intended lazy computation.</p>
+<h2 id="state-machine">State Machine<a class="headerlink" href="#state-machine" title="Permanent link">&para;</a></h2>
+<p>We can represent each computation using a dedicated state machine. The <code>Fibonacci</code> function would be implemented as:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">static</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">Fibonacci</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nd">@NotNull</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">iterator</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">private</span> <span class="n">Fibonacci_State</span> <span class="n">_state</span> <span class="o">=</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Start</span><span class="p">;</span>
+                <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">_hasCurrent</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+                <span class="kd">private</span> <span class="n">Integer</span> <span class="n">_current</span><span class="p">;</span>
+
+                <span class="kd">private</span> <span class="kt">int</span> <span class="n">currFib</span><span class="p">;</span>
+                <span class="kd">private</span> <span class="kt">int</span> <span class="n">nextFib</span><span class="p">;</span>
+
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">hasNext</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">_state</span> <span class="o">==</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Start</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="c1">// Compute the first element</span>
+                        <span class="n">computeNext</span><span class="p">();</span>
+                    <span class="p">}</span>
+                    <span class="k">return</span> <span class="n">_hasCurrent</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">next</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_hasCurrent</span> <span class="o">&amp;&amp;</span> <span class="n">_state</span> <span class="o">!=</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Done</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="c1">// Compute the next element</span>
+                        <span class="n">computeNext</span><span class="p">();</span>
+                    <span class="p">}</span>
+                    <span class="n">_hasCurrent</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+                    <span class="k">return</span> <span class="n">_current</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="kd">private</span> <span class="kt">void</span> <span class="nf">computeNext</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">_state</span> <span class="o">==</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Start</span><span class="p">)</span> <span class="k">goto</span> <span class="n">start</span><span class="p">;</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">_state</span> <span class="o">==</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Step2</span><span class="p">)</span> <span class="k">goto</span> <span class="n">step2</span><span class="p">;</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">_state</span> <span class="o">==</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Step3</span><span class="p">)</span> <span class="k">goto</span> <span class="n">step3</span><span class="p">;</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="p">();</span>
+
+<span class="nl">                    start:</span>
+                    <span class="n">_current</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                    <span class="n">_hasCurrent</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="n">_state</span> <span class="o">=</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Step2</span><span class="p">;</span>
+                    <span class="k">return</span><span class="p">;</span>
+                    <span class="n">step2</span><span class="p">:</span>
+                    <span class="n">currFib</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                    <span class="n">nextFib</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+                    <span class="c1">// Fall through</span>
+                    <span class="n">loopstart</span><span class="p">:</span>
+                    <span class="n">_current</span> <span class="o">=</span> <span class="n">nextFib</span><span class="p">;</span>
+                    <span class="n">_hasCurrent</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="n">_state</span> <span class="o">=</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">Step3</span><span class="p">;</span>
+                    <span class="k">return</span><span class="p">;</span>
+                    <span class="n">step3</span><span class="p">:</span>
+                    <span class="kt">int</span> <span class="n">newFib</span> <span class="o">=</span> <span class="n">currFib</span> <span class="o">+</span> <span class="n">nextFib</span><span class="p">;</span>
+                    <span class="n">currFib</span> <span class="o">=</span> <span class="n">nextFib</span><span class="p">;</span>
+                    <span class="n">nextFib</span> <span class="o">=</span> <span class="n">newFib</span><span class="p">;</span>
+                    <span class="c1">// Goto loopStart</span>
+                    <span class="n">_state</span> <span class="o">=</span> <span class="n">Fibonacci_State</span><span class="p">.</span><span class="na">LoopStart</span><span class="p">;</span>
+                    <span class="k">goto</span> <span class="n">loopstart</span><span class="p">;</span>
+                    <span class="n">done</span><span class="p">:</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">};</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">enum</span> <span class="n">Fibonacci_State</span> <span class="p">{</span>
+    <span class="n">Start</span><span class="p">,</span>
+    <span class="n">Step2</span><span class="p">,</span>
+    <span class="n">Step3</span><span class="p">,</span>
+    <span class="n">Done</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Note that we modeled the control flow using <code>goto</code> statements, which don't exist in Java but do illustrate the transformation to a statemachine more clearly. Also note how the loop, which is a goto statement in byte code, is still present in the code in the form of the <code>loopstart</code> label; dealing with loops requires no special machinery.</p>
+<p>The <code>yield(e)</code> calls have been transformed into the sequence:</p>
+<div class="highlight"><pre><span></span><code><span class="n">_current</span> <span class="o">=</span> <span class="n">e</span><span class="p">;</span>
+<span class="n">_hasCurrent</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="n">_state</span> <span class="o">=</span> <span class="n">next_state</span><span class="p">;</span>
+</code></pre></div>
+<p>Where <code>next_state</code> is the next state where the state machine should resume.</p>
+<h3 id="optimizations">Optimizations<a class="headerlink" href="#optimizations" title="Permanent link">&para;</a></h3>
+<p>We can optimize this a bit by not creating an <code>enum</code> but just using integer values for the states. Also, we can reduce the number of local variables we need to store in the iterator by doing some use-def analysis. If they don't cross block bounaries, they do not need to be in the iterator state.</p>
+<h2 id="anf">ANF<a class="headerlink" href="#anf" title="Permanent link">&para;</a></h2>
+<p>Functional Fibonacci sequence in Tego:</p>
+<div class="highlight"><pre><span></span><code>decl fibs : [Int]
+fibs = [0 | 1 | &lt;zipWith(add)&gt; (fibs, &lt;tail&gt; fibs)]
+</code></pre></div>
+<p>In ANF:</p>
+<div class="highlight"><pre><span></span><code>yield 0
+yield 1
+let zwa = zipWith(add) in
+let tl = &lt;tail&gt; fibs in
+let tup = (fibs, tl) in
+let l = &lt;zwa&gt; tup in
+yieldAll l
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Evaluation vs Application</p>
+<p>A strategy <code>s</code> evaluated with value <code>v</code> as input, is written as <code>&lt;s&gt; v</code>.
+A strategy <code>s</code> applied to arguments <code>a1</code>, <code>a2</code>, .., <code>an</code> is writen as <code>s(a1, a2, .., an)</code>.
+Therefore, to apply and evaluate a strategy in one go, is to write <code>&lt;s(a1, a2, .., an)&gt; v</code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Yielding</p>
+<p>The <code>yield</code> construct yields a value for a lazy sequence.</p>
+</div>
+<p>Note that <code>yieldAll</code> is actually just a loop and a yield, so we get:</p>
+<div class="highlight"><pre><span></span><code>yield 0
+yield 1
+let zwa = zipWith(add) in
+let tl = &lt;tail&gt; fibs in
+let tup = (fibs, tl) in
+let l = &lt;zwa&gt; tup in
+let iter = &lt;Iterable.getIterator&gt; l in
+let hn = &lt;Iterator.hasNext&gt; iter in
+while (hn) {
+    let n = &lt;Iterator.next&gt; iter in
+    yield n
+    hn = &lt;Iterator.hasNext&gt; iter
+}
+</code></pre></div>
+<p>Writing the ANF out in a state machine, we get:</p>
+<div class="highlight"><pre><span></span><code>let state = getState() in
+let s0 = (state == 0) in
+if (s0) {
+    // yield 0
+    setState(1)
+    setCurrent(0)
+} else {
+    let s1 = (state == 1) in
+    if (s1) {
+        // yield 1
+        setState(2)
+        setCurrent(1)
+    } else {
+        let s2 = (state == 2) in
+        if (s2) {
+            let zwa = zipWith(add) in
+            let tl = &lt;tail&gt; fibs in
+            let tup = (fibs, tl) in
+            let l = &lt;zwa&gt; tup in
+
+        } else {
+
+        }
+    }
+}
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>return new Iterator&lt;Integer&gt;() {
+    private Fibonacci_State _state = Fibonacci_State.Start;
+    private boolean _hasCurrent = false;
+    private Integer _current;
+
+    private int currFib;
+    private int nextFib;
+
+    @Override
+    public boolean hasNext() {
+        if (_state == Fibonacci_State.Start) {
+            // Compute the first element
+            computeNext();
+        }
+        return _hasCurrent;
+    }
+
+    @Override
+    public Integer next() {
+        if (!_hasCurrent &amp;&amp; _state != Fibonacci_State.Done) {
+            // Compute the next element
+            computeNext();
+        }
+        _hasCurrent = false;
+        return _current;
+    }
+
+    private void computeNext() {
+        if (_state == Fibonacci_State.Start) goto start;
+        if (_state == Fibonacci_State.Step2) goto step2;
+        if (_state == Fibonacci_State.Step3) goto step3;
+        throw new IllegalStateException();
+
+        start:
+        _current = 1;
+        _hasCurrent = true;
+        _state = Fibonacci_State.Step2;
+        return;
+        step2:
+        currFib = 1;
+        nextFib = 1;
+        // Fall through
+        loopstart:
+        _current = nextFib;
+        _hasCurrent = true;
+        _state = Fibonacci_State.Step3;
+        return;
+        step3:
+        int newFib = currFib + nextFib;
+        currFib = nextFib;
+        nextFib = newFib;
+        // Goto loopStart
+        _state = Fibonacci_State.LoopStart;
+        goto loopstart;
+        done:
+        return;
+    }
+};
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.indexes", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a1c7c35e.min.js"></script>
+      
+    
+  </body>
+</html>
