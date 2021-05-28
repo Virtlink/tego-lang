@@ -1,0 +1,108 @@
+module statics/types
+
+imports
+  signatures/Tego-sig
+
+signature
+  sorts TYPE
+  constructors
+    REF     : scope -> TYPE
+
+    // Primitives
+    BOOL    : TYPE
+    CHAR    : TYPE
+
+    BYTE    : TYPE
+    SHORT   : TYPE
+    INT     : TYPE
+    LONG    : TYPE
+
+    UBYTE   : TYPE
+    USHORT  : TYPE
+    UINT    : TYPE
+    ULONG   : TYPE
+
+    FLOAT   : TYPE
+    DOUBLE  : TYPE
+
+    // Misc
+    MODULE  : scope -> TYPE
+    STRATEGY: list(TYPE) * TYPE * TYPE -> TYPE
+    CLASS   : ID -> TYPE
+    LIST    : TYPE -> TYPE
+    TUPLE   : list(TYPE) -> TYPE
+    ANY     : TYPE
+    UNIT    : TYPE
+    STRING  : TYPE
+
+  relations
+    withType: -> TYPE
+
+// Matches the type associated with the given scope.
+rules matchType: TYPE -> scope
+
+  matchType(T) = s :-
+    T == toType(s).
+
+// Gets the type associated with the given scope.
+rules toType: scope -> TYPE
+
+  toType(s) = T :-
+    query withType
+      filter e and true
+      min /* */ and true
+      in s |-> [(_, T)].
+
+// Creates a new scope and associates the given type.
+rules fromType: TYPE -> scope
+
+  fromType(T) = s :-
+    new s, setType(s, T).//!withType[T] in s.
+
+// Associates the given type to the given scope.
+rules setType: scope * TYPE
+
+  setType(s, T) :-
+    !withType[T] in s.
+
+// --------------------------------------------------------------- //
+
+signature
+  sorts KIND
+  constructors
+    CLASSKIND    : KIND
+    STRATEGYKIND : KIND
+  relations
+    withKind: -> KIND
+
+// Matches the kind associated with the given scope.
+rules matchKind: KIND -> scope
+
+  matchKind(K) = s :-
+    K == toKind(s).
+
+// Gets the kind associated with the given scope.
+rules toKind: scope -> KIND
+
+  toKind(s) = K :-
+    query withKind
+      filter e and true
+      min /* */ and true
+      in s |-> [(_, K)].
+
+// Creates a new scope and associates the given kind.
+rules fromKind: KIND -> scope
+
+  fromKind(K) = s :-
+    new s, setKind(s, K).//!withKind[K] in s.
+
+// Associates the given kind to the given scope.
+rules setKind: scope * KIND
+
+  setKind(s, K) :-
+    !withKind[K] in s.
+
+// Gets the kind from a type.
+rules kindOfType: TYPE -> KIND
+
+  kindOfType(REF(s_ty)) = toKind(s_ty).

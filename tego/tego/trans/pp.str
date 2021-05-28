@@ -37,11 +37,11 @@ rules
     ; !V([], <id>)
     ; box2text-string(|120)
 
-  pp-TYPE =
-    parenthesize-Tego
-    ; prettyprint-Tego-TYPE
-    ; !V([], <id>)
-    ; box2text-string(|120)
+//  pp-TYPE =
+//    parenthesize-Tego
+//    ; prettyprint-Tego-TYPE
+//    ; !V([], <id>)
+//    ; box2text-string(|120)
 
   pp-debug :
     ast -> result
@@ -49,7 +49,7 @@ rules
        result := <pp-Tego-string> ast
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-Tego-string); debug(!"cannot pp ")))> ast
     ;  result := ""
-    
+
 rules
 
   escape-html = string-as-chars(escape-chars(Escape-html))

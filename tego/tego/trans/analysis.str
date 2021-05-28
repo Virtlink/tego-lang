@@ -37,7 +37,9 @@ rules // Analysis
 //  editor-analyze = stx-editor-analyze(pre-analyze, post-analyze|"statics", "projectOk", "fileOk")
 
   //pre-analyze  = origin-track-forced(desugar-all; explicate-injections-Tego)
-  pre-analyze  = origin-track-forced(desugar-all; to-ir-all; to-ir-anf-all; explicate-injections-Tego)
+  //pre-analyze  = origin-track-forced(desugar-all; to-ir-all; to-ir-anf-all; explicate-injections-Tego)
+//  pre-analyze = origin-track-forced(desugar-all); origin-track-forced(explicate-injections-Tego)
+  pre-analyze = origin-track-forced(explicate-injections-Tego)
   // TODO: Incorporate `check` messages into resulting messages
   post-analyze = origin-track-forced(implicate-injections-Tego)
 
@@ -51,13 +53,21 @@ rules // Analysis
     where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> exp]])>
         ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[no name on node [<strip-annos;write-to-string> exp]])> exp
 
+//  get-ref: exp -> <strip-annos>
+//    stx--editor-resolve:
+//      (node, position, ast, path, project-path) -> r
+//    where
+//      <stx--get-ast-index> node
+//    ; a := <stx--get-ast-analysis> node
+//    ; r := <stx--get-ast-property(|a,Ref())> node
+
   fail-msg(|msg) = err-msg(|$[get-type: [msg]]); fail
 
 rules // Editor Services
 
   editor-resolve = stx-editor-resolve
 
-  editor-hover = stx-editor-hover((pp-TYPE <+ pp-Statix-ATerm); escape-html)
+  editor-hover = stx-editor-hover //((pp-TYPE <+ pp-Statix-ATerm); escape-html)
 
 rules // Debugging
 

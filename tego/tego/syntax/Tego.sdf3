@@ -102,38 +102,39 @@ context-free syntax
   Type.TupleType            = <(<{Type ", "}+>)>
   Type                      = <(<Type>)> {bracket}
 
-// Statix NAME representation, for pretty-printing only:
-context-free sorts NAME
-context-free syntax
-
-  NAME.ROOTNAME             = []
-  NAME.MODULENAME           = [[NAME]::[ID]]
-  NAME.STRATEGYNAME         = [[NAME]::[ID]]
-  NAME.CLASSNAME            = [[NAME]::[ID]]
+//// Statix NAME representation, for pretty-printing only:
+//context-free sorts NAME
+//context-free syntax
+//
+//  NAME.ROOTNAME             = []
+//  NAME.MODULENAME           = [[NAME]::[ID]]
+//  NAME.STRATEGYNAME         = [[NAME]::[ID]]
+//  NAME.CLASSNAME            = [[NAME]::[ID]]
 
 // Statix TYPE representation, for pretty-printing only:
-context-free sorts TYPE
-context-free syntax
-
-  TYPE.STRATEGY             = [([{TYPE ", "}*]) [TYPE] -> [TYPE]]
-  TYPE.CLASS                = [[ID]]
-  TYPE.LIST                 = [List<[TYPE]>]
-  TYPE.TUPLE                = [Tuple<[{TYPE ", "}+]>]
-
-  TYPE.BYTE                 = [Byte]
-  TYPE.SHORT                = [Short]
-  TYPE.INT                  = [Int]
-  TYPE.LONG                 = [Long]
-
-  TYPE.UBYTE                = [UByte]
-  TYPE.USHORT               = [UShort]
-  TYPE.UINT                 = [UInt]
-  TYPE.ULONG                = [ULong]
-
-  TYPE.ANY                  = [Any]
-  TYPE.BOOL                 = [Bool]
-  TYPE.UNIT                 = [Unit]
-  TYPE.STRING               = [String]
+//context-free sorts TYPE
+//context-free syntax
+//
+//  TYPE.STRATEGY             = [([{TYPE ", "}*]) [TYPE] -> [TYPE]]
+//  //TYPE.STRATEGY             = [strategy [TYPE]::[ID]]
+//  TYPE.CLASS                = [class [TYPE]::[ID]]
+//  TYPE.LIST                 = [List<[TYPE]>]
+//  TYPE.TUPLE                = [Tuple<[{TYPE ", "}+]>]
+//
+////  TYPE.BYTE                 = [Byte]
+////  TYPE.SHORT                = [Short]
+////  TYPE.INT                  = [Int]
+////  TYPE.LONG                 = [Long]
+////
+////  TYPE.UBYTE                = [UByte]
+////  TYPE.USHORT               = [UShort]
+////  TYPE.UINT                 = [UInt]
+////  TYPE.ULONG                = [ULong]
+//
+//  TYPE.ANY                  = [Any]
+////  TYPE.BOOL                 = [Bool]
+//  TYPE.UNIT                 = [Unit]
+//  TYPE.STRING               = [String]
 
 context-free sorts Exp Arg
 context-free syntax

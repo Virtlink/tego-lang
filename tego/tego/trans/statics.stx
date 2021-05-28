@@ -2,6 +2,7 @@ module statics
 
 imports
   signatures/Tego-sig
+  statics/types
 
 // Single-file entry point
 rules programOk : File
@@ -20,8 +21,7 @@ rules projectOk : scope
 rules fileOk : scope * File
 
   fileOk(s, f@File(modules)) :- {N}
-    modulesOk(s, modules),
-    @f.name := declareName(s, ROOTNAME()).        // should be declared in init(s).
+    modulesOk(s, modules).
 
   fileOk(s, File-Plhdr()).
 
@@ -100,8 +100,7 @@ rules declOk : scope * scope * Decl
     typeOfType(ds, outType) == OT,
     T == STRATEGY(PTs, IT, OT),
     declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T,
-    @d.name := STRATEGYNAME(resolveParentName(ms), name).
+    @d.type := T.
 
   // TODO: Support generics
   declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
@@ -308,16 +307,10 @@ rules clauseOk : scope * RuleClause
   clauseOk(s, WhereClause(exp)) :-
     typeOfExp(s, exp) == UNIT().
 
-rules declareTypeParam : scope * TypeParamDecl * TYPE
-  declareTypeParams maps declareTypeParam(*, list(*), list(*))
-
-  declareTypeParam(ts, TypeParamDecl(name), T) :-
-    !type[TypeParam{name@_}, T] in ts.
-
 rules declareModule : scope * string * TYPE
 
   declareModule(s, name, T) :-
-    !type[Decl{name@name}, T] in s.
+    !type[name, T] in s.
 
 rules resolveModule : scope * string -> scope
 
@@ -332,12 +325,12 @@ rules declareImportAll : scope * scope
 rules declareImportDecl : scope * string * TYPE
 
   declareImportDecl(is, name, T) :-
-    !type[Decl{name@name}, T] in is.
+    !type[name, T] in is.
 
 rules declareDecl : scope * string * TYPE
 
   declareDecl(s, name, T) :-
-    !type[Decl{name@name}, T] in s.
+    !type[name, T] in s.
 
 rules declareDeclWithMods : scope * scope * string * TYPE * list(DeclMod)
 
@@ -355,29 +348,14 @@ rules declareDeclWithMods : scope * scope * string * TYPE * list(DeclMod)
 
 rules resolveDecl : scope * string -> TYPE
 
-  resolveDecl(s, name) = T :-
+  resolveDecl(s, name) = T :- {decl}
     query type
       filter P* I?
-      and { d' :- d' == Decl{name@_} }
+      and { d' :- d' == name }
       min $ < P, $ < I
-      in s |-> [(_, (_, T))].
+      in s |-> [(_, (decl, T))],
+    @name.ref := decl.
 
-///////////
-// Names //
-///////////
-rules declareName : scope * NAME -> NAME
-
-  declareName(s, N) = N :-
-    !name[N] in s.
-
-rules resolveParentName : scope -> NAME
-
-  resolveParentName(s) = N :-
-    query name
-      filter P+
-      and true
-      min $ < P
-      in s |-> [(_, N)].
 
 
 rules getScope : TYPE -> scope
@@ -390,20 +368,13 @@ rules isPublicDecl : list(DeclMod)
   isPublicDecl([_|mods]) :- isPublicDecl(mods).
 
 signature
-  constructors
-    MODULE   : scope -> TYPE
-    // Other types are defined in Tego.sdf3
   sorts
     DECL = (path * (occurrence * TYPE))
 
 signature
   namespaces
-    //Module    : ID
-    Decl      : ID
-    TypeParam : ID
   relations
-    type     : occurrence -> TYPE
-    name     : -> NAME
+    type     : ID -> TYPE
   name-resolution
     labels
       P      // laxical parent
