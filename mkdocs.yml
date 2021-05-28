@@ -1,9 +1,9 @@
 site_name: Tego
 site_description: Tego language
 site_author: Daniel A. A. Pelsmaeker
-site_dir: .docs_site/
 
 repo_url: https://github.com/Virtlink/tego-lang
+edit_uri: https://github.com/Virtlink/tego-lang/edit/main/docs
 
 nav:
   - Home: index.md
@@ -22,6 +22,7 @@ nav:
     - reference/java-interop.md
   - Background:
     - background/index.md
+    - background/declarations-and-fqns.md
   - Develop:
     - develop/index.md
     - Documentation: develop/documentation.md
@@ -74,3 +75,12 @@ markdown_extensions:
 
 plugins:
   - search
+  - git-revision-date:
+      enabled_if_env: CI
+  - macros
+
+extra:
+  os:
+    windows: ":fontawesome-brands-windows: Windows"
+    linux: ":fontawesome-brands-linux: Linux"
+    macos: ":fontawesome-brands-apple: macOS"
