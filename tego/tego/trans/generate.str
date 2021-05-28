@@ -2,9 +2,13 @@ module generate
 
 imports
   signatures/Tego-sig
+
   libspoofax/term/annotation
   analysis
   pp
+
+  statix/runtime/analysis
+  statix/runtime/ast
 
 signature
   constructors
@@ -13,6 +17,11 @@ signature
     OfRef  : Term -> Annotation
 
 rules
+
+  // Works on the analyzed term
+  generate-annotated-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
+  with filename := <guarantee-extension(|"annotated.aterm")> path
+     ; result := <bottomup(annotate-with-type; annotate-with-ref)> f
 
   // Works on the analyzed term
   generate-typed-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
@@ -32,7 +41,7 @@ rules
     try(
         (is-Tego-Decl + is-Tego-Exp)
       ; add-annotation(|OfType(<get-type; not(?"nabl2.Var"#(_))>))
-    ) ; remove-annotations(not(?OfType(_))))
+    ) ; id)//remove-annotations(not(?OfType(_))))
 
   name-term = bottomup(
     where(get-name < debug(!"name: ") + debug(!"no name: ")) ;
@@ -46,4 +55,36 @@ rules
     try(
         id
       ; add-annotation(|OfRef(<get-ref; not(?"nabl2.Var"#(_))>))
-    ) ; remove-annotations(not(?OfRef(_))))
+    ) ; id)//remove-annotations(not(?OfRef(_))))
+
+  annotate-with-type = try(
+      (is-Tego-Decl + is-Tego-Exp)      // Sorts to annotate
+      ; add-annotation(|OfType(<get-type; not(?"nabl2.Var"#(_))>))
+    )
+
+  annotate-with-ref = try(
+      id                                // Sorts to annotate
+      ; add-annotation(|OfType(<get-ref; not(?"nabl2.Var"#(_))>))
+    )
+
+rules
+
+  get-type: term -> type //<strip-annos> type
+    where <debug(!"Debug get-type: ")> term
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get type: no analysis on node [<strip-annos;write-to-string> term]])>
+        ; type   := <stx-get-ast-type(|a) <+ fail-msg(|$[get type: no type on node [<strip-annos;write-to-string> term]])> term
+
+  get-name: term -> <strip-annos> name
+    where <debug(!"Debug get-type: ")> term
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get name: no analysis on node [<strip-annos;write-to-string> term]])>
+        ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[get name: no name on node [<strip-annos;write-to-string> term]])> term
+
+  get-ref: term -> ref //<strip-annos> ref
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get ref: no analysis on node [<strip-annos;write-to-string> term]])>
+        ; ref    := <stx-get-ast-ref(|a) <+ fail-msg(|$[get ref: no ref on node [<strip-annos;write-to-string> term]])> term
+
+  fail-msg(|msg) = err-msg(|msg); fail
+
+rules
+
+  //collate-term-indices:

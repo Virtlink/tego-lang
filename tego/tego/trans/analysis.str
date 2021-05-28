@@ -41,21 +41,7 @@ rules // Analysis
   pre-analyze  = origin-track-forced(desugar-all; to-ir-all; to-ir-anf-all; explicate-injections-Tego)
   post-analyze = origin-track-forced(implicate-injections-Tego)
 
-  get-type: term -> <strip-annos> type
-    where <debug(!"Debug get-type: ")> term
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> term]])>
-        ; type   := <stx-get-ast-type(|a) <+ fail-msg(|$[no type on node [<strip-annos;write-to-string> term]])> term
 
-  get-name: term -> <strip-annos> name
-    where <debug(!"Debug get-type: ")> term
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> term]])>
-        ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[no name on node [<strip-annos;write-to-string> term]])> term
-
-  get-ref: term -> <strip-annos> ref
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> term]])>
-        ; ref    := <stx-get-ast-ref(|a) <+ fail-msg(|$[no ref on node [<strip-annos;write-to-string> term]])> term
-
-  fail-msg(|msg) = err-msg(|$[get-type: [msg]]); fail
 
 rules // Editor Services
 
