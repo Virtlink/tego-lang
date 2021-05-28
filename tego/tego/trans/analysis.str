@@ -4,6 +4,9 @@ imports
 
   statixruntime
   statix/api
+  statix/runtime/pp
+  statix/runtime/analysis
+  statix/runtime/ast
 
   pp
   desugar
@@ -12,7 +15,6 @@ imports
   injections/-
 
   libspoofax/term/origin
-  statix/runtime/pp
 
 rules // Analysis
 
@@ -39,23 +41,19 @@ rules // Analysis
   pre-analyze  = origin-track-forced(desugar-all; to-ir-all; to-ir-anf-all; explicate-injections-Tego)
   post-analyze = origin-track-forced(implicate-injections-Tego)
 
-  get-type: exp -> <strip-annos> type
-    where <debug(!"Debug get-type: ")> exp
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> exp]])>
-        ; type   := <stx-get-ast-type(|a) <+ fail-msg(|$[no type on node [<strip-annos;write-to-string> exp]])> exp
+  get-type: term -> <strip-annos> type
+    where <debug(!"Debug get-type: ")> term
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> term]])>
+        ; type   := <stx-get-ast-type(|a) <+ fail-msg(|$[no type on node [<strip-annos;write-to-string> term]])> term
 
-  get-name: exp -> <strip-annos> name
-    where <debug(!"Debug get-type: ")> exp
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> exp]])>
-        ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[no name on node [<strip-annos;write-to-string> exp]])> exp
+  get-name: term -> <strip-annos> name
+    where <debug(!"Debug get-type: ")> term
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> term]])>
+        ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[no name on node [<strip-annos;write-to-string> term]])> term
 
-//  get-ref: exp -> <strip-annos>
-//    stx--editor-resolve:
-//      (node, position, ast, path, project-path) -> r
-//    where
-//      <stx--get-ast-index> node
-//    ; a := <stx--get-ast-analysis> node
-//    ; r := <stx--get-ast-property(|a,Ref())> node
+  get-ref: term -> <strip-annos> ref
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[no analysis on node [<strip-annos;write-to-string> term]])>
+        ; ref    := <stx-get-ast-ref(|a) <+ fail-msg(|$[no ref on node [<strip-annos;write-to-string> term]])> term
 
   fail-msg(|msg) = err-msg(|$[get-type: [msg]]); fail
 

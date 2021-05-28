@@ -22,5 +22,9 @@ menus
 
     action: "Show pre-analyzed AST" = debug-show-pre-analyzed (source)
     action: "Show analyzed AST"     = debug-show-analyzed
+
+  menu: "Generate" (openeditor)
+
     action: "Generate typed AST"    = generate-typed-aterm
     action: "Generate named AST"    = generate-named-aterm
+    action: "Generate refd AST"     = generate-refd-aterm

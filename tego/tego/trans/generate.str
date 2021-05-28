@@ -4,11 +4,13 @@ imports
   signatures/Tego-sig
   libspoofax/term/annotation
   analysis
+  pp
 
 signature
   constructors
     OfName : Term -> Annotation
     OfType : Term -> Annotation
+    OfRef  : Term -> Annotation
 
 rules
 
@@ -20,6 +22,10 @@ rules
   generate-named-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
   with filename := <guarantee-extension(|"named.aterm")> path
      ; result := <name-term> f
+
+  generate-refd-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
+  with filename := <guarantee-extension(|"refd.aterm")> path
+     ; result := <ref-term> f
 
   type-term = bottomup(
     where(get-type < debug(!"type: ") + debug(!"no type: ")) ;
@@ -34,3 +40,10 @@ rules
         id
       ; add-annotation(|OfName(<get-name; not(?"nabl2.Var"#(_))>))
     ) ; remove-annotations(not(?OfName(_))))
+
+  ref-term = bottomup(
+    where(get-ref < debug(!"ref: ") + debug(!"no ref: ")) ;
+    try(
+        id
+      ; add-annotation(|OfRef(<get-ref; not(?"nabl2.Var"#(_))>))
+    ) ; remove-annotations(not(?OfRef(_))))
