@@ -21,7 +21,7 @@ rules
   // Works on the analyzed term
   generate-annotated-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
   with filename := <guarantee-extension(|"annotated.aterm")> path
-     ; result := <bottomup(annotate-with-type; annotate-with-ref)> f
+     ; result := <bottomup(annotate-with-type; annotate-with-ref); gather-all-term-indices> f
 
   // Works on the analyzed term
   generate-typed-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
@@ -85,6 +85,75 @@ rules
 
   fail-msg(|msg) = err-msg(|msg); fail
 
+signature constructors
+  TermIndices : list(TermIndex) -> TermIndices
+
+// Gathers and removes term indices for the given (desugared) declaration
+// Note that we don't gather (or remove) indices for definitions, or the body definitions of declarations
 rules
 
-  //collate-term-indices:
+  gather-all-term-indices = alltd(gather-term-indices)
+
+  gather-term-indices: decl@ClassDecl(mods, name){anno*}
+    -> ClassDecl(
+         <remove-term-indices> mods,
+         <remove-term-indices> name
+       ){newanno*}
+  with tis       := TermIndices(<collect-term-indices> decl)
+     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+
+  gather-term-indices: decl@StrategyDecl(mods, name, typeParams, paramTypes, inType, outType){anno*}
+    -> StrategyDecl(
+         <remove-term-indices> mods,
+         <remove-term-indices> name,
+         <remove-term-indices> typeParams,
+         <remove-term-indices> paramTypes,
+         <remove-term-indices> inType,
+         <remove-term-indices> outType
+       ){newanno*}
+  with tis       := TermIndices(<collect-term-indices> decl)
+     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+
+  gather-term-indices: decl@ValDecl(mods, name, type){anno*}
+    -> ValDecl(
+         <remove-term-indices> mods,
+         <remove-term-indices> name,
+         <remove-term-indices> type
+       ){newanno*}
+  with tis       := TermIndices(<collect-term-indices> decl)
+     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+
+  gather-term-indices: decl@ValDef(mods, name, type, exp){anno*}
+    -> ValDef(
+         <remove-term-indices> mods,
+         <remove-term-indices> name,
+         <remove-term-indices> type,
+         exp
+       ){newanno*}
+  with tis       := TermIndices(<concat> [
+         <collect-term-index> decl,
+         <collect-term-indices> [mods, name, type]
+       ])
+     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+
+  gather-term-indices: decl@ValDefNoType(mods, name, exp){anno*}
+    -> ValDefNoType(
+         <remove-term-indices> mods,
+         <remove-term-indices> name,
+         exp
+       ){newanno*}
+  with tis       := TermIndices(<concat> [
+         <collect-term-index> decl,
+         <collect-term-indices> [mods, name]
+       ])
+     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+
+  collect-term-index   = ![<get-term-index>] <+ ![]
+  collect-term-indices = collect-all(get-term-index)
+
+  get-term-index: t{anno*} -> ti
+  where ti := <fetch(?TermIndex(_, _)); ?[<id>]> anno*
+
+  remove-term-indices = bottomup(try(remove-term-index))
+  remove-term-index: t{anno*} -> t{newanno*}
+  with newanno*  := <remove-all(?TermIndex(_, _))> anno*
