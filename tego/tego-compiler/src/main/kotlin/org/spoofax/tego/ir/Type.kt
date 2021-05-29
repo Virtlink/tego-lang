@@ -9,8 +9,8 @@ sealed interface Type
  * A type reference.
  */
 sealed interface TypeRef : Type {
-    /** The referenced name. */
-    val name: QName
+//    /** The referenced name. */
+//    val name: QName
 }
 
 object BoolType : Type
@@ -62,8 +62,9 @@ data class TupleType(
  * @property name The name of the class.
  */
 data class ClassTypeRef(
-    override val name: QName
-) : TypeRef
+    val name: String,
+    override val pointer: TermIndex,
+) : TypeRef, Reference
 
 /**
  * A reference to a strategy.
@@ -71,8 +72,9 @@ data class ClassTypeRef(
  * @property name The name of the strategy.
  */
 data class StrategyTypeRef(
-    override val name: QName
-) : TypeRef
+    val name: String,
+    override val pointer: TermIndex,
+) : TypeRef, Reference
 
 data class ListType(
     val elementsType: Type

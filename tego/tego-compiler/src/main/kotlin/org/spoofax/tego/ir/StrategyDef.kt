@@ -8,7 +8,7 @@ data class StrategyDef(
     val params: List<ParamDef>,
     val inputName: String,
     val body: Exp,
-    override val pointer: Any
+    override val pointer: TermIndex
 ) : Def, Reference {
 //    var decl: StrategyTypeDecl? = null
 }

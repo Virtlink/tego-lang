@@ -99,7 +99,8 @@ data class Eval(
 data class Var(
     val name: String,
     override val type: Type,
-) : Exp {
+    override val pointer: TermIndex,
+) : Exp, Reference {
     override val isImm: Boolean get() = true
 }
 

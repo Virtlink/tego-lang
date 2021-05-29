@@ -67,3 +67,7 @@ extern module mb/statix/solver
 
 extern module mb/nabl2/terms
   class type ITermVar
+
+// Implicitly imported
+extern module java/lang
+  class type Class

@@ -1,17 +1,16 @@
 File(
   [ Module(
       []{TermIndex("completion-min.tego", 2)}
-    , "example1"{TermIndex("completion-min.tego", 3)}
+    , "example1"{OfDecl("example1"{TermIndex("completion-min.tego", 3)}), TermIndex("completion-min.tego", 3)}
     , [ImportAll("mb/nabl2/terms"{OfRef("mb/nabl2/terms"{TermIndex("completion-min.tego", 708)}), TermIndex("completion-min.tego", 4)}){TermIndex("completion-min.tego", 5)}, ImportAll("mb/statix/common"{OfRef("mb/statix/common"{TermIndex("completion-min.tego", 670)}), TermIndex("completion-min.tego", 6)}){TermIndex("completion-min.tego", 7)}, ImportAll("mb/statix/solver"{OfRef("mb/statix/solver"{TermIndex("completion-min.tego", 689)}), TermIndex("completion-min.tego", 8)}){TermIndex("completion-min.tego", 9)}, ImportAll("mb/statix/constraints"{OfRef("mb/statix/constraints"{TermIndex("completion-min.tego", 642)}), TermIndex("completion-min.tego", 10)}){TermIndex("completion-min.tego", 11)}]{TermIndex("completion-min.tego", 17)}
     , [ StrategyDecl(
           []{TermIndex("completion-min.tego", 19)}
-        , "complete"{TermIndex("completion-min.tego", 20)}
+        , "complete"{OfDecl("complete"{TermIndex("completion-min.tego", 20)}), TermIndex("completion-min.tego", 20)}
         , []{TermIndex("completion-min.tego", 22)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 23)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 24)}]{TermIndex("completion-min.tego", 27)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 28)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 29)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 30)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 31)}){TermIndex("completion-min.tego", 32)}
-        ){ OfDecl("complete"{TermIndex("completion-min.tego", 20)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 23)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 24)}]{TermIndex("completion-min.tego", 27)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 28)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 29)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 30)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 31)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 32)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -21,11 +20,14 @@ File(
          , TermIndex("completion-min.tego", 33)
          }
       , StrategyDefWInput(
-          "complete"{TermIndex("completion-min.tego", 34)}
-        , [ParamDefNoType("v"{TermIndex("completion-min.tego", 35)}){TermIndex("completion-min.tego", 36)}]{TermIndex("completion-min.tego", 39)}
-        , "__input"{TermIndex("completion-min.tego", 40)}
+          "complete"{OfRef("complete"{TermIndex("completion-min.tego", 20)}), TermIndex("completion-min.tego", 34)}
+        , [ParamDefNoType("v"{OfDecl("v"{TermIndex("completion-min.tego", 35)}), TermIndex("completion-min.tego", 35)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 36)}]{TermIndex("completion-min.tego", 39)}
+        , "__input"{OfDecl("__input"{TermIndex("completion-min.tego", 40)}), OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 40)}
         , Let(
-            "x431"{TermIndex("completion-min.tego", 41)}
+            "x222"{ OfDecl("x222"{TermIndex("completion-min.tego", 41)})
+                  , OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                  , TermIndex("completion-min.tego", 41)
+                  }
           , Apply(Var("expandDeterministic"{OfRef("expandDeterministic"{TermIndex("completion-min.tego", 196)}), TermIndex("completion-min.tego", 42)}){ OfType(
                                                                                                                                                            STRATEGY(
                                                                                                                                                              [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
@@ -38,7 +40,12 @@ File(
                                                                                                                                                                                                                                                                                                                                                                                                                                  , TermIndex("completion-min.tego", 49)
                                                                                                                                                                                                                                                                                                                                                                                                                                  }
           , Let(
-              "x430"{TermIndex("completion-min.tego", 50)}
+              "x221"{ OfDecl("x221"{TermIndex("completion-min.tego", 50)})
+                    , OfType(
+                        STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
+                      )
+                    , TermIndex("completion-min.tego", 50)
+                    }
             , Apply(Var("flatMap"{OfRef("flatMap"{TermIndex("completion-min.tego", 214)}), TermIndex("completion-min.tego", 51)}){ OfType(
                                                                                                                                      STRATEGY(
                                                                                                                                        [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
@@ -47,7 +54,7 @@ File(
                                                                                                                                      ){OfSort(SORT("TYPE"))}
                                                                                                                                    )
                                                                                                                                  , TermIndex("completion-min.tego", 52)
-                                                                                                                                 }, [Var("x431"{OfRef("x431"{TermIndex("completion-min.tego", 41)}), TermIndex("completion-min.tego", 53)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                 }, [Var("x222"{OfRef("x222"{TermIndex("completion-min.tego", 41)}), TermIndex("completion-min.tego", 53)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
                                                                                                                                                                                                                                            , TermIndex("completion-min.tego", 54)
                                                                                                                                                                                                                                            }]{TermIndex("completion-min.tego", 57)}){ OfType(
                                                                                                                                                                                                                                                                                         STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
@@ -55,7 +62,10 @@ File(
                                                                                                                                                                                                                                                                                     , TermIndex("completion-min.tego", 58)
                                                                                                                                                                                                                                                                                     }
             , Let(
-                "x434"{TermIndex("completion-min.tego", 59)}
+                "x225"{ OfDecl("x225"{TermIndex("completion-min.tego", 59)})
+                      , OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                      , TermIndex("completion-min.tego", 59)
+                      }
               , Apply(Var("expandAllQueries"{OfRef("expandAllQueries"{TermIndex("completion-min.tego", 178)}), TermIndex("completion-min.tego", 60)}){ OfType(
                                                                                                                                                          STRATEGY(
                                                                                                                                                            [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
@@ -68,7 +78,12 @@ File(
                                                                                                                                                                                                                                                                                                                                                                                                                                , TermIndex("completion-min.tego", 67)
                                                                                                                                                                                                                                                                                                                                                                                                                                }
               , Let(
-                  "x433"{TermIndex("completion-min.tego", 68)}
+                  "x224"{ OfDecl("x224"{TermIndex("completion-min.tego", 68)})
+                        , OfType(
+                            STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
+                          )
+                        , TermIndex("completion-min.tego", 68)
+                        }
                 , Apply(Var("flatMap"{OfRef("flatMap"{TermIndex("completion-min.tego", 214)}), TermIndex("completion-min.tego", 69)}){ OfType(
                                                                                                                                          STRATEGY(
                                                                                                                                            [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
@@ -77,7 +92,7 @@ File(
                                                                                                                                          ){OfSort(SORT("TYPE"))}
                                                                                                                                        )
                                                                                                                                      , TermIndex("completion-min.tego", 70)
-                                                                                                                                     }, [Var("x434"{OfRef("x434"{TermIndex("completion-min.tego", 59)}), TermIndex("completion-min.tego", 71)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                     }, [Var("x225"{OfRef("x225"{TermIndex("completion-min.tego", 59)}), TermIndex("completion-min.tego", 71)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
                                                                                                                                                                                                                                                , TermIndex("completion-min.tego", 72)
                                                                                                                                                                                                                                                }]{TermIndex("completion-min.tego", 75)}){ OfType(
                                                                                                                                                                                                                                                                                             STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
@@ -85,7 +100,10 @@ File(
                                                                                                                                                                                                                                                                                         , TermIndex("completion-min.tego", 76)
                                                                                                                                                                                                                                                                                         }
                 , Let(
-                    "x437"{TermIndex("completion-min.tego", 77)}
+                    "x228"{ OfDecl("x228"{TermIndex("completion-min.tego", 77)})
+                          , OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                          , TermIndex("completion-min.tego", 77)
+                          }
                   , Apply(Var("expandAllInjections"{OfRef("expandAllInjections"{TermIndex("completion-min.tego", 160)}), TermIndex("completion-min.tego", 78)}){ OfType(
                                                                                                                                                                    STRATEGY(
                                                                                                                                                                      [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
@@ -98,7 +116,12 @@ File(
                                                                                                                                                                                                                                                                                                                                                                                                                                          , TermIndex("completion-min.tego", 85)
                                                                                                                                                                                                                                                                                                                                                                                                                                          }
                   , Let(
-                      "x436"{TermIndex("completion-min.tego", 86)}
+                      "x227"{ OfDecl("x227"{TermIndex("completion-min.tego", 86)})
+                            , OfType(
+                                STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
+                              )
+                            , TermIndex("completion-min.tego", 86)
+                            }
                     , Apply(Var("flatMap"{OfRef("flatMap"{TermIndex("completion-min.tego", 214)}), TermIndex("completion-min.tego", 87)}){ OfType(
                                                                                                                                              STRATEGY(
                                                                                                                                                [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
@@ -107,7 +130,7 @@ File(
                                                                                                                                              ){OfSort(SORT("TYPE"))}
                                                                                                                                            )
                                                                                                                                          , TermIndex("completion-min.tego", 88)
-                                                                                                                                         }, [Var("x437"{OfRef("x437"{TermIndex("completion-min.tego", 77)}), TermIndex("completion-min.tego", 89)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                         }, [Var("x228"{OfRef("x228"{TermIndex("completion-min.tego", 77)}), TermIndex("completion-min.tego", 89)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
                                                                                                                                                                                                                                                    , TermIndex("completion-min.tego", 90)
                                                                                                                                                                                                                                                    }]{TermIndex("completion-min.tego", 93)}){ OfType(
                                                                                                                                                                                                                                                                                                 STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
@@ -115,7 +138,10 @@ File(
                                                                                                                                                                                                                                                                                             , TermIndex("completion-min.tego", 94)
                                                                                                                                                                                                                                                                                             }
                     , Let(
-                        "x439"{TermIndex("completion-min.tego", 95)}
+                        "x230"{ OfDecl("x230"{TermIndex("completion-min.tego", 95)})
+                              , OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                              , TermIndex("completion-min.tego", 95)
+                              }
                       , Apply(Var("expandAllPredicates"{OfRef("expandAllPredicates"{TermIndex("completion-min.tego", 142)}), TermIndex("completion-min.tego", 96)}){ OfType(
                                                                                                                                                                        STRATEGY(
                                                                                                                                                                          [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
@@ -128,29 +154,29 @@ File(
                                                                                                                                                                                                                                                                                                                                                                                                                                               , TermIndex("completion-min.tego", 103)
                                                                                                                                                                                                                                                                                                                                                                                                                                               }
                       , Let(
-                          "x438"{TermIndex("completion-min.tego", 104)}
-                        , Eval(Var("x439"{OfRef("x439"{TermIndex("completion-min.tego", 95)}), TermIndex("completion-min.tego", 105)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                          "x229"{OfDecl("x229"{TermIndex("completion-min.tego", 104)}), OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 104)}
+                        , Eval(Var("x230"{OfRef("x230"{TermIndex("completion-min.tego", 95)}), TermIndex("completion-min.tego", 105)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
                                                                                                                                       , TermIndex("completion-min.tego", 106)
                                                                                                                                       }, Var("__input"{OfRef("__input"{TermIndex("completion-min.tego", 40)}), TermIndex("completion-min.tego", 107)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 108)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 109)}
                         , Let(
-                            "x435"{TermIndex("completion-min.tego", 110)}
-                          , Eval(Var("x436"{OfRef("x436"{TermIndex("completion-min.tego", 86)}), TermIndex("completion-min.tego", 111)}){ OfType(
+                            "x226"{OfDecl("x226"{TermIndex("completion-min.tego", 110)}), OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 110)}
+                          , Eval(Var("x227"{OfRef("x227"{TermIndex("completion-min.tego", 86)}), TermIndex("completion-min.tego", 111)}){ OfType(
                                                                                                                                             STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
                                                                                                                                           )
                                                                                                                                         , TermIndex("completion-min.tego", 112)
-                                                                                                                                        }, Var("x438"{OfRef("x438"{TermIndex("completion-min.tego", 104)}), TermIndex("completion-min.tego", 113)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 114)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 115)}
+                                                                                                                                        }, Var("x229"{OfRef("x229"{TermIndex("completion-min.tego", 104)}), TermIndex("completion-min.tego", 113)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 114)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 115)}
                           , Let(
-                              "x432"{TermIndex("completion-min.tego", 116)}
-                            , Eval(Var("x433"{OfRef("x433"{TermIndex("completion-min.tego", 68)}), TermIndex("completion-min.tego", 117)}){ OfType(
+                              "x223"{OfDecl("x223"{TermIndex("completion-min.tego", 116)}), OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 116)}
+                            , Eval(Var("x224"{OfRef("x224"{TermIndex("completion-min.tego", 68)}), TermIndex("completion-min.tego", 117)}){ OfType(
                                                                                                                                               STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
                                                                                                                                             )
                                                                                                                                           , TermIndex("completion-min.tego", 118)
-                                                                                                                                          }, Var("x435"{OfRef("x435"{TermIndex("completion-min.tego", 110)}), TermIndex("completion-min.tego", 119)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 120)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 121)}
-                            , Eval(Var("x430"{OfRef("x430"{TermIndex("completion-min.tego", 50)}), TermIndex("completion-min.tego", 122)}){ OfType(
+                                                                                                                                          }, Var("x226"{OfRef("x226"{TermIndex("completion-min.tego", 110)}), TermIndex("completion-min.tego", 119)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 120)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 121)}
+                            , Eval(Var("x221"{OfRef("x221"{TermIndex("completion-min.tego", 50)}), TermIndex("completion-min.tego", 122)}){ OfType(
                                                                                                                                               STRATEGY([], LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
                                                                                                                                             )
                                                                                                                                           , TermIndex("completion-min.tego", 123)
-                                                                                                                                          }, Var("x432"{OfRef("x432"{TermIndex("completion-min.tego", 116)}), TermIndex("completion-min.tego", 124)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 125)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 126)}
+                                                                                                                                          }, Var("x223"{OfRef("x223"{TermIndex("completion-min.tego", 116)}), TermIndex("completion-min.tego", 124)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 125)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 126)}
                             ){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 127)}
                           ){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 128)}
                         ){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 129)}
@@ -161,8 +187,7 @@ File(
               ){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 134)}
             ){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 135)}
           ){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 136)}
-        ){ OfRef("complete"{TermIndex("completion-min.tego", 20)})
-         , OfType(
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -173,13 +198,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 138)}]{TermIndex("completion-min.tego", 141)}
-        , "expandAllPredicates"{TermIndex("completion-min.tego", 142)}
+        , "expandAllPredicates"{OfDecl("expandAllPredicates"{TermIndex("completion-min.tego", 142)}), TermIndex("completion-min.tego", 142)}
         , []{TermIndex("completion-min.tego", 144)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 145)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 146)}]{TermIndex("completion-min.tego", 149)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 150)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 151)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 152)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 153)}){TermIndex("completion-min.tego", 154)}
-        ){ OfDecl("expandAllPredicates"{TermIndex("completion-min.tego", 142)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 145)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 146)}]{TermIndex("completion-min.tego", 149)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 150)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 151)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 152)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 153)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 154)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -190,13 +214,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 156)}]{TermIndex("completion-min.tego", 159)}
-        , "expandAllInjections"{TermIndex("completion-min.tego", 160)}
+        , "expandAllInjections"{OfDecl("expandAllInjections"{TermIndex("completion-min.tego", 160)}), TermIndex("completion-min.tego", 160)}
         , []{TermIndex("completion-min.tego", 162)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 163)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 164)}]{TermIndex("completion-min.tego", 167)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 168)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 169)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 170)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 171)}){TermIndex("completion-min.tego", 172)}
-        ){ OfDecl("expandAllInjections"{TermIndex("completion-min.tego", 160)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 163)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 164)}]{TermIndex("completion-min.tego", 167)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 168)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 169)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 170)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 171)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 172)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -207,13 +230,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 174)}]{TermIndex("completion-min.tego", 177)}
-        , "expandAllQueries"{TermIndex("completion-min.tego", 178)}
+        , "expandAllQueries"{OfDecl("expandAllQueries"{TermIndex("completion-min.tego", 178)}), TermIndex("completion-min.tego", 178)}
         , []{TermIndex("completion-min.tego", 180)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 181)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 182)}]{TermIndex("completion-min.tego", 185)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 186)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 187)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 188)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 189)}){TermIndex("completion-min.tego", 190)}
-        ){ OfDecl("expandAllQueries"{TermIndex("completion-min.tego", 178)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 181)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 182)}]{TermIndex("completion-min.tego", 185)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 186)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 187)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 188)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 189)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 190)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -224,13 +246,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 192)}]{TermIndex("completion-min.tego", 195)}
-        , "expandDeterministic"{TermIndex("completion-min.tego", 196)}
+        , "expandDeterministic"{OfDecl("expandDeterministic"{TermIndex("completion-min.tego", 196)}), TermIndex("completion-min.tego", 196)}
         , []{TermIndex("completion-min.tego", 198)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 199)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 200)}]{TermIndex("completion-min.tego", 203)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 204)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 205)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 206)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 207)}){TermIndex("completion-min.tego", 208)}
-        ){ OfDecl("expandDeterministic"{TermIndex("completion-min.tego", 196)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 199)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 200)}]{TermIndex("completion-min.tego", 203)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 204)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 205)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 206)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 207)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 208)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -241,13 +262,14 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 210)}]{TermIndex("completion-min.tego", 213)}
-        , "flatMap"{TermIndex("completion-min.tego", 214)}
+        , "flatMap"{OfDecl("flatMap"{TermIndex("completion-min.tego", 214)}), TermIndex("completion-min.tego", 214)}
         , []{TermIndex("completion-min.tego", 216)}
-        , [StrategyType([]{TermIndex("completion-min.tego", 218)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 219)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 220)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 221)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 222)}){TermIndex("completion-min.tego", 223)}){TermIndex("completion-min.tego", 224)}]{TermIndex("completion-min.tego", 227)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 228)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 229)}){TermIndex("completion-min.tego", 230)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 231)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 232)}){TermIndex("completion-min.tego", 233)}
-        ){ OfDecl("flatMap"{TermIndex("completion-min.tego", 214)})
-         , OfType(
+        , [StrategyType([]{TermIndex("completion-min.tego", 218)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 219)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 220)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 221)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 222)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 223)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      , TermIndex("completion-min.tego", 224)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }]{TermIndex("completion-min.tego", 227)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 228)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 229)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 230)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 231)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 232)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 233)}
+        ){ OfType(
              STRATEGY(
                [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
              , LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
@@ -258,13 +280,14 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 235)}]{TermIndex("completion-min.tego", 238)}
-        , "fixsetSS"{TermIndex("completion-min.tego", 239)}
+        , "fixsetSS"{OfDecl("fixsetSS"{TermIndex("completion-min.tego", 239)}), TermIndex("completion-min.tego", 239)}
         , []{TermIndex("completion-min.tego", 241)}
-        , [StrategyType([]{TermIndex("completion-min.tego", 243)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 244)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 245)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 246)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 247)}){TermIndex("completion-min.tego", 248)}){TermIndex("completion-min.tego", 249)}]{TermIndex("completion-min.tego", 252)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 253)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 254)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 255)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 256)}){TermIndex("completion-min.tego", 257)}
-        ){ OfDecl("fixsetSS"{TermIndex("completion-min.tego", 239)})
-         , OfType(
+        , [StrategyType([]{TermIndex("completion-min.tego", 243)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 244)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 245)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 246)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 247)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 248)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      , TermIndex("completion-min.tego", 249)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }]{TermIndex("completion-min.tego", 252)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 253)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 254)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 255)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 256)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 257)}
+        ){ OfType(
              STRATEGY(
                [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -275,13 +298,14 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 259)}]{TermIndex("completion-min.tego", 262)}
-        , "trySS"{TermIndex("completion-min.tego", 263)}
+        , "trySS"{OfDecl("trySS"{TermIndex("completion-min.tego", 263)}), TermIndex("completion-min.tego", 263)}
         , []{TermIndex("completion-min.tego", 265)}
-        , [StrategyType([]{TermIndex("completion-min.tego", 267)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 268)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 269)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 270)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 271)}){TermIndex("completion-min.tego", 272)}){TermIndex("completion-min.tego", 273)}]{TermIndex("completion-min.tego", 276)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 277)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 278)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 279)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 280)}){TermIndex("completion-min.tego", 281)}
-        ){ OfDecl("trySS"{TermIndex("completion-min.tego", 263)})
-         , OfType(
+        , [StrategyType([]{TermIndex("completion-min.tego", 267)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 268)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 269)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 270)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 271)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 272)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      , TermIndex("completion-min.tego", 273)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }]{TermIndex("completion-min.tego", 276)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 277)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 278)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 279)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 280)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 281)}
+        ){ OfType(
              STRATEGY(
                [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -292,13 +316,14 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 283)}]{TermIndex("completion-min.tego", 286)}
-        , "repeatSS"{TermIndex("completion-min.tego", 287)}
+        , "repeatSS"{OfDecl("repeatSS"{TermIndex("completion-min.tego", 287)}), TermIndex("completion-min.tego", 287)}
         , []{TermIndex("completion-min.tego", 289)}
-        , [StrategyType([]{TermIndex("completion-min.tego", 291)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 292)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 293)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 294)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 295)}){TermIndex("completion-min.tego", 296)}){TermIndex("completion-min.tego", 297)}]{TermIndex("completion-min.tego", 300)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 301)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 302)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 303)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 304)}){TermIndex("completion-min.tego", 305)}
-        ){ OfDecl("repeatSS"{TermIndex("completion-min.tego", 287)})
-         , OfType(
+        , [StrategyType([]{TermIndex("completion-min.tego", 291)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 292)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 293)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 294)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 295)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 296)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      , TermIndex("completion-min.tego", 297)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }]{TermIndex("completion-min.tego", 300)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 301)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 302)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 303)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 304)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 305)}
+        ){ OfType(
              STRATEGY(
                [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -309,13 +334,14 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 307)}]{TermIndex("completion-min.tego", 310)}
-        , "limitSS"{TermIndex("completion-min.tego", 311)}
+        , "limitSS"{OfDecl("limitSS"{TermIndex("completion-min.tego", 311)}), TermIndex("completion-min.tego", 311)}
         , []{TermIndex("completion-min.tego", 313)}
-        , [IntType(){TermIndex("completion-min.tego", 314)}, StrategyType([]{TermIndex("completion-min.tego", 316)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 317)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 318)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 319)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 320)}){TermIndex("completion-min.tego", 321)}){TermIndex("completion-min.tego", 322)}]{TermIndex("completion-min.tego", 326)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 327)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 328)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 329)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 330)}){TermIndex("completion-min.tego", 331)}
-        ){ OfDecl("limitSS"{TermIndex("completion-min.tego", 311)})
-         , OfType(
+        , [IntType(){OfType(INT(){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 314)}, StrategyType([]{TermIndex("completion-min.tego", 316)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 317)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 318)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 319)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 320)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 321)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             , TermIndex("completion-min.tego", 322)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             }]{TermIndex("completion-min.tego", 326)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 327)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 328)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 329)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 330)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 331)}
+        ){ OfType(
              STRATEGY(
                [INT(){OfSort(SORT("TYPE"))}, STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -326,13 +352,14 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 333)}]{TermIndex("completion-min.tego", 336)}
-        , "distinctSS"{TermIndex("completion-min.tego", 337)}
+        , "distinctSS"{OfDecl("distinctSS"{TermIndex("completion-min.tego", 337)}), TermIndex("completion-min.tego", 337)}
         , []{TermIndex("completion-min.tego", 339)}
-        , [StrategyType([]{TermIndex("completion-min.tego", 341)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 342)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 343)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 344)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 345)}){TermIndex("completion-min.tego", 346)}){TermIndex("completion-min.tego", 347)}]{TermIndex("completion-min.tego", 350)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 351)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 352)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 353)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 354)}){TermIndex("completion-min.tego", 355)}
-        ){ OfDecl("distinctSS"{TermIndex("completion-min.tego", 337)})
-         , OfType(
+        , [StrategyType([]{TermIndex("completion-min.tego", 341)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 342)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 343)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 344)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 345)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 346)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      , TermIndex("completion-min.tego", 347)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }]{TermIndex("completion-min.tego", 350)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 351)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 352)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 353)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 354)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 355)}
+        ){ OfType(
              STRATEGY(
                [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -343,15 +370,18 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 357)}]{TermIndex("completion-min.tego", 360)}
-        , "orSS"{TermIndex("completion-min.tego", 361)}
+        , "orSS"{OfDecl("orSS"{TermIndex("completion-min.tego", 361)}), TermIndex("completion-min.tego", 361)}
         , []{TermIndex("completion-min.tego", 363)}
-        , [ StrategyType([]{TermIndex("completion-min.tego", 365)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 366)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 367)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 368)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 369)}){TermIndex("completion-min.tego", 370)}){TermIndex("completion-min.tego", 371)}
-          , StrategyType([]{TermIndex("completion-min.tego", 373)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 374)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 375)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 376)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 377)}){TermIndex("completion-min.tego", 378)}){TermIndex("completion-min.tego", 379)}
+        , [ StrategyType([]{TermIndex("completion-min.tego", 365)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 366)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 367)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 368)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 369)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 370)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       , TermIndex("completion-min.tego", 371)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       }
+          , StrategyType([]{TermIndex("completion-min.tego", 373)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 374)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 375)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 376)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 377)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 378)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       , TermIndex("completion-min.tego", 379)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       }
           ]{TermIndex("completion-min.tego", 383)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 384)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 385)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 386)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 387)}){TermIndex("completion-min.tego", 388)}
-        ){ OfDecl("orSS"{TermIndex("completion-min.tego", 361)})
-         , OfType(
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 384)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 385)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 386)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 387)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 388)}
+        ){ OfType(
              STRATEGY(
                [ STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
                , STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
@@ -364,27 +394,31 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 390)}]{TermIndex("completion-min.tego", 393)}
-        , "idSS"{TermIndex("completion-min.tego", 394)}
+        , "idSS"{OfDecl("idSS"{TermIndex("completion-min.tego", 394)}), TermIndex("completion-min.tego", 394)}
         , []{TermIndex("completion-min.tego", 396)}
         , []{TermIndex("completion-min.tego", 398)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 399)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 400)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 401)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 402)}){TermIndex("completion-min.tego", 403)}
-        ){ OfDecl("idSS"{TermIndex("completion-min.tego", 394)})
-         , OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 399)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 400)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 401)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 402)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 403)}
+        ){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
          , TermIndex("completion-min.tego", 404)
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 405)}]{TermIndex("completion-min.tego", 408)}
-        , "ifSS"{TermIndex("completion-min.tego", 409)}
+        , "ifSS"{OfDecl("ifSS"{TermIndex("completion-min.tego", 409)}), TermIndex("completion-min.tego", 409)}
         , []{TermIndex("completion-min.tego", 411)}
-        , [ StrategyType([]{TermIndex("completion-min.tego", 413)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 414)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 415)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 416)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 417)}){TermIndex("completion-min.tego", 418)}){TermIndex("completion-min.tego", 419)}
-          , StrategyType([]{TermIndex("completion-min.tego", 421)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 422)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 423)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 424)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 425)}){TermIndex("completion-min.tego", 426)}){TermIndex("completion-min.tego", 427)}
-          , StrategyType([]{TermIndex("completion-min.tego", 429)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 430)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 431)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 432)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 433)}){TermIndex("completion-min.tego", 434)}){TermIndex("completion-min.tego", 435)}
+        , [ StrategyType([]{TermIndex("completion-min.tego", 413)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 414)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 415)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 416)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 417)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 418)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       , TermIndex("completion-min.tego", 419)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       }
+          , StrategyType([]{TermIndex("completion-min.tego", 421)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 422)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 423)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 424)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 425)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 426)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       , TermIndex("completion-min.tego", 427)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       }
+          , StrategyType([]{TermIndex("completion-min.tego", 429)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 430)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 431)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 432)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 433)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 434)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       , TermIndex("completion-min.tego", 435)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       }
           ]{TermIndex("completion-min.tego", 440)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 441)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 442)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 443)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 444)}){TermIndex("completion-min.tego", 445)}
-        ){ OfDecl("ifSS"{TermIndex("completion-min.tego", 409)})
-         , OfType(
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 441)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 442)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 443)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 444)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 445)}
+        ){ OfType(
              STRATEGY(
                [ STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
                , STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
@@ -398,13 +432,14 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 447)}]{TermIndex("completion-min.tego", 450)}
-        , "singleSS"{TermIndex("completion-min.tego", 451)}
+        , "singleSS"{OfDecl("singleSS"{TermIndex("completion-min.tego", 451)}), TermIndex("completion-min.tego", 451)}
         , []{TermIndex("completion-min.tego", 453)}
-        , [StrategyType([]{TermIndex("completion-min.tego", 455)}, TypeRef("SolverState"{TermIndex("completion-min.tego", 456)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 457)}, ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 458)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 459)}){TermIndex("completion-min.tego", 460)}){TermIndex("completion-min.tego", 461)}]{TermIndex("completion-min.tego", 464)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 465)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 466)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 467)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 468)}){TermIndex("completion-min.tego", 469)}
-        ){ OfDecl("singleSS"{TermIndex("completion-min.tego", 451)})
-         , OfType(
+        , [StrategyType([]{TermIndex("completion-min.tego", 455)}, TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 456)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 457)}, ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 458)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 459)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 460)}){ OfType(STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      , TermIndex("completion-min.tego", 461)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }]{TermIndex("completion-min.tego", 464)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 465)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 466)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 467)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 468)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 469)}
+        ){ OfType(
              STRATEGY(
                [STRATEGY([], CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}, LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -415,21 +450,28 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 471)}]{TermIndex("completion-min.tego", 474)}
-        , "selectConstraints"{TermIndex("completion-min.tego", 475)}
+        , "selectConstraints"{OfDecl("selectConstraints"{TermIndex("completion-min.tego", 475)}), TermIndex("completion-min.tego", 475)}
         , []{TermIndex("completion-min.tego", 477)}
-        , [ TypeRef("Class"{TermIndex("completion-min.tego", 478)}){OfRef("Class"{OfSort(STRING())}), TermIndex("completion-min.tego", 479)}
+        , [ TypeRef("Class"{OfRef("Class"{TermIndex("completion-min.tego", 736)}), TermIndex("completion-min.tego", 478)}){OfType(CLASS("Class"{TermIndex("completion-min.tego", 736)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 479)}
           , StrategyType(
-              [TypeRef("IConstraint"{TermIndex("completion-min.tego", 480)}){OfRef("IConstraint"{TermIndex("completion-min.tego", 698)}), TermIndex("completion-min.tego", 481)}]{TermIndex("completion-min.tego", 484)}
-            , TypeRef("SolverState"{TermIndex("completion-min.tego", 485)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 486)}
-            , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 487)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 488)}){TermIndex("completion-min.tego", 489)}
-            ){TermIndex("completion-min.tego", 490)}
+              [TypeRef("IConstraint"{OfRef("IConstraint"{TermIndex("completion-min.tego", 698)}), TermIndex("completion-min.tego", 480)}){OfType(CLASS("IConstraint"{TermIndex("completion-min.tego", 698)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 481)}]{TermIndex("completion-min.tego", 484)}
+            , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 485)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 486)}
+            , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 487)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 488)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 489)}
+            ){ OfType(
+                 STRATEGY(
+                   [CLASS("IConstraint"{TermIndex("completion-min.tego", 698)}){OfSort(SORT("TYPE"))}]
+                 , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
+                 , LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}
+                 ){OfSort(SORT("TYPE"))}
+               )
+             , TermIndex("completion-min.tego", 490)
+             }
           ]{TermIndex("completion-min.tego", 494)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 495)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 496)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 497)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 498)}){TermIndex("completion-min.tego", 499)}
-        ){ OfDecl("selectConstraints"{TermIndex("completion-min.tego", 475)})
-         , OfType(
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 495)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 496)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 497)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 498)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 499)}
+        ){ OfType(
              STRATEGY(
-               [ CLASS("Class"{OfSort(STRING())}){OfSort(SORT("TYPE"))}
+               [ CLASS("Class"{TermIndex("completion-min.tego", 736)}){OfSort(SORT("TYPE"))}
                , STRATEGY(
                    [CLASS("IConstraint"{TermIndex("completion-min.tego", 698)}){OfSort(SORT("TYPE"))}]
                  , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -444,13 +486,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 501)}]{TermIndex("completion-min.tego", 504)}
-        , "assertValid"{TermIndex("completion-min.tego", 505)}
+        , "assertValid"{OfDecl("assertValid"{TermIndex("completion-min.tego", 505)}), TermIndex("completion-min.tego", 505)}
         , []{TermIndex("completion-min.tego", 507)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 508)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 509)}]{TermIndex("completion-min.tego", 512)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 513)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 514)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 515)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 516)}){TermIndex("completion-min.tego", 517)}
-        ){ OfDecl("assertValid"{TermIndex("completion-min.tego", 505)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 508)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 509)}]{TermIndex("completion-min.tego", 512)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 513)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 514)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 515)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 516)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 517)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -461,13 +502,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 519)}]{TermIndex("completion-min.tego", 522)}
-        , "expandPredicateConstraint"{TermIndex("completion-min.tego", 523)}
+        , "expandPredicateConstraint"{OfDecl("expandPredicateConstraint"{TermIndex("completion-min.tego", 523)}), TermIndex("completion-min.tego", 523)}
         , []{TermIndex("completion-min.tego", 525)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 526)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 527)}]{TermIndex("completion-min.tego", 530)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 531)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 532)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 533)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 534)}){TermIndex("completion-min.tego", 535)}
-        ){ OfDecl("expandPredicateConstraint"{TermIndex("completion-min.tego", 523)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 526)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 527)}]{TermIndex("completion-min.tego", 530)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 531)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 532)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 533)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 534)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 535)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -478,13 +518,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 537)}]{TermIndex("completion-min.tego", 540)}
-        , "expandQueryConstraint"{TermIndex("completion-min.tego", 541)}
+        , "expandQueryConstraint"{OfDecl("expandQueryConstraint"{TermIndex("completion-min.tego", 541)}), TermIndex("completion-min.tego", 541)}
         , []{TermIndex("completion-min.tego", 543)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 544)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 545)}]{TermIndex("completion-min.tego", 548)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 549)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 550)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 551)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 552)}){TermIndex("completion-min.tego", 553)}
-        ){ OfDecl("expandQueryConstraint"{TermIndex("completion-min.tego", 541)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 544)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 545)}]{TermIndex("completion-min.tego", 548)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 549)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 550)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 551)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 552)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 553)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -495,13 +534,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 555)}]{TermIndex("completion-min.tego", 558)}
-        , "expandInjection"{TermIndex("completion-min.tego", 559)}
+        , "expandInjection"{OfDecl("expandInjection"{TermIndex("completion-min.tego", 559)}), TermIndex("completion-min.tego", 559)}
         , []{TermIndex("completion-min.tego", 561)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 562)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 563)}]{TermIndex("completion-min.tego", 566)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 567)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 568)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 569)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 570)}){TermIndex("completion-min.tego", 571)}
-        ){ OfDecl("expandInjection"{TermIndex("completion-min.tego", 559)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 562)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 563)}]{TermIndex("completion-min.tego", 566)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 567)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 568)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 569)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 570)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 571)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -512,13 +550,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 573)}]{TermIndex("completion-min.tego", 576)}
-        , "filterPlaceholders"{TermIndex("completion-min.tego", 577)}
+        , "filterPlaceholders"{OfDecl("filterPlaceholders"{TermIndex("completion-min.tego", 577)}), TermIndex("completion-min.tego", 577)}
         , []{TermIndex("completion-min.tego", 579)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 580)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 581)}]{TermIndex("completion-min.tego", 584)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 585)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 586)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 587)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 588)}){TermIndex("completion-min.tego", 589)}
-        ){ OfDecl("filterPlaceholders"{TermIndex("completion-min.tego", 577)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 580)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 581)}]{TermIndex("completion-min.tego", 584)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 585)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 586)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 587)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 588)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 589)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -529,13 +566,12 @@ File(
          }
       , StrategyDecl(
           [ExternDecl(){TermIndex("completion-min.tego", 591)}]{TermIndex("completion-min.tego", 594)}
-        , "containsVar"{TermIndex("completion-min.tego", 595)}
+        , "containsVar"{OfDecl("containsVar"{TermIndex("completion-min.tego", 595)}), TermIndex("completion-min.tego", 595)}
         , []{TermIndex("completion-min.tego", 597)}
-        , [TypeRef("ITermVar"{TermIndex("completion-min.tego", 598)}){OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 599)}, TypeRef("IConstraint"{TermIndex("completion-min.tego", 600)}){OfRef("IConstraint"{TermIndex("completion-min.tego", 698)}), TermIndex("completion-min.tego", 601)}]{TermIndex("completion-min.tego", 605)}
-        , TypeRef("SolverState"{TermIndex("completion-min.tego", 606)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 607)}
-        , ListType(TypeRef("SolverState"{TermIndex("completion-min.tego", 608)}){OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 609)}){TermIndex("completion-min.tego", 610)}
-        ){ OfDecl("containsVar"{TermIndex("completion-min.tego", 595)})
-         , OfType(
+        , [TypeRef("ITermVar"{OfRef("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 598)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 599)}, TypeRef("IConstraint"{OfRef("IConstraint"{TermIndex("completion-min.tego", 698)}), TermIndex("completion-min.tego", 600)}){OfType(CLASS("IConstraint"{TermIndex("completion-min.tego", 698)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 601)}]{TermIndex("completion-min.tego", 605)}
+        , TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 606)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 607)}
+        , ListType(TypeRef("SolverState"{OfRef("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 608)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 609)}){OfType(LIST(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 610)}
+        ){ OfType(
              STRATEGY(
                [CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}, CLASS("IConstraint"{TermIndex("completion-min.tego", 698)}){OfSort(SORT("TYPE"))}]
              , CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}
@@ -545,32 +581,38 @@ File(
          , TermIndex("completion-min.tego", 611)
          }
       ]{TermIndex("completion-min.tego", 636)}
-    ){TermIndex("completion-min.tego", 637)}
+    ){OfType(MODULE(Scope("", "ms_pub_97-52")){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 637)}
   , Module(
       [ExternModule(){TermIndex("completion-min.tego", 638)}]{TermIndex("completion-min.tego", 641)}
-    , "mb/statix/constraints"{TermIndex("completion-min.tego", 642)}
+    , "mb/statix/constraints"{OfDecl("mb/statix/constraints"{TermIndex("completion-min.tego", 642)}), TermIndex("completion-min.tego", 642)}
     , []{TermIndex("completion-min.tego", 644)}
-    , [ ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 645)}, ExternDecl(){TermIndex("completion-min.tego", 646)}]{TermIndex("completion-min.tego", 650)}, "CResolveQuery"{TermIndex("completion-min.tego", 651)}){OfDecl("CResolveQuery"{TermIndex("completion-min.tego", 651)}), OfType(CLASS("CResolveQuery"{TermIndex("completion-min.tego", 651)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 652)}
-      , ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 653)}, ExternDecl(){TermIndex("completion-min.tego", 654)}]{TermIndex("completion-min.tego", 658)}, "CUser"{TermIndex("completion-min.tego", 659)}){OfDecl("CUser"{TermIndex("completion-min.tego", 659)}), OfType(CLASS("CUser"{TermIndex("completion-min.tego", 659)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 660)}
+    , [ ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 645)}, ExternDecl(){TermIndex("completion-min.tego", 646)}]{TermIndex("completion-min.tego", 650)}, "CResolveQuery"{OfDecl("CResolveQuery"{TermIndex("completion-min.tego", 651)}), TermIndex("completion-min.tego", 651)}){OfType(CLASS("CResolveQuery"{TermIndex("completion-min.tego", 651)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 652)}
+      , ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 653)}, ExternDecl(){TermIndex("completion-min.tego", 654)}]{TermIndex("completion-min.tego", 658)}, "CUser"{OfDecl("CUser"{TermIndex("completion-min.tego", 659)}), TermIndex("completion-min.tego", 659)}){OfType(CLASS("CUser"{TermIndex("completion-min.tego", 659)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 660)}
       ]{TermIndex("completion-min.tego", 664)}
-    ){TermIndex("completion-min.tego", 665)}
+    ){OfType(MODULE(Scope("", "ms_pub_75-21")){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 665)}
   , Module(
       [ExternModule(){TermIndex("completion-min.tego", 666)}]{TermIndex("completion-min.tego", 669)}
-    , "mb/statix/common"{TermIndex("completion-min.tego", 670)}
+    , "mb/statix/common"{OfDecl("mb/statix/common"{TermIndex("completion-min.tego", 670)}), TermIndex("completion-min.tego", 670)}
     , []{TermIndex("completion-min.tego", 672)}
-    , [ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 673)}, ExternDecl(){TermIndex("completion-min.tego", 674)}]{TermIndex("completion-min.tego", 678)}, "SolverState"{TermIndex("completion-min.tego", 679)}){OfDecl("SolverState"{TermIndex("completion-min.tego", 679)}), OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 680)}]{TermIndex("completion-min.tego", 683)}
-    ){TermIndex("completion-min.tego", 684)}
+    , [ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 673)}, ExternDecl(){TermIndex("completion-min.tego", 674)}]{TermIndex("completion-min.tego", 678)}, "SolverState"{OfDecl("SolverState"{TermIndex("completion-min.tego", 679)}), TermIndex("completion-min.tego", 679)}){OfType(CLASS("SolverState"{TermIndex("completion-min.tego", 679)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 680)}]{TermIndex("completion-min.tego", 683)}
+    ){OfType(MODULE(Scope("", "ms_pub_57-16")){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 684)}
   , Module(
       [ExternModule(){TermIndex("completion-min.tego", 685)}]{TermIndex("completion-min.tego", 688)}
-    , "mb/statix/solver"{TermIndex("completion-min.tego", 689)}
+    , "mb/statix/solver"{OfDecl("mb/statix/solver"{TermIndex("completion-min.tego", 689)}), TermIndex("completion-min.tego", 689)}
     , []{TermIndex("completion-min.tego", 691)}
-    , [ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 692)}, ExternDecl(){TermIndex("completion-min.tego", 693)}]{TermIndex("completion-min.tego", 697)}, "IConstraint"{TermIndex("completion-min.tego", 698)}){OfDecl("IConstraint"{TermIndex("completion-min.tego", 698)}), OfType(CLASS("IConstraint"{TermIndex("completion-min.tego", 698)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 699)}]{TermIndex("completion-min.tego", 702)}
-    ){TermIndex("completion-min.tego", 703)}
+    , [ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 692)}, ExternDecl(){TermIndex("completion-min.tego", 693)}]{TermIndex("completion-min.tego", 697)}, "IConstraint"{OfDecl("IConstraint"{TermIndex("completion-min.tego", 698)}), TermIndex("completion-min.tego", 698)}){OfType(CLASS("IConstraint"{TermIndex("completion-min.tego", 698)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 699)}]{TermIndex("completion-min.tego", 702)}
+    ){OfType(MODULE(Scope("", "ms_pub_39-12")){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 703)}
   , Module(
       [ExternModule(){TermIndex("completion-min.tego", 704)}]{TermIndex("completion-min.tego", 707)}
-    , "mb/nabl2/terms"{TermIndex("completion-min.tego", 708)}
+    , "mb/nabl2/terms"{OfDecl("mb/nabl2/terms"{TermIndex("completion-min.tego", 708)}), TermIndex("completion-min.tego", 708)}
     , []{TermIndex("completion-min.tego", 710)}
-    , [ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 711)}, ExternDecl(){TermIndex("completion-min.tego", 712)}]{TermIndex("completion-min.tego", 716)}, "ITermVar"{TermIndex("completion-min.tego", 717)}){OfDecl("ITermVar"{TermIndex("completion-min.tego", 717)}), OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 718)}]{TermIndex("completion-min.tego", 721)}
-    ){TermIndex("completion-min.tego", 722)}
-  ]{TermIndex("completion-min.tego", 729)}
-){TermIndex("completion-min.tego", 730)}
+    , [ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 711)}, ExternDecl(){TermIndex("completion-min.tego", 712)}]{TermIndex("completion-min.tego", 716)}, "ITermVar"{OfDecl("ITermVar"{TermIndex("completion-min.tego", 717)}), TermIndex("completion-min.tego", 717)}){OfType(CLASS("ITermVar"{TermIndex("completion-min.tego", 717)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 718)}]{TermIndex("completion-min.tego", 721)}
+    ){OfType(MODULE(Scope("", "ms_pub_21-8")){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 722)}
+  , Module(
+      [ExternModule(){TermIndex("completion-min.tego", 723)}]{TermIndex("completion-min.tego", 726)}
+    , "java/lang"{OfDecl("java/lang"{TermIndex("completion-min.tego", 727)}), TermIndex("completion-min.tego", 727)}
+    , []{TermIndex("completion-min.tego", 729)}
+    , [ClassDecl([PublicDecl(){TermIndex("completion-min.tego", 730)}, ExternDecl(){TermIndex("completion-min.tego", 731)}]{TermIndex("completion-min.tego", 735)}, "Class"{OfDecl("Class"{TermIndex("completion-min.tego", 736)}), TermIndex("completion-min.tego", 736)}){OfType(CLASS("Class"{TermIndex("completion-min.tego", 736)}){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 737)}]{TermIndex("completion-min.tego", 740)}
+    ){OfType(MODULE(Scope("", "ms_pub_3-4")){OfSort(SORT("TYPE"))}), TermIndex("completion-min.tego", 741)}
+  ]{TermIndex("completion-min.tego", 749)}
+){TermIndex("completion-min.tego", 750)}

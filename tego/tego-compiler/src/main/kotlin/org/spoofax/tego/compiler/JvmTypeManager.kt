@@ -76,7 +76,7 @@ class JvmTypeManager(
         is TupleType -> TODO("Tuple types not supported")
         is ListType -> JvmTypes.List.parameterizedBy(JvmTypeArg.invariant(getJvmType(type.elementsType)))
         is ClassTypeRef -> {
-            val decl = symbolTable[type.name] ?: throw NoSuchElementException("No type declaration found for reference $type")
+            val decl = (symbolTable[type.pointer] ?: throw NoSuchElementException("No type declaration found for reference $type")) as TypeDecl
             getJvmType(decl)
         }
         is StrategyTypeRef -> TODO("Strategy type references not supported")

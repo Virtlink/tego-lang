@@ -18,7 +18,8 @@ data class Module(
     val declarations: List<TypeDecl>,
     val definitions: List<Def>,
     val modifiers: ModuleModifiers,
-)
+    override val pointers: List<TermIndex>,
+) : Declaration
 
 typealias ModuleModifiers = EnumSet<ModuleModifier>
 

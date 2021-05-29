@@ -19,7 +19,7 @@ data class ParamDef(
  */
 sealed interface Declaration {
     /** Objects that are used as the pointers for this declaration; or an empty list when there are none. */
-    val pointers: List<Any>
+    val pointers: List<TermIndex>
 }
 
 /**
@@ -27,5 +27,5 @@ sealed interface Declaration {
  */
 sealed interface Reference {
     /** Object that is used as the pointer for this reference. */
-    val pointer: Any
+    val pointer: TermIndex
 }

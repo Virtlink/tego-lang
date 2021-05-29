@@ -45,8 +45,9 @@ class IrBuilder(
         val allDecls = moduleTerm[3].asList().mapNotNull { toDecl(it) }
         val decls = allDecls.filterIsInstance<TypeDecl>()
         val defs = allDecls.filterIsInstance<Def>()
+        val ptrs = listOf(declOf(moduleTerm[1]))
 
-        return Module(name, decls, defs, modifiers)
+        return Module(name, decls, defs, modifiers, ptrs)
     }
 
     /**
@@ -109,7 +110,7 @@ class IrBuilder(
         val params = defTerm[1].asList().map { toParamDef(it) }
         val inputName = defTerm[2].toJavaString()
         val body = toExp(defTerm[3])
-        val ptr = refOf(defTerm[1])
+        val ptr = refOf(defTerm[0])
         return StrategyDef(name, params, inputName, body, ptr)
     }
 
@@ -137,7 +138,7 @@ class IrBuilder(
             "Let" -> Let(expTerm[0].toJavaString(), toExp(expTerm[1]), toExp(expTerm[2]), type)
             "Apply" -> Apply(toExp(expTerm[0]), expTerm[1].asList().map { toExp(it) }, type)
             "Eval" -> Eval(toExp(expTerm[0]), toExp(expTerm[1]), type)
-            "Var" -> Var(expTerm[0].toJavaString(), type)
+            "Var" -> Var(expTerm[0].toJavaString(), type, refOf(expTerm[0]))
 
 //            "Int" -> IntLit(exp[0].toJavaInt(), type)
 //            "String" -> StringLit(exp[0].toJavaString(), type)
@@ -149,13 +150,43 @@ class IrBuilder(
         }
     }
 
-    private fun termIndicesOf(t: Term): List<TermIndex> {
-        val termIndicesTerm = t.annotations["TermIndices", 1] ?: return emptyList()
-        return termIndicesTerm[0].asList().map { toTermIndex(it) }
+    /**
+     * Gets the type of a term (its `OfType(_)` annotation)
+     */
+    private fun typeOf(t: Term): Type {
+        val typeTerm = t.annotations["OfType", 1]?.get(0)
+            ?: throw IllegalStateException("Expected term to have OfType(), found nothing: $t")
+        return toType(typeTerm)
     }
 
-    private fun toTermIndex(termIndexTerm: Term?): TermIndex {
-        requireNotNull(termIndexTerm) { "Expected a term, not nothing." }
+    /**
+     * Gets the pointer of a declaration term (its `OfDecl(x{TermIndex(_, _)})` annotation)
+     */
+    private fun declOf(t: Term): TermIndex {
+        val pointerTerm = t.annotations["OfDecl", 1]?.get(0)?.annotations?.get("TermIndex", 2)
+            ?: throw IllegalStateException("Expected term to have OfDecl(x{TermIndex(_, _)}) annotation, found nothing: $t")
+        return toTermIndex(pointerTerm)
+    }
+
+    /**
+     * Gets the pointer of a reference term (its `OfRef(x@{TermIndex(_, _)})` annotation)
+     */
+    private fun refOf(t: Term): TermIndex {
+        val pointerTerm = t.annotations["OfRef", 1]?.get(0)?.annotations?.get("TermIndex", 2)
+            ?: throw IllegalStateException("Expected term to have OfRef(x@{TermIndex(_, _)}) annotation, found nothing: $t")
+        return toTermIndex(pointerTerm)
+    }
+
+    /**
+     * Gets the pointer of a resolved type (its `TermIndex(_, _)` annotation).
+     */
+    private fun pointerOf(t: Term): TermIndex {
+        val termIndexTerm = t.annotations["TermIndex", 2]
+            ?: throw IllegalStateException("Expected term to have TermIndex() annotation, found nothing: $t")
+        return toTermIndex(termIndexTerm)
+    }
+
+    private fun toTermIndex(termIndexTerm: Term): TermIndex {
         require(termIndexTerm is ApplTerm && termIndexTerm.constructor == "TermIndex") { "Expected TermIndex() term, got: $termIndexTerm"}
 
         val resource = termIndexTerm[0].toJavaString()
@@ -163,21 +194,15 @@ class IrBuilder(
         return TermIndex(resource, index)
     }
 
-    private fun typeOf(t: Term): Type {
-        return toType(t.annotations["OfType", 1]?.get(0))
-    }
-    private fun declOf(t: Term): TermIndex {
-        return toTermIndex(t.annotations["OfDecl", 1]?.get(0))
-    }
-    private fun refOf(t: Term): TermIndex {
-        return toTermIndex(t.annotations["OfRef", 1]?.get(0))
-    }
+//    private fun termIndicesOf(t: Term): List<TermIndex> {
+//        val termIndicesTerm = t.annotations["TermIndices", 1] ?: return emptyList()
+//        return termIndicesTerm[0].asList().map { toTermIndex(it) }
+//    }
 
     /**
      * Transforms a type term into an IR type.
      */
-    fun toType(typeTerm: Term?): Type {
-        requireNotNull(typeTerm) { "Expected a type, not nothing." }
+    fun toType(typeTerm: Term): Type {
         require(typeTerm is ApplTerm) { "Expected constructor application term, got: $typeTerm"}
 
         return when (typeTerm.constructor) {
@@ -206,7 +231,7 @@ class IrBuilder(
             "STRATEGY" -> StrategyType(typeTerm[0].asList().map { toType(it) }, toType(typeTerm[1]), toType(typeTerm[2]))
             "TUPLE" -> TupleType(typeTerm[0].asList().map { toType(it) })
             // TODO: Fix package name
-            "CLASS" -> ClassTypeRef(QName(PackageName("tego"), typeTerm[0].toJavaString()))
+            "CLASS" -> ClassTypeRef(typeTerm[0].toJavaString(), pointerOf(typeTerm[0]))
             "LIST" -> ListType(toType(typeTerm[0]))
 
             "ERROR" -> TypeError("Type error")

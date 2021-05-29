@@ -32,7 +32,8 @@ class TegoCompiler(
         val gatherer = Gatherer()
         project.files.forEach { file ->
             file.modules.forEach { module ->
-                module.declarations.forEach { decl ->
+                gatherer.addDeclaration(module)
+                module.declarations.filterIsInstance<Declaration>().forEach { decl ->
                     gatherer.addDeclaration(decl)
                 }
             }
@@ -60,7 +61,7 @@ class TegoCompiler(
          *
          * @param decl the declaration to add
          */
-        fun addDeclaration(decl: TypeDecl) {
+        fun addDeclaration(decl: Declaration) {
             symbolTable.add(decl)
         }
     }
@@ -91,7 +92,7 @@ class TegoCompiler(
          * @return the compiled JVM class
          */
         fun compileDefinition(def: StrategyDef): JvmClass {
-            val decl = symbolTable[def.name] as StrategyTypeDecl? ?: throw IllegalStateException("No declaration found for definition: ${def.name}")
+            val decl = symbolTable[def.pointer] as StrategyTypeDecl? ?: throw IllegalStateException("No declaration found for definition: ${def.name}")
             require(def.body.isAnf) { "The definition body must be in ANF." }
 
             val cls = strategyAssembler.assembleStrategy(decl, def)

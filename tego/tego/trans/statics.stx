@@ -33,10 +33,13 @@ rules fileOk : scope * File
 rules init : scope
 
   init(s) :-
-    // java/lang
-    {s_java_lang} new s_java_lang,
-    declareDecl(s, "java/lang", MODULE(s_java_lang)),
-    declareDecl(s_java_lang, "Class", CLASS("Class")).
+    true.
+    // FIXME: Doing built-ins like this doesn't generate term indices for them,
+    // making it impossible for the compiler to find the resolution
+//    // java/lang
+//    {s_java_lang} new s_java_lang,
+//    declareDecl(s, "java/lang", MODULE(s_java_lang)),
+//    declareDecl(s_java_lang, "Class", CLASS("Class")).
 
 
 

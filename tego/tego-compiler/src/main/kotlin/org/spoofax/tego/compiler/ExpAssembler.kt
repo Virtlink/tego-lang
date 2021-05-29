@@ -112,12 +112,8 @@ class ExpAssembler(
                         loadLocalVar(v)
                     } else {
                         // TODO: Fix package name
-                        val d = symbolTable[QName(PackageName("tego"), exp.name)]
-                        if (d != null) {
-                            loadTypeDecl(d)
-                        } else {
-                            throw NoSuchElementException("Environment contains no variable or declaration with name '${exp.name}'.")
-                        }
+                        val d = (symbolTable[exp.pointer] ?: throw NoSuchElementException("Environment contains no variable or declaration with name '${exp.name}'.")) as TypeDecl
+                        loadTypeDecl(d)
                     }
                 }
                 else -> TODO("Unsupported expression of type ${exp::class.java}: $exp")

@@ -52,8 +52,9 @@ rules typeOfExp : scope * Exp -> TYPE
     @e.type := T.
 
   // FIXME: Should be Class<T> where T is the type
-  typeOfExp(s, e@ClassRef(type)) = T@CLASS("Class") :-
+  typeOfExp(s, e@ClassRef(type)) = T :- //@CLASS("Class") :-
     typeOfType(s, type) == CLASS(_),
+    resolveDecl(s, "Class") == T,
     @e.type := T.
 
   // FIXME: This is incorrect since we want to be able to cast literals to any of the integer types

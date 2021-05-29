@@ -19,8 +19,8 @@ fun Term.toJavaString(): String {
  * @return the Java integer
  */
 fun Term.toJavaInt(): Int {
-    val str = this.toJavaString()
-    return str.toIntOrNull() ?: throw InvalidFormatException("Expected integer value, got: $str")
+    require(this is IntTerm) { "Expected ${describeTermType(IntTerm::class)}, got ${describeTermType(this)}: $this"}
+    return this.value
 }
 
 /**
