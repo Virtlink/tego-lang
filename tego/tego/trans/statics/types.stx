@@ -3,12 +3,16 @@ module statics/types
 imports
   signatures/Tego-sig
 
+  statics/declarations
+  statics/expressions
+  statics/modules
+  statics/references
+
 signature
   sorts TYPE
   constructors
-    REF     : scope -> TYPE
 
-    // Primitives
+    // Primitive Types
     BOOL    : TYPE
     CHAR    : TYPE
 
@@ -38,71 +42,57 @@ signature
   relations
     withType: -> TYPE
 
-// Matches the type associated with the given scope.
-rules matchType: TYPE -> scope
+rules getScope : TYPE -> scope
 
-  matchType(T) = s :-
-    T == toType(s).
+  getScope(MODULE(s)) = s.
 
-// Gets the type associated with the given scope.
-rules toType: scope -> TYPE
+rules isPublicDecl : list(DeclMod)
 
-  toType(s) = T :-
-    query withType
-      filter e and true
-      min /* */ and true
-      in s |-> [(_, T)].
+  isPublicDecl([PublicDecl()|_]).
+  isPublicDecl([_|mods]) :- isPublicDecl(mods).
 
-// Creates a new scope and associates the given type.
-rules fromType: TYPE -> scope
 
-  fromType(T) = s :-
-    new s, setType(s, T).//!withType[T] in s.
 
-// Associates the given type to the given scope.
-rules setType: scope * TYPE
+rules typeOfType : scope * Type -> TYPE
+  typesOfTypes maps typeOfType(*, list(*)) = list(*)
 
-  setType(s, T) :-
-    !withType[T] in s.
+  typeOfType(s, t@StrategyType(paramTypes, inputType, outputType)) = T@STRATEGY(PTs, IT, OT) :-
+    typesOfTypes(s, paramTypes) == PTs,
+    typeOfType(s, inputType) == IT,
+    typeOfType(s, outputType) == OT,
+    @t.type := T.
 
-// --------------------------------------------------------------- //
+  typeOfType(s, t@AnyType()) = T@ANY() :-
+    @t.type := T.
 
-signature
-  sorts KIND
-  constructors
-    CLASSKIND    : KIND
-    STRATEGYKIND : KIND
-  relations
-    withKind: -> KIND
+  typeOfType(s, t@UnitType()) = T@UNIT() :-
+    @t.type := T.
 
-// Matches the kind associated with the given scope.
-rules matchKind: KIND -> scope
+  typeOfType(s, t@BoolType()) = T@BOOL() :-
+    @t.type := T.
 
-  matchKind(K) = s :-
-    K == toKind(s).
+  typeOfType(s, t@IntType()) = T@INT() :-
+    @t.type := T.
 
-// Gets the kind associated with the given scope.
-rules toKind: scope -> KIND
+  typeOfType(s, t@ListType(type)) = T@LIST(ET) :-
+    typeOfType(s, type) == ET,
+    @t.type := T.
 
-  toKind(s) = K :-
-    query withKind
-      filter e and true
-      min /* */ and true
-      in s |-> [(_, K)].
+  typeOfType(s, t@TypeRef(name)) = T :-
+    resolveDecl(s, name) == T,
+    @t.type := T.
 
-// Creates a new scope and associates the given kind.
-rules fromKind: KIND -> scope
+  typeOfType(s, t@MemberTypeRef(rcv, name)) = T :- {T_rcv s_rcv}
+    typeOfType(s, rcv) == T_rcv,
+    getScope(T_rcv) == s_rcv,
+    resolveDecl(s_rcv, name) == T,
+    @t.type := T.
 
-  fromKind(K) = s :-
-    new s, setKind(s, K).//!withKind[K] in s.
+  typeOfType(s, t@TupleType(types)) = T@TUPLE(Ts) :-
+    typesOfTypes(s, types) == Ts,
+    @t.type := T.
 
-// Associates the given kind to the given scope.
-rules setKind: scope * KIND
+  typeOfType(s, t@WldType()) = T :-
+    @t.type := T.
 
-  setKind(s, K) :-
-    !withKind[K] in s.
-
-// Gets the kind from a type.
-rules kindOfType: TYPE -> KIND
-
-  kindOfType(REF(s_ty)) = toKind(s_ty).
+  typeOfType(s, Type-Plhdr()) = _.

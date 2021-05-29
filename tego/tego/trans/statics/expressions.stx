@@ -1,0 +1,127 @@
+module statics/expressions
+
+imports
+  signatures/Tego-sig
+
+  statics/declarations
+  statics/modules
+  statics/references
+  statics/types
+
+rules typeOfExp : scope * Exp -> TYPE
+  typesOfExps maps typeOfExp(*, list(*)) = list(*)
+
+  typeOfExp(s, e@Seq(e1, e2)) = T :- {IT MT OT}
+    typeOfExp(s, e1) == STRATEGY([], IT, MT),
+    typeOfExp(s, e2) == STRATEGY([], MT, OT),
+    T == STRATEGY([], IT, OT),
+    @e.type := T.
+
+  typeOfExp(s, e@Map(e1, e2)) = T :- {IT MT OT}
+    typeOfExp(s, e1) == STRATEGY([], IT, LIST(MT)),
+    typeOfExp(s, e2) == STRATEGY([], MT, OT),
+    T == STRATEGY([], IT, LIST(OT)),
+    @e.type := T.
+
+  typeOfExp(s, e@FlatMap(e1, e2)) = T :- {IT MT OT}
+    typeOfExp(s, e1) == STRATEGY([], IT, LIST(MT)),
+    typeOfExp(s, e2) == STRATEGY([], MT, LIST(OT)),
+    T == STRATEGY([], IT, LIST(OT)),
+    @e.type := T.
+
+  typeOfExp(s, e@Id()) = T@STRATEGY([], ANY(), ANY()) :-
+    @e.type := T.
+
+  typeOfExp(s, e@Fail()) = T :- //@STRATEGY([], ANY(), ANY()) :-
+    @e.type := T.
+
+  typeOfExp(s, e@Apply(rcv, args)) = T :- {ET TAs PTs IT OT}
+    typeOfExp(s, rcv) == STRATEGY(PTs, IT, OT),
+    typesOfExps(s, args) == PTs,
+    T == STRATEGY([], IT, OT),
+    @e.type := T.
+
+  typeOfExp(s, e@Var(name)) = T :-
+    resolveDecl(s, name) == T,
+    @e.type := T.
+
+  typeOfExp(s, e@Member(rcv, name)) = T :- {T_rcv s_rcv}
+    typeOfExp(s, rcv) == T_rcv,
+    getScope(T_rcv) == s_rcv,
+    resolveDecl(s_rcv, name) == T,
+    @e.type := T.
+
+  // FIXME: Should be Class<T> where T is the type
+  typeOfExp(s, e@ClassRef(type)) = T@CLASS("Class") :-
+    typeOfType(s, type) == CLASS(_),
+    @e.type := T.
+
+  // FIXME: This is incorrect since we want to be able to cast literals to any of the integer types
+  typeOfExp(s, e@Int(_)) = T@INT() :-
+    @e.type := T.
+
+  typeOfExp(s, e@String(_)) = T@STRING() :-
+    @e.type := T.
+
+  typeOfExp(s, e@Object()) = T@ANY() :-
+    @e.type := T.
+
+  typeOfExp(s, e@True()) = T@BOOL() :-
+    @e.type := T.
+
+  typeOfExp(s, e@False()) = T@BOOL() :-
+    @e.type := T.
+
+  // TODO: Accept ANY() as input type
+  typeOfExp(s, e@Build(exp)) = T@STRATEGY([], _, TEXP) :-
+    typeOfExp(s, exp) == TEXP,
+    @e.type := T.
+
+  typeOfExp(s, e@Eval(rcv, exp)) = OT :- {IT}
+    typeOfExp(s, rcv) == STRATEGY([], IT, OT),
+    typeOfExp(s, exp) == IT,
+    @e.type := OT.
+
+  typeOfExp(s, e@Let(bindName, bindExp, body)) = T :- {BT ls}
+    typeOfExp(s, bindExp) == BT,
+    new ls, ls -P-> s,
+    declareDecl(ls, bindName, BT),
+    typeOfExp(ls, body) == T,
+    @bindName.type := BT,
+    @e.type := T.
+
+  typeOfExp(s, e@Tuple(exps)) = T@TUPLE(Ts) :-
+    typesOfExps(s, exps) == Ts,
+    @e.type := T.
+
+  typeOfExp(s, e@LambdaRule(paramDefs, inExp, outExp)) = T@STRATEGY(PTs, IT, OT) :- {ss}
+    new ss, ss -P-> s,
+    typesOfParamDefs(ss, paramDefs) == PTs,
+    typeOfExp(ss, inExp) == IT,
+    typeOfExp(ss, outExp) == OT,
+    T == STRATEGY(PTs, IT, OT),
+    @e.type := T.
+
+  typeOfExp(s, e@LambdaStrategy(paramDefs, exp)) = T@STRATEGY(PTs, IT, OT) :- {ss}
+    new ss, ss -P-> s,
+    typesOfParamDefs(ss, paramDefs) == PTs,
+    typeOfExp(ss, exp) == STRATEGY([], IT, OT),
+    T == STRATEGY(PTs, IT, OT),
+    @e.type := T.
+
+  typeOfExp(s, Exp-Plhdr()) = T.
+
+
+rules typeOfParamDef : scope * ParamDef -> TYPE
+  typesOfParamDefs maps typeOfParamDef(*, list(*)) = list(*)
+
+  typeOfParamDef(s, p@ParamDef(name, type)) = T :-
+    typeOfType(s, type) == T,
+    declareDecl(s, name, T),
+    @p.type := T.
+
+  typeOfParamDef(s, p@ParamDefNoType(name)) = T :-
+    declareDecl(s, name, T),
+    @p.type := T.
+
+  typeOfParamDef(s, ParamDef-Plhdr()) = T.

@@ -1,0 +1,84 @@
+module statics/declarations
+
+imports
+  signatures/Tego-sig
+
+  statics/expressions
+  statics/modules
+  statics/references
+  statics/types
+
+rules declOk : scope * scope * Decl
+  declsOk maps declOk(*, *, list(*))
+
+  declOk(ms, ms_pub, d@ValDef(mods, name, type, body)) :- {T TBODY}
+    typeOfType(ms, type) == T,
+    typeOfExp(ms, body) == TBODY,
+    TBODY == T,
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    @d.type := T.
+
+  declOk(ms, ms_pub, d@ValDefNoType(mods, name, body)) :- {T TBODY}
+    typeOfExp(ms, body) == T,
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    @d.type := T.
+
+  declOk(ms, ms_pub, d@ValDecl(mods, name, type)) :- {T}
+    typeOfType(ms, type) == T,
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    @d.type := T.
+
+  declOk(ms, ms_pub, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
+    // Create strategy declaration scope in which the type variables are declared
+    new ds, ds -P-> ms,
+    typesOfTypes(ds, params) == PTs,
+    typeOfType(ds, inType) == IT,
+    typeOfType(ds, outType) == OT,
+    T == STRATEGY(PTs, IT, OT),
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    @d.type := T.
+
+  // TODO: Support generics
+  declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
+
+  declOk(ms, ms_pub, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
+    // FIXME: Only resolve in the current module scope
+    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
+    new ss, ss -P-> ms,
+    typesOfParamDefs(ss, paramDefs) == PTs,
+    typeOfExp(ss, body) == STRATEGY([], IT, OT),
+    @d.type := T.
+
+  declOk(ms, ms_pub, d@StrategyDefWInput(name, paramDefs, bindInput, body)) :- {T PTs IT OT ss}
+    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
+    new ss, ss -P-> ms,
+    typesOfParamDefs(ss, paramDefs) == PTs,
+    declareDecl(ss, bindInput, IT),
+    @bindInput.type := IT,
+    typeOfExp(ss, body) == OT,
+    @d.type := T.
+
+  declOk(ms, ms_pub, d@RuleDef(name, paramDefs, inExp, outExp, clauses)) :- {T PTs IT OT ss}
+    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
+    new ss, ss -P-> ms,
+    typesOfParamDefs(ss, paramDefs) == PTs,
+    typeOfExp(ss, inExp) == IT,
+    typeOfExp(ss, outExp) == OT,
+    clausesOk(ss, clauses),
+    @d.type := T.
+
+  declOk(ms, ms_pub, d@ClassDecl(mods, name)) :- {T}
+    T == CLASS(name),
+    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    @d.type := T.
+
+
+  declOk(ms, ms_pub, Decl-Plhdr()).
+
+
+rules clauseOk : scope * RuleClause
+  clausesOk maps clauseOk(*, list(*))
+
+  clauseOk(s, WhereClause(exp)) :-
+    typeOfExp(s, exp) == UNIT().
+

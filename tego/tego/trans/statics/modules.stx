@@ -1,0 +1,47 @@
+module statics/modules
+
+imports
+  signatures/Tego-sig
+
+  statics/declarations
+  statics/expressions
+  statics/references
+  statics/types
+
+rules module_init : scope * scope
+
+  module_init(s, ms) :-
+    // default imports
+    declareImportAll(ms, resolveModule(s, "java/lang")).
+
+rules moduleOk : scope * Module
+  modulesOk maps moduleOk(*, list(*))
+
+  moduleOk(s, m@Module(mods, name, imports, decls)) :- {ms_pub ms is T}
+    new ms_pub, ms_pub -P-> s,
+    new ms, ms -P-> ms_pub,
+    module_init(s, ms_pub),
+    T == MODULE(ms_pub),
+    declareModule(s, name, T),
+    importsOk(s, ms, imports),
+    declsOk(ms, ms_pub, decls),
+    @m.type := T.
+
+  moduleOk(s, Module-Plhdr()).
+
+rules importOk : scope * scope * Import
+  importsOk maps importOk(*, *, list(*))
+
+  importOk(s, ms, d@Import(moduleName, name)) :- {ims is T}
+    resolveModule(s, moduleName) == ims,
+    resolveDecl(ims, name) == T,
+    new is, ms -I-> is,
+    declareImportDecl(is, name, T),
+    @d.type := T.
+
+  importOk(s, ms, d@ImportAll(moduleName)) :- {ims}
+    resolveModule(s, moduleName) == ims,
+    declareImportAll(ms, ims).
+
+  importOk(s, ms, Import-Plhdr()).
+
