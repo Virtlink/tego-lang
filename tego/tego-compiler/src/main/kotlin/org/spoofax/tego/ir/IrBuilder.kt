@@ -81,9 +81,9 @@ class IrBuilder {
 
         // TODO: Fix package name
         val modifiers = toTypeModifiers(declTerm[0])
-        val name = QName(PackageName("tego"), declTerm[1].toJavaString())
+        val simpleName = declTerm[1].toJavaString()
         val ptrs = listOf(declOf(declTerm[1]))
-        return ClassTypeDecl(name, modifiers, ptrs)
+        return ClassTypeDecl(simpleName, modifiers, ptrs)
     }
 
     /**
@@ -94,10 +94,10 @@ class IrBuilder {
 
         val type = typeOf(declTerm) as StrategyType
         // TODO: Fix package name
-        val name = QName(PackageName("tego"), declTerm[1].toJavaString())
+        val simpleName = declTerm[1].toJavaString()
         val modifiers = toTypeModifiers(declTerm[0])
         val ptrs = listOf(declOf(declTerm[1]))
-        return StrategyTypeDecl(name, type, modifiers, ptrs)
+        return StrategyTypeDecl(simpleName, type, modifiers, ptrs)
     }
 
     /**
@@ -107,12 +107,12 @@ class IrBuilder {
         require(defTerm is ApplTerm && defTerm.constructor == "StrategyDefWInput") { "Expected StrategyDefWInput() term, got: $defTerm"}
 
         // TODO: Fix package name
-        val name = defTerm[0].toJavaString()
+        val simpleName = defTerm[0].toJavaString()
         val params = defTerm[1].asList().map { toParamDef(it) }
         val inputName = defTerm[2].toJavaString()
         val body = toExp(defTerm[3])
         val ptr = refOf(defTerm[0])
-        return StrategyDef(name, params, inputName, body, ptr)
+        return StrategyDef(simpleName, params, inputName, body, ptr)
     }
 
     /**

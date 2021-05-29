@@ -1,5 +1,7 @@
 package org.spoofax.tego.ir
 
+import com.virtlink.kasm.JvmType
+import org.spoofax.tego.compiler.JvmTypeManager
 import java.util.*
 
 /**
@@ -15,6 +17,10 @@ sealed interface TypeDecl : Decl, Declaration {
     /** The module that contains the declaration. */
     var module: Module?
 
+    /**
+     * Gets the JVM type for this declaration.
+     */
+    fun toJvmType(types: JvmTypeManager): JvmType
 }
 
 /**
@@ -24,7 +30,7 @@ sealed interface TypeDecl : Decl, Declaration {
  * @property type The type of the strategy.
  */
 data class StrategyTypeDecl(
-    override val name: QName,
+    val simpleName: String,
     val type: StrategyType,
     override val modifiers: TypeModifiers,
     override val pointers: List<TermIndex>,
@@ -38,6 +44,20 @@ data class StrategyTypeDecl(
 
     override var module: Module? = null
 
+    override val name: QName get() = QName(module?.name!!, this.simpleName)
+
+    override fun toJvmType(types: JvmTypeManager): JvmType {
+        return JvmType.fromSignature("L${name.packageName}/${getJvmClassName()};")
+    }
+
+    /**
+     * Gets the JVM class name of this type.
+     */
+    private fun getJvmClassName(): String {
+        // TODO: Make this smarter about names with underscores, dashes, and special characters
+        return name.simpleName.capitalize() + "Strategy"
+    }
+
 }
 
 /**
@@ -46,12 +66,18 @@ data class StrategyTypeDecl(
  * @property name The fully-qualified name of the class.
  */
 data class ClassTypeDecl(
-    override val name: QName,
+    val simpleName: String,
     override val modifiers: TypeModifiers,
     override val pointers: List<TermIndex>,
 ) : TypeDecl, Declaration {
 
     override var module: Module? = null
+
+    override val name: QName get() = QName(module?.name!!, this.simpleName)
+
+    override fun toJvmType(types: JvmTypeManager): JvmType {
+        return JvmType.fromSignature("L${name.packageName}/${name.simpleName};")
+    }
 
 }
 

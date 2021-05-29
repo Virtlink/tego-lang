@@ -7,7 +7,6 @@ import com.virtlink.tego.strategies.Strategy1
 import com.virtlink.tego.strategies.Strategy2
 import com.virtlink.tego.strategies.Strategy3
 import org.spoofax.tego.ir.*
-import org.spoofax.tego.utils.of
 
 
 /**
@@ -97,11 +96,7 @@ class JvmTypeManager(
      * @param decl the type declaration
      * @return the JVM type
      */
-    fun getJvmType(decl: TypeDecl): JvmType = when(decl) {
-        is ClassTypeDecl -> JvmType.of(decl.name)
-        is StrategyTypeDecl -> JvmType.of(decl.name)
-        else -> TODO("Unsupported declaration of type ${decl::class.java}: $decl")
-    }
+    fun getJvmType(decl: TypeDecl): JvmType = decl.toJvmType(this)
 
     /**
      * Gets the JVM class signature for the given strategy type declaration.

@@ -92,7 +92,7 @@ class TegoCompiler(
          * @return the compiled JVM class
          */
         fun compileDefinition(def: StrategyDef): JvmClass {
-            val decl = symbolTable[def.pointer] as StrategyTypeDecl? ?: throw IllegalStateException("No declaration found for definition: ${def.name}")
+            val decl = symbolTable[def.pointer] as StrategyTypeDecl? ?: throw IllegalStateException("No declaration found for definition: ${def.simpleName}")
             require(def.body.isAnf) { "The definition body must be in ANF." }
 
             val cls = strategyAssembler.assembleStrategy(decl, def)
