@@ -21,7 +21,8 @@ rules moduleOk : scope * Module
     new ms_pub, ms_pub -P-> s,
     new ms, ms -P-> ms_pub,
     module_init(s, ms_pub),
-    declareModule(s, name, ms_pub) == T,
+    T == MODULE(ms_pub),
+    declareDecl(s, name, T),
     importsOk(s, ms, imports),
     declsOk(ms, ms_pub, decls),
     @m.type := T.

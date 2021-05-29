@@ -35,7 +35,7 @@ rules init : scope
   init(s) :-
     // java/lang
     {s_java_lang} new s_java_lang,
-    declareModule(s, "java/lang", MODULE(s_java_lang)),
+    declareDecl(s, "java/lang", MODULE(s_java_lang)),
     declareDecl(s_java_lang, "Class", CLASS("Class")).
 
 

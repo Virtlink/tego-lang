@@ -16,6 +16,7 @@ imports
   injections/-
 
   libspoofax/term/origin
+  libspoofax/analysis/constraint
 
 rules // Analysis
 
