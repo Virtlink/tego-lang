@@ -3,23 +3,30 @@ package org.spoofax.tego.ir
 import java.util.*
 
 /** A Tego project. */
-data class Project(
-    val files: List<File>,
-)
+class Project {
+    val files: MutableList<File> = Children(this, { it.project }, { it, owner -> it.project = owner })
+}
 
 /** A Tego file. */
-data class File(
-    val modules: List<Module>,
-)
+class File {
+
+    var project: Project? = null
+    val modules: MutableList<Module> = Children(this, { it.file }, { it, owner -> it.file = owner })
+
+}
 
 /** A Tego module. */
 data class Module(
     val name: PackageName,
-    val declarations: List<TypeDecl>,
-    val definitions: List<Def>,
     val modifiers: ModuleModifiers,
     override val pointers: List<TermIndex>,
-) : Declaration
+) : Declaration {
+
+    var file: File? = null
+    val declarations: MutableList<TypeDecl> = Children(this, { it.module }, { it, owner -> it.module = owner })
+    val definitions: MutableList<Def> = Children(this, { it.module }, { it, owner -> it.module = owner })
+
+}
 
 typealias ModuleModifiers = EnumSet<ModuleModifier>
 

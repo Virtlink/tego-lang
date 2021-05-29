@@ -10,5 +10,7 @@ data class StrategyDef(
     val body: Exp,
     override val pointer: TermIndex
 ) : Def, Reference {
-//    var decl: StrategyTypeDecl? = null
+
+    override var module: Module? = null
+
 }

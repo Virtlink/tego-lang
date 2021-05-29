@@ -5,12 +5,15 @@ import java.util.*
 /**
  * A type declaration.
  */
-sealed interface TypeDecl : Decl {
+sealed interface TypeDecl : Decl, Declaration {
 
     /** The fully-qualified name of the declaration. */
     val name: QName
     /** The modifiers of the declaration. */
     val modifiers: TypeModifiers
+
+    /** The module that contains the declaration. */
+    var module: Module?
 
 }
 
@@ -33,6 +36,8 @@ data class StrategyTypeDecl(
         append(type)
     }.toString()
 
+    override var module: Module? = null
+
 }
 
 /**
@@ -44,7 +49,11 @@ data class ClassTypeDecl(
     override val name: QName,
     override val modifiers: TypeModifiers,
     override val pointers: List<TermIndex>,
-) : TypeDecl, Declaration
+) : TypeDecl, Declaration {
+
+    override var module: Module? = null
+
+}
 
 typealias TypeModifiers = EnumSet<TypeModifier>
 

@@ -5,9 +5,7 @@ import org.spoofax.tego.aterm.*
 /**
  * Builds the Intermediate Representation of an expression.
  */
-class IrBuilder(
-//    val declMap: DeclMap = DeclMap(mutableMapOf())
-) {
+class IrBuilder {
 
     /**
      * Transforms a Tego project term into an IR Tego [Project].
@@ -16,10 +14,10 @@ class IrBuilder(
         // NOTE: There is not a Project() term yet
         require(projectTerm is ApplTerm) { "Expected constructor application term, got: $projectTerm"}
 
-        return Project(
+        return Project().apply {
             // TODO: Support multi-file
-            listOf(toFile(projectTerm))
-        )
+            this.files.addAll(listOf(toFile(projectTerm)))
+        }
     }
 
     /**
@@ -29,7 +27,9 @@ class IrBuilder(
         require(fileTerm is ApplTerm && fileTerm.constructor == "File") { "Expected File() term, got: $fileTerm"}
 
         val modules = fileTerm[0].asList().map { toModule(it) }
-        return File(modules)
+        return File().apply {
+            this.modules.addAll(modules)
+        }
     }
 
     /**
@@ -41,13 +41,14 @@ class IrBuilder(
         val modifiers = toModuleModifiers(moduleTerm[0])
         // TODO: Better way to get the QName from a module name / fix package name
         val name = PackageName(moduleTerm[1].toJavaString())
+        val ptrs = listOf(declOf(moduleTerm[1]))
         // We can ignore the imports (module[2])
         val allDecls = moduleTerm[3].asList().mapNotNull { toDecl(it) }
-        val decls = allDecls.filterIsInstance<TypeDecl>()
-        val defs = allDecls.filterIsInstance<Def>()
-        val ptrs = listOf(declOf(moduleTerm[1]))
 
-        return Module(name, decls, defs, modifiers, ptrs)
+        return Module(name, modifiers, ptrs).apply {
+            declarations.addAll(allDecls.filterIsInstance<TypeDecl>())
+            definitions.addAll(allDecls.filterIsInstance<Def>())
+        }
     }
 
     /**
