@@ -2,7 +2,6 @@ package org.spoofax.tego.compiler
 
 import com.virtlink.kasm.*
 import com.virtlink.kasm.JvmType.Companion.asRawType
-import org.spoofax.tego.ir.QName
 import org.spoofax.tego.ir.StrategyDef
 import org.spoofax.tego.ir.StrategyTypeDecl
 import org.spoofax.tego.ir.SymbolTable
@@ -33,12 +32,12 @@ class StrategyAssembler(
      * @return the assembled JVM class
      */
     fun assembleStrategy(decl: StrategyTypeDecl, def: StrategyDef): JvmClass {
-        val declJvmType: JvmType = decl.toJvmType(typeManager)
+        val declJvmType: JvmType = typeManager.getJvmType(decl)
         val strategyJvmClassSignature: JvmClassSignature = typeManager.getJvmClassSignature(decl)
 
-        val strategy0JvmType: JvmType = JvmType.fromDescriptor("Lcom/virtlink/tego/strategies/Strategy;")
-        val glcStrategyJvmType: JvmType = JvmType.fromDescriptor("Lcom/virtlink/tego/runtime/IfStrategy;")
-        val idStrategyJvmType: JvmType = JvmType.fromDescriptor("Lcom/virtlink/tego/runtime/IdStrategy;")
+//        val strategy0JvmType: JvmType = JvmType.fromDescriptor("Lcom/virtlink/tego/strategies/Strategy;")
+//        val glcStrategyJvmType: JvmType = JvmType.fromDescriptor("Lcom/virtlink/tego/runtime/IfStrategy;")
+//        val idStrategyJvmType: JvmType = JvmType.fromDescriptor("Lcom/virtlink/tego/runtime/IdStrategy;")
 
         val evalJvmMethodSignature: JvmMethodSignature = typeManager.getEvalJvmMethodSignature(decl.type)
 

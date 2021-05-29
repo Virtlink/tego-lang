@@ -1,6 +1,8 @@
 package org.spoofax.tego.ir
 
+import com.virtlink.kasm.JvmClassSignature
 import com.virtlink.kasm.JvmType
+import com.virtlink.kasm.JvmTypes
 import org.spoofax.tego.compiler.JvmTypeManager
 import java.util.*
 
@@ -20,7 +22,10 @@ sealed interface TypeDecl : Decl, Declaration {
     /**
      * Gets the JVM type for this declaration.
      */
-    fun toJvmType(types: JvmTypeManager): JvmType
+    fun getJvmType(types: JvmTypeManager): JvmType
+
+    /** Gets the JVM class signature for this declaration. */
+    fun getJvmClassSignature(types: JvmTypeManager): JvmClassSignature
 }
 
 /**
@@ -46,8 +51,16 @@ data class StrategyTypeDecl(
 
     override val name: QName get() = QName(module?.name!!, this.simpleName)
 
-    override fun toJvmType(types: JvmTypeManager): JvmType {
+    override fun getJvmType(types: JvmTypeManager): JvmType {
         return JvmType.fromSignature("L${name.packageName}/${getJvmClassName()};")
+    }
+
+    override fun getJvmClassSignature(types: JvmTypeManager): JvmClassSignature {
+        return JvmClassSignature.of(
+            JvmTypes.Object,
+            listOf(types[type]),
+            //decl.typeParameters.map { JvmTypeParam.of(it.name, JvmTypes.Object) }
+        )
     }
 
     /**
@@ -75,8 +88,15 @@ data class ClassTypeDecl(
 
     override val name: QName get() = QName(module?.name!!, this.simpleName)
 
-    override fun toJvmType(types: JvmTypeManager): JvmType {
+    override fun getJvmType(types: JvmTypeManager): JvmType {
         return JvmType.fromSignature("L${name.packageName}/${name.simpleName};")
+    }
+
+    override fun getJvmClassSignature(types: JvmTypeManager): JvmClassSignature {
+        return JvmClassSignature.of(
+            JvmTypes.Object,
+            emptyList(),
+        )
     }
 
 }

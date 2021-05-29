@@ -96,23 +96,17 @@ class JvmTypeManager(
      * @param decl the type declaration
      * @return the JVM type
      */
-    fun getJvmType(decl: TypeDecl): JvmType = decl.toJvmType(this)
+    fun getJvmType(decl: TypeDecl): JvmType = decl.getJvmType(this)
 
     /**
-     * Gets the JVM class signature for the given strategy type declaration.
+     * Gets the JVM class signature for the given type declaration.
      *
      * This method is thread-safe.
      *
      * @param decl the strategy type declaration
      * @return the JVM class signature
      */
-    fun getJvmClassSignature(decl: StrategyTypeDecl): JvmClassSignature {
-        return JvmClassSignature.of(
-            JvmTypes.Object,
-            listOf(getJvmType(decl.type)),
-            //decl.typeParameters.map { JvmTypeParam.of(it.name, JvmTypes.Object) }
-        )
-    }
+    fun getJvmClassSignature(decl: TypeDecl): JvmClassSignature = decl.getJvmClassSignature(this)
 
     /**
      * Gets the JVM class signature for the `eval` method of the given strategy type.
