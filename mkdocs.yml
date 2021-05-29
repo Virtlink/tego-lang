@@ -22,7 +22,7 @@ nav:
     - reference/java-interop.md
   - Background:
     - background/index.md
-    - background/declarations-and-fqns.md
+    - background/declarations-and-references.md
   - Develop:
     - develop/index.md
     - Documentation: develop/documentation.md

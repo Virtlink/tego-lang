@@ -12,25 +12,25 @@ imports
 
 signature
   constructors
-    OfName : Term -> Annotation
-    OfType : Term -> Annotation
-    OfRef  : Term -> Annotation
+    OfType : /* TYPE */ Term -> Annotation
+    OfRef  : /* TermIndex */ Term -> Annotation
+    OfDecl : /* TermIndex */ Term -> Annotation
 
 rules
 
   // Works on the analyzed term
   generate-annotated-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
   with filename := <guarantee-extension(|"annotated.aterm")> path
-     ; result := <bottomup(annotate-with-type; annotate-with-ref); gather-all-term-indices> f
+     ; result := <bottomup(annotate-with-type; annotate-with-ref; annotate-with-decl); move-all-ref-annos> f
 
   // Works on the analyzed term
   generate-typed-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
   with filename := <guarantee-extension(|"typed.aterm")> path
      ; result := <type-term> f
 
-  generate-named-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
-  with filename := <guarantee-extension(|"named.aterm")> path
-     ; result := <name-term> f
+//  generate-named-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
+//  with filename := <guarantee-extension(|"named.aterm")> path
+//     ; result := <name-term> f
 
   generate-refd-aterm: (_, _, f@File(_), path, project-path) -> (filename, result)
   with filename := <guarantee-extension(|"refd.aterm")> path
@@ -43,12 +43,12 @@ rules
       ; add-annotation(|OfType(<get-type; not(?"nabl2.Var"#(_))>))
     ) ; id)//remove-annotations(not(?OfType(_))))
 
-  name-term = bottomup(
-    where(get-name < debug(!"name: ") + debug(!"no name: ")) ;
-    try(
-        id
-      ; add-annotation(|OfName(<get-name; not(?"nabl2.Var"#(_))>))
-    ) ; remove-annotations(not(?OfName(_))))
+//  name-term = bottomup(
+//    where(get-name < debug(!"name: ") + debug(!"no name: ")) ;
+//    try(
+//        id
+//      ; add-annotation(|OfName(<get-name; not(?"nabl2.Var"#(_))>))
+//    ) ; remove-annotations(not(?OfName(_))))
 
   ref-term = bottomup(
     where(get-ref < debug(!"ref: ") + debug(!"no ref: ")) ;
@@ -57,103 +57,169 @@ rules
       ; add-annotation(|OfRef(<get-ref; not(?"nabl2.Var"#(_))>))
     ) ; id)//remove-annotations(not(?OfRef(_))))
 
+  decl-term = bottomup(
+    where(get-decl < debug(!"decl: ") + debug(!"no decl: ")) ;
+    try(
+        id
+      ; add-annotation(|OfDecl(<get-decl; not(?"nabl2.Var"#(_))>))
+    ) ; remove-annotations(not(?OfDecl(_))))
+
   annotate-with-type = try(
-      (is-Tego-Decl + is-Tego-Exp)      // Sorts to annotate
+      id                                // Sorts to annotate
+      //(is-Tego-Decl + is-Tego-Exp)      // Sorts to annotate
       ; add-annotation(|OfType(<get-type; not(?"nabl2.Var"#(_))>))
     )
 
   annotate-with-ref = try(
       id                                // Sorts to annotate
-      ; add-annotation(|OfType(<get-ref; not(?"nabl2.Var"#(_))>))
+      ; add-annotation(|OfRef(<get-ref; not(?"nabl2.Var"#(_))>))
+    )
+
+  annotate-with-decl = try(
+      id                                // Sorts to annotate
+      //(is-Tego-Decl)                    // Sorts to annotate
+      ; add-annotation(|OfDecl(<get-decl; not(?"nabl2.Var"#(_))>))
     )
 
 rules
 
-  get-type: term -> type //<strip-annos> type
-    where <debug(!"Debug get-type: ")> term
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get type: no analysis on node [<strip-annos;write-to-string> term]])>
-        ; type   := <stx-get-ast-type(|a) <+ fail-msg(|$[get type: no type on node [<strip-annos;write-to-string> term]])> term
+  get-type: term -> type
+   // where <debug(!"Debug get-type: ")> term
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get type: no analysis on node [<strip-annos; write-to-string> term]])>
+        ; type   := <stx-get-ast-type(|a) <+ fail-msg(|$[get type: no type on node [<strip-annos; write-to-string> term]])> term
 
-  get-name: term -> <strip-annos> name
-    where <debug(!"Debug get-type: ")> term
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get name: no analysis on node [<strip-annos;write-to-string> term]])>
-        ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[get name: no name on node [<strip-annos;write-to-string> term]])> term
+//  get-name: term -> name
+//    where <debug(!"Debug get-type: ")> term
+//    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get name: no analysis on node [<strip-annos; write-to-string> term]])>
+//        ; name   := <stx-get-ast-property(|a, "name") <+ fail-msg(|$[get name: no name on node [<strip-annos; write-to-string> term]])> term
 
-  get-ref: term -> ref //<strip-annos> ref
-    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get ref: no analysis on node [<strip-annos;write-to-string> term]])>
-        ; ref    := <stx-get-ast-ref(|a) <+ fail-msg(|$[get ref: no ref on node [<strip-annos;write-to-string> term]])> term
+  get-ref: term -> ref
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get ref: no analysis on node [<strip-annos; write-to-string> term]])>
+        ; ref    := <stx-get-ast-ref(|a) <+ fail-msg(|$[get ref: no ref on node [<strip-annos; write-to-string> term]])> term
+
+  get-decl: term -> decl
+    where a      := <stx-get-ast-analysis <+ fail-msg(|$[get decl: no analysis on node [<strip-annos; write-to-string> term]])>
+        ; decl   := <stx-get-ast-property(|a, "decl") <+ fail-msg(|$[get decl: no decl on node [<strip-annos; write-to-string> term]])> term
 
   fail-msg(|msg) = err-msg(|msg); fail
 
-signature constructors
-  TermIndices : list(TermIndex) -> TermIndices
-
-// Gathers and removes term indices for the given (desugared) declaration
-// Note that we don't gather (or remove) indices for definitions, or the body definitions of declarations
+// Moves OfRef() from the name to the definition itself
 rules
 
-  gather-all-term-indices = alltd(gather-term-indices)
+  move-all-ref-annos = bottomup(try(move-ref-anno))
 
-  gather-term-indices: decl@ClassDecl(mods, name){anno*}
-    -> ClassDecl(
-         <remove-term-indices> mods,
-         <remove-term-indices> name
-       ){newanno*}
-  with tis       := TermIndices(<collect-term-indices> decl)
-     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+  move-ref-anno: StrategyDefWInput(name{name_anno*}, params, inputParam, body){anno*}
+    -> StrategyDefWInput(name{name_anno'*}, params, inputParam, body){anno'*}
+  where (name_anno'*, anno'*) := <do-move-ref-anno> (name_anno*, anno*)
 
-  gather-term-indices: decl@StrategyDecl(mods, name, typeParams, paramTypes, inType, outType){anno*}
-    -> StrategyDecl(
-         <remove-term-indices> mods,
-         <remove-term-indices> name,
-         <remove-term-indices> typeParams,
-         <remove-term-indices> paramTypes,
-         <remove-term-indices> inType,
-         <remove-term-indices> outType
-       ){newanno*}
-  with tis       := TermIndices(<collect-term-indices> decl)
-     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+  move-ref-anno: RuleDef(name{name_anno*}, params, inputExp, outputExp, clauses){anno*}
+    -> RuleDef(name{name_anno'*}, params, inputExp, outputExp, clauses){anno'*}
+  where (name_anno'*, anno'*) := <do-move-ref-anno> (name_anno*, anno*)
 
-  gather-term-indices: decl@ValDecl(mods, name, type){anno*}
-    -> ValDecl(
-         <remove-term-indices> mods,
-         <remove-term-indices> name,
-         <remove-term-indices> type
-       ){newanno*}
-  with tis       := TermIndices(<collect-term-indices> decl)
-     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+  move-ref-anno: TypeRef(name{name_anno*}){anno*}
+    -> TypeRef(name{name_anno'*}){anno'*}
+  where (name_anno'*, anno'*) := <do-move-ref-anno> (name_anno*, anno*)
 
-  gather-term-indices: decl@ValDef(mods, name, type, exp){anno*}
-    -> ValDef(
-         <remove-term-indices> mods,
-         <remove-term-indices> name,
-         <remove-term-indices> type,
-         exp
-       ){newanno*}
-  with tis       := TermIndices(<concat> [
-         <collect-term-index> decl,
-         <collect-term-indices> [mods, name, type]
-       ])
-     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+  move-ref-anno: Var(name{name_anno*}){anno*}
+    -> Var(name{name_anno'*}){anno'*}
+  where (name_anno'*, anno'*) := <do-move-ref-anno> (name_anno*, anno*)
 
-  gather-term-indices: decl@ValDefNoType(mods, name, exp){anno*}
-    -> ValDefNoType(
-         <remove-term-indices> mods,
-         <remove-term-indices> name,
-         exp
-       ){newanno*}
-  with tis       := TermIndices(<concat> [
-         <collect-term-index> decl,
-         <collect-term-indices> [mods, name]
-       ])
-     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+  move-ref-anno: Member(rcv, name{name_anno*}){anno*}
+    -> Member(rcv, name{name_anno'*}){anno'*}
+  where (name_anno'*, anno'*) := <do-move-ref-anno> (name_anno*, anno*)
 
-  collect-term-index   = ![<get-term-index>] <+ ![]
-  collect-term-indices = collect-all(get-term-index)
+//  move-ref-anno: StrategyDefWInput(name{name_anno*}, params, inputParam, body){anno*}
+//    -> StrategyDefWInput(name{name_anno'*}, params, inputParam, body){anno'*}
+//  where ofref      := <fetch-elem(?OfRef(_))> name_anno*
+//  with name_anno'* := <remove-all(?OfRef(_))> name_anno*
+//     ; anno'*      := [ofref|anno*]
 
-  get-term-index: t{anno*} -> ti
-  where ti := <fetch(?TermIndex(_, _)); ?[<id>]> anno*
+//  move-ref-anno: RuleDef(name{name_anno*}, params, inputExp, outputExp, clauses){anno*}
+//    -> RuleDef(name{name_anno'*}, params, inputExp, outputExp, clauses){anno'*}
+//  where ofref      := <fetch-elem(?OfRef(_))> name_anno*
+//  with name_anno'* := <remove-all(?OfRef(_))> name_anno*
+//     ; anno'*      := [ofref|anno*]
+//
+//  move-ref-anno: TypeRef(name{name_anno*}){anno*}
+//    -> TypeRef(name{name_anno'*}){anno'*}
+//  where ofref      := <fetch-elem(?OfRef(_))> name_anno*
+//  with name_anno'* := <remove-all(?OfRef(_))> name_anno*
+//     ; anno'*      := [ofref|anno*]
 
-  remove-term-indices = bottomup(try(remove-term-index))
-  remove-term-index: t{anno*} -> t{newanno*}
-  with newanno*  := <remove-all(?TermIndex(_, _))> anno*
+  do-move-ref-anno: (from_anno*, to_anno*) -> (from_anno'*, to_anno'*)
+  where ofref      := <fetch-elem(?OfRef(_))> from_anno*
+  with from_anno'* := <remove-all(?OfRef(_))> from_anno*
+     ; to_anno'*   := [ofref|to_anno*]
+
+//signature constructors
+//  TermIndices : list(TermIndex) -> TermIndices
+//
+//// Gathers and removes term indices for the given (desugared) declaration
+//// Note that we don't gather (or remove) indices for definitions, or the body definitions of declarations
+//rules
+//
+//  gather-all-term-indices = alltd(gather-term-indices)
+//
+//  gather-term-indices: decl@ClassDecl(mods, name){anno*}
+//    -> ClassDecl(
+//         <remove-term-indices> mods,
+//         <remove-term-indices> name
+//       ){newanno*}
+//  with tis       := TermIndices(<collect-term-indices> decl)
+//     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+//
+//  gather-term-indices: decl@StrategyDecl(mods, name, typeParams, paramTypes, inType, outType){anno*}
+//    -> StrategyDecl(
+//         <remove-term-indices> mods,
+//         <remove-term-indices> name,
+//         <remove-term-indices> typeParams,
+//         <remove-term-indices> paramTypes,
+//         <remove-term-indices> inType,
+//         <remove-term-indices> outType
+//       ){newanno*}
+//  with tis       := TermIndices(<collect-term-indices> decl)
+//     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+//
+//  gather-term-indices: decl@ValDecl(mods, name, type){anno*}
+//    -> ValDecl(
+//         <remove-term-indices> mods,
+//         <remove-term-indices> name,
+//         <remove-term-indices> type
+//       ){newanno*}
+//  with tis       := TermIndices(<collect-term-indices> decl)
+//     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+//
+//  gather-term-indices: decl@ValDef(mods, name, type, exp){anno*}
+//    -> ValDef(
+//         <remove-term-indices> mods,
+//         <remove-term-indices> name,
+//         <remove-term-indices> type,
+//         exp
+//       ){newanno*}
+//  with tis       := TermIndices(<concat> [
+//         <collect-term-index> decl,
+//         <collect-term-indices> [mods, name, type]
+//       ])
+//     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+//
+//  gather-term-indices: decl@ValDefNoType(mods, name, exp){anno*}
+//    -> ValDefNoType(
+//         <remove-term-indices> mods,
+//         <remove-term-indices> name,
+//         exp
+//       ){newanno*}
+//  with tis       := TermIndices(<concat> [
+//         <collect-term-index> decl,
+//         <collect-term-indices> [mods, name]
+//       ])
+//     ; newanno*  := [tis|<remove-all(?TermIndex(_, _))> anno*]
+//
+//  collect-term-index   = ![<get-term-index>] <+ ![]
+//  collect-term-indices = collect-all(get-term-index)
+//
+//  get-term-index: t{anno*} -> ti
+//  where ti := <fetch(?TermIndex(_, _)); ?[<id>]> anno*
+//
+//  remove-term-indices = bottomup(try(remove-term-index))
+//  remove-term-index: t{anno*} -> t{newanno*}
+//  with newanno*  := <remove-all(?TermIndex(_, _))> anno*

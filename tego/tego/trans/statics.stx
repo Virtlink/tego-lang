@@ -51,8 +51,7 @@ rules moduleOk : scope * Module
     importsOk(s, ms, imports),
     declsOk(ms, ms_pub, decls),
     @m.type := T,
-    true.
-    //declareName(ms_pub, MODULENAME(resolveParentName(s), name)).
+    @m.decl := name.
 
   moduleOk(s, Module-Plhdr()).
 
@@ -80,17 +79,20 @@ rules declOk : scope * scope * Decl
     typeOfExp(ms, body) == TBODY,
     TBODY == T,
     declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+    @d.type := T,
+    @d.decl := name.
 
   declOk(ms, ms_pub, d@ValDefNoType(mods, name, body)) :- {T TBODY}
     typeOfExp(ms, body) == T,
     declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+    @d.type := T,
+    @d.decl := name.
 
   declOk(ms, ms_pub, d@ValDecl(mods, name, type)) :- {T}
     typeOfType(ms, type) == T,
     declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+    @d.type := T,
+    @d.decl := name.
 
   declOk(ms, ms_pub, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
     // Create strategy declaration scope in which the type variables are declared
@@ -100,7 +102,8 @@ rules declOk : scope * scope * Decl
     typeOfType(ds, outType) == OT,
     T == STRATEGY(PTs, IT, OT),
     declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+    @d.type := T,
+    @d.decl := name.
 
   // TODO: Support generics
   declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
@@ -134,7 +137,8 @@ rules declOk : scope * scope * Decl
   declOk(ms, ms_pub, d@ClassDecl(mods, name)) :- {T}
     T == CLASS(name),
     declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+    @d.type := T,
+    @d.decl := name.
 
 
   declOk(ms, ms_pub, Decl-Plhdr()).
@@ -278,7 +282,8 @@ rules typeOfExp : scope * Exp -> TYPE
     declareDecl(ls, bindName, BT),
     typeOfExp(ls, body) == T,
     @bindName.type := BT,
-    @e.type := T.
+    @e.type := T,
+    @e.decl := bindName.
 
   typeOfExp(s, e@Tuple(exps)) = T@TUPLE(Ts) :-
     typesOfExps(s, exps) == Ts,

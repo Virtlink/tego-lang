@@ -12,6 +12,7 @@ imports
   desugar
   check
   to-ir
+  generate
   injections/-
 
   libspoofax/term/origin

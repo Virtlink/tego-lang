@@ -8,4 +8,6 @@ data class StrategyDef(
     val params: List<ParamDef>,
     val inputName: String,
     val body: Exp,
-) : Def
+) : Def {
+//    var decl: StrategyTypeDecl? = null
+}

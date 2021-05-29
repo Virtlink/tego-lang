@@ -11,7 +11,7 @@ interface SymbolTable {
      * Resolves a type to its declaration.
      *
      * @param name the name to resolve
-     * @return the type declaration; or `null` when not found
+     * @return the type declaration; or `null` if not found
      */
     operator fun get(name: QName): TypeDecl? = resolve(name)
 
