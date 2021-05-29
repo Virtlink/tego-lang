@@ -12,7 +12,7 @@ rules module_init : scope * scope
 
   module_init(s, ms) :-
     // default imports
-    declareImportAll(ms, resolveModule(s, "java/lang")).
+    importAll(ms, resolveModule(s, "java/lang")).
 
 rules moduleOk : scope * Module
   modulesOk maps moduleOk(*, list(*))
@@ -21,8 +21,7 @@ rules moduleOk : scope * Module
     new ms_pub, ms_pub -P-> s,
     new ms, ms -P-> ms_pub,
     module_init(s, ms_pub),
-    T == MODULE(ms_pub),
-    declareModule(s, name, T),
+    declareModule(s, name, ms_pub) == T,
     importsOk(s, ms, imports),
     declsOk(ms, ms_pub, decls),
     @m.type := T.
@@ -36,12 +35,12 @@ rules importOk : scope * scope * Import
     resolveModule(s, moduleName) == ims,
     resolveDecl(ims, name) == T,
     new is, ms -I-> is,
-    declareImportDecl(is, name, T),
+    importOne(is, name, T),
     @d.type := T.
 
   importOk(s, ms, d@ImportAll(moduleName)) :- {ims}
     resolveModule(s, moduleName) == ims,
-    declareImportAll(ms, ims).
+    importAll(ms, ims).
 
   importOk(s, ms, Import-Plhdr()).
 

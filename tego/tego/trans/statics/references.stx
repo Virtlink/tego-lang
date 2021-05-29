@@ -22,24 +22,17 @@ signature
       I      // import edge
 
 
-rules declareModule : scope * string * TYPE
+// Imports all declarations of the specified scope into the current scope
+rules importAll : scope * scope
 
-  declareModule(s, name, T) :-
-    !type[name, T] in s.
+  importAll(s, s_import) :-
+    s -I-> s_import.
 
-rules resolveModule : scope * string -> scope
 
-  resolveModule(s, name) = ms :-
-    resolveDecl(s, name) == MODULE(ms).
+// Imports one declaration with the specified name and type into the current scope
+rules importOne : scope * string * TYPE
 
-rules declareImportAll : scope * scope
-
-  declareImportAll(s, s2) :-
-    s -I-> s2.
-
-rules declareImportDecl : scope * string * TYPE
-
-  declareImportDecl(is, name, T) :-
+  importOne(is, name, T) :-
     !type[name, T] in is.
 
 
@@ -59,6 +52,7 @@ rules declareDeclWithMods : scope * scope * string * TYPE * list(DeclMod)
     // private
     declareDecl(s_priv, name, T).
 
+
 // Declares a declaration with the given name and type in the given scope
 rules declareDecl : scope * string * TYPE
 
@@ -67,6 +61,7 @@ rules declareDecl : scope * string * TYPE
     // For compilation and to support renaming,
     // we need @decl on the name of the declaration.
     @name.decl := name.
+
 
 // Resolves a declaration with the given name in the given scope to a type
 rules resolveDecl : scope * string -> TYPE
@@ -81,3 +76,18 @@ rules resolveDecl : scope * string -> TYPE
     // we need @ref on the name of the reference
     // pointing to the name of the declaration.
     @name.ref := decl.
+
+
+// Declares the module with the specified name and scope and returns its type
+rules declareModule : scope * string * scope -> TYPE
+
+  declareModule(s, name, ms_pub) = T :-
+    MODULE(ms_pub) == T,
+    !type[name, T] in s.
+
+
+// Resolves the module with the specified name to its scope
+rules resolveModule : scope * string -> scope
+
+  resolveModule(s, name) = ms :-
+    resolveDecl(s, name) == MODULE(ms).
