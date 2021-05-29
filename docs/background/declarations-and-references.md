@@ -27,5 +27,9 @@ While types and type references are handled as explained previously, this does n
 ## Declarations
 Similarly, we get the value of the `@t.decl` attribute and apply it using an `OfDecl` annotation. Both the reference `@t.ref` and the declaration `@t.decl` must point to the same entity, usually the name of the declaration.
 
-## Term Indices
-While we cannot uniquely associate a name to a reference or declaration, we _can_ use Statix resolution mechanism in combination with term indices. Each term index uniquely identifies a term in the AST.
+## Pointers and Term Indices
+In the compiler IR, declarations have an associated `pointers` field that holds objects that uniquely point to this declaration. Similarly, references have an associated `pointer` field that matches the pointer object of the declaration. Statix ensures all terms in the AST have a uniquely identifying term index. Since Statix already performs reference resolution, we can use the term indices as the pointer object to relate references and declarations.
+
+## Renaming
+To support renaming, the `@decl` Statix annotation must be applied to the name of the declaration, thus `@name.decl := name`. This also means that the `OfDecl()` term annotation will be applied to the name of the declaration.
+Similarly, the `@ref` Statix annotation must be applied to the name of the reference, thus `@name.ref := decl`. Therefore the `OfRef()` term annotation will be applied to the name of the reference.

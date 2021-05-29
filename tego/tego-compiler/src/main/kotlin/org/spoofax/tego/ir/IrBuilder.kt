@@ -6,7 +6,7 @@ import org.spoofax.tego.aterm.*
  * Builds the Intermediate Representation of an expression.
  */
 class IrBuilder(
-    val declMap: DeclMap = DeclMap(mutableMapOf())
+//    val declMap: DeclMap = DeclMap(mutableMapOf())
 ) {
 
     /**
@@ -55,7 +55,7 @@ class IrBuilder(
     fun toDecl(declTerm: Term): Decl? {
         require(declTerm is ApplTerm) { "Expected constructor application term, got: $declTerm"}
 
-        val decl = when (declTerm.constructor) {
+        return when (declTerm.constructor) {
             "ValDef" -> /* TODO: Support this. */ null
             "ValDecl" -> /* TODO: Support this. */ null
             "ValDefNoType" -> /* TODO: Support this. */ null
@@ -68,12 +68,7 @@ class IrBuilder(
             "ClassDecl" -> toClassDecl(declTerm)
 
             else -> TODO("Unsupported declaration: $declTerm")
-        } ?: return null
-
-        termIndicesOf(declTerm).forEach { termIndex ->
-            declMap[termIndex] = decl
         }
-        return decl
     }
 
     /**
@@ -85,7 +80,8 @@ class IrBuilder(
         // TODO: Fix package name
         val modifiers = toTypeModifiers(declTerm[0])
         val name = QName(PackageName("tego"), declTerm[1].toJavaString())
-        return ClassTypeDecl(name, modifiers)
+        val ptrs = listOf(declOf(declTerm[1]))
+        return ClassTypeDecl(name, modifiers, ptrs)
     }
 
     /**
@@ -98,7 +94,8 @@ class IrBuilder(
         // TODO: Fix package name
         val name = QName(PackageName("tego"), declTerm[1].toJavaString())
         val modifiers = toTypeModifiers(declTerm[0])
-        return StrategyTypeDecl(name, type, modifiers)
+        val ptrs = listOf(declOf(declTerm[1]))
+        return StrategyTypeDecl(name, type, modifiers, ptrs)
     }
 
     /**
@@ -108,11 +105,12 @@ class IrBuilder(
         require(defTerm is ApplTerm && defTerm.constructor == "StrategyDefWInput") { "Expected StrategyDefWInput() term, got: $defTerm"}
 
         // TODO: Fix package name
-        val name = QName(PackageName("tego"), defTerm[0].toJavaString())
+        val name = defTerm[0].toJavaString()
         val params = defTerm[1].asList().map { toParamDef(it) }
         val inputName = defTerm[2].toJavaString()
         val body = toExp(defTerm[3])
-        return StrategyDef(name, params, inputName, body)
+        val ptr = refOf(defTerm[1])
+        return StrategyDef(name, params, inputName, body, ptr)
     }
 
     /**
@@ -156,7 +154,8 @@ class IrBuilder(
         return termIndicesTerm[0].asList().map { toTermIndex(it) }
     }
 
-    private fun toTermIndex(termIndexTerm: Term): TermIndex {
+    private fun toTermIndex(termIndexTerm: Term?): TermIndex {
+        requireNotNull(termIndexTerm) { "Expected a term, not nothing." }
         require(termIndexTerm is ApplTerm && termIndexTerm.constructor == "TermIndex") { "Expected TermIndex() term, got: $termIndexTerm"}
 
         val resource = termIndexTerm[0].toJavaString()
@@ -166,6 +165,12 @@ class IrBuilder(
 
     private fun typeOf(t: Term): Type {
         return toType(t.annotations["OfType", 1]?.get(0))
+    }
+    private fun declOf(t: Term): TermIndex {
+        return toTermIndex(t.annotations["OfDecl", 1]?.get(0))
+    }
+    private fun refOf(t: Term): TermIndex {
+        return toTermIndex(t.annotations["OfRef", 1]?.get(0))
     }
 
     /**

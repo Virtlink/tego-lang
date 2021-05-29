@@ -24,7 +24,8 @@ data class StrategyTypeDecl(
     override val name: QName,
     val type: StrategyType,
     override val modifiers: TypeModifiers,
-) : TypeDecl {
+    override val pointers: List<Any>,
+) : TypeDecl, Declaration {
 
     override fun toString(): String  = StringBuilder().apply {
         append(name)
@@ -42,7 +43,8 @@ data class StrategyTypeDecl(
 data class ClassTypeDecl(
     override val name: QName,
     override val modifiers: TypeModifiers,
-) : TypeDecl
+    override val pointers: List<Any>,
+) : TypeDecl, Declaration
 
 typealias TypeModifiers = EnumSet<TypeModifier>
 

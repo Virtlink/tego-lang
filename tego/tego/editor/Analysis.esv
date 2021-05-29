@@ -26,6 +26,6 @@ menus
   menu: "Generate" (openeditor)
 
     action: "Generate annotated AST" = generate-annotated-aterm
-    action: "Generate typed AST"     = generate-typed-aterm
-    action: "Generate named AST"     = generate-named-aterm
-    action: "Generate refd AST"      = generate-refd-aterm
+//    action: "Generate typed AST"     = generate-typed-aterm
+//    action: "Generate named AST"     = generate-named-aterm
+//    action: "Generate refd AST"      = generate-refd-aterm

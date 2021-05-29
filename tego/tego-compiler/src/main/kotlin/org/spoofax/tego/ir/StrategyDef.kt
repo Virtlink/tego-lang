@@ -4,10 +4,11 @@ package org.spoofax.tego.ir
  * A strategy definition.
  */
 data class StrategyDef(
-    val name: QName,
+    val name: String,
     val params: List<ParamDef>,
     val inputName: String,
     val body: Exp,
-) : Def {
+    override val pointer: Any
+) : Def, Reference {
 //    var decl: StrategyTypeDecl? = null
 }
