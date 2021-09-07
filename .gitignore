@@ -106,3 +106,6 @@ src-gen/
 !tego/tego-compiler/src/**/*.aterm
 !tego/tego-runtime/src/**/*.aterm
 
+
+## Misc
+/generated/

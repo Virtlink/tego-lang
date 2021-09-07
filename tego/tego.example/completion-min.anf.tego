@@ -1,0 +1,67 @@
+module example1
+
+    import mb/nabl2/terms::*
+    import mb/statix/common::*
+    import mb/statix/solver::*
+    import mb/statix/constraints::*
+
+    def complete< >(ITermVar): SolverState -> [SolverState]
+    complete(v) __input =
+      let x35 = <x36> x38,
+      let x38 = <x39> x41,
+      let x41 = <x42> __input,
+      let x42 = expandAllPredicates(v),
+      let x39 = flatMap(x40),
+      let x40 = expandAllInjections(v),
+      let x36 = flatMap(x37),
+      let x37 = expandAllQueries(v),
+      let x15 = flatMap(x34),
+      let x34 = expandDeterministic(v),
+      <x15> x35.
+    extern def expandAllPredicates< >(ITermVar): SolverState -> [SolverState]
+    extern def expandAllInjections< >(ITermVar): SolverState -> [SolverState]
+    extern def expandAllQueries< >(ITermVar): SolverState -> [SolverState]
+    extern def expandDeterministic< >(ITermVar): SolverState -> [SolverState]
+    extern def flatMap< >(( ) SolverState -> [SolverState]): [SolverState] -> [SolverState]
+    extern def fixsetSS< >(( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def trySS< >(( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def repeatSS< >(( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def limitSS< >(Int, ( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def distinctSS< >(( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def orSS< >(( ) SolverState -> [SolverState], ( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def idSS< >( ): SolverState -> [SolverState]
+    extern def ifSS< >(( ) SolverState -> [SolverState], ( ) SolverState -> [SolverState], ( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def singleSS< >(( ) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def selectConstraints< >(Class, (IConstraint) SolverState -> [SolverState]): SolverState -> [SolverState]
+    extern def assertValid< >(ITermVar): SolverState -> [SolverState]
+    extern def expandPredicateConstraint< >(ITermVar): SolverState -> [SolverState]
+    extern def expandQueryConstraint< >(ITermVar): SolverState -> [SolverState]
+    extern def expandInjection< >(ITermVar): SolverState -> [SolverState]
+    extern def filterPlaceholders< >(ITermVar): SolverState -> [SolverState]
+    extern def containsVar< >(ITermVar, IConstraint): SolverState -> [SolverState]
+
+extern module mb/statix/constraints
+
+
+    public extern class type CResolveQuery
+    public extern class type CUser
+
+extern module mb/statix/common
+
+
+    public extern class type SolverState
+
+extern module mb/statix/solver
+
+
+    public extern class type IConstraint
+
+extern module mb/nabl2/terms
+
+
+    public extern class type ITermVar
+
+extern module java/lang
+
+
+    public extern class type Class

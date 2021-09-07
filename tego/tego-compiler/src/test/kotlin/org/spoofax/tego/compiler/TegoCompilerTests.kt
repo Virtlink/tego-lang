@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.spoofax.tego.aterm.TermFactoryImpl
 import org.spoofax.tego.aterm.io.ATermReader
 import org.spoofax.tego.ir.IrBuilder
+import java.nio.file.Path
 import kotlin.io.path.createTempDirectory
 
 /**
@@ -25,7 +26,8 @@ class TegoCompilerTests {
             StrategyAssembler.Factory(ExpAssembler.Factory()),
             classWriter
         )
-        val tmpDir = createTempDirectory("tego")
+        val tmpDir = Path.of("/Users/daniel/repos/tego-lang/generated")
+//        val tmpDir = createTempDirectory("tego")
 
         // Act
         val clss = compiler.compile(moduleTerm)

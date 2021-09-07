@@ -349,7 +349,7 @@ class ATermReader(
      *
      * @param reader the reader to read from
      * @return `true` when there is more to read;
-     * otherwise, `false` whent he end of the stream has been reached
+     * otherwise, `false` when the end of the stream has been reached
      */
     private fun readWhitespace(reader: PushbackReader): Boolean {
         var ch: Char = reader.peek() ?: return false
@@ -388,8 +388,8 @@ class ATermReader(
      */
     private fun PushbackReader.peek(): Char? {
         val ch = this.read()
-        this.unread(ch)
         if (ch == -1) return null
+        this.unread(ch)
         return ch.toChar()
     }
 
@@ -465,7 +465,7 @@ class ATermReader(
      * Tries to peek to see if the given character matches the next character.
      *
      * @param expected the expected character
-     * @return the next character; or `null` when the characer was different
+     * @return the next character; or `null` when the character was different
      */
     private fun PushbackReader.tryPeek(vararg expected: Char): Char? {
         return tryPeek { ch -> ch in expected }

@@ -42,7 +42,7 @@ class Children<T, O>(
     private fun unsetOwner(element: T): T {
         val currentOwner = getter(element)
         check(currentOwner == this.owner || currentOwner == null) { "Existing element already belongs to a different collection." }
-        setter(element, this.owner)
+        setter(element, null)
         return element
     }
 }
