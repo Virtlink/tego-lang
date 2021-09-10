@@ -41,17 +41,17 @@ signature
     STRING   : TYPE
     
     // A reference to a type parameter
-    PARAMREF : TYPE_PARAM -> TYPE
+    TPARAMREF: TPARAM -> TYPE
 
   relations
     withType: -> TYPE
 
-  sorts TYPE_PARAM TYPE_ARG
+  sorts TPARAM
   constructors
-    TYPE_PARAM : scope * string * TYPE * TYPE -> TYPE_PARAM
+    TPARAM : scope * string * TYPE * TYPE -> TPARAM
   relations
-    type_param : TYPE_PARAM
-    type_arg   : TYPE_PARAM -> TYPE
+    type_param : TPARAM
+    type_arg   : TPARAM -> TYPE
     //typeParam: TYPEPARAM -> (TYPE * TYPE) // param -> (upperBound * lowerBound)
     //typeArg  : TYPEPARAM -> TYPE		  // param -> instantiated T
 
@@ -120,10 +120,10 @@ rules typeOfType : scope * Type -> TYPE
  * @param occs the list of type parameter occurrences
  * @return the type of the type reference
  */ 
-rules typeOfTypeRefOrTypeParam : scope * Type * list((path * TYPE_PARAM)) -> TYPE
+rules typeOfTypeRefOrTypeParam : scope * Type * list((path * TPARAM)) -> TYPE
     
   // A reference to a type parameter.
-  typeOfTypeRefOrTypeParam(s, t@TypeRef(name), [(_, param@TYPE_PARAM(_, name', T_UPPER, _))]) = T :-
+  typeOfTypeRefOrTypeParam(s, t@TypeRef(name), [(_, param@TPARAM(_, name', T_UPPER, _))]) = T :-
     typeOfTYPE_PARAM(param, resolveTypeArg(s, name)) == T,
     @name.ref := name',
     @t.type := T.
@@ -149,16 +149,16 @@ rules typeOfTypeRefOrTypeParam : scope * Type * list((path * TYPE_PARAM)) -> TYP
  * @param occs the list of type argument occurrences, which may be empty
  * @return the type of the type parameter
  */
-rules typeOfTYPE_PARAM : TYPE_PARAM * list((path * (TYPE_PARAM * TYPE))) -> TYPE
+rules typeOfTYPE_PARAM : TPARAM * list((path * (TPARAM * TYPE))) -> TYPE
 
   // Exactly one type argument found for the type parameter with the specified name.
   typeOfTYPE_PARAM(_, [(_, (_, T))]) = T.
   
   // No type arguments found for the type parameter with the specified name.
-  typeOfTYPE_PARAM(param, []) = PARAMREF(param).
+  typeOfTYPE_PARAM(param, []) = TPARAMREF(param).
   
   // Two or more type arguments found for the type parameter with the specified name.
-  typeOfTYPE_PARAM(_, [(_, (TYPE_PARAM(_, name, _, _), _)), _|_]) = T :-
+  typeOfTYPE_PARAM(_, [(_, (TPARAM(_, name, _, _), _)), _|_]) = T :-
     false | error $[BUG: multiple type arguments named [name]].
     
 /**
@@ -168,13 +168,13 @@ rules typeOfTYPE_PARAM : TYPE_PARAM * list((path * (TYPE_PARAM * TYPE))) -> TYPE
  * @param d the type parameter
  * @return the semantic type of the type parameter
  */
-rules declareTypeParam : scope * TypeParamDecl -> TYPE_PARAM
+rules declareTypeParam : scope * TypeParamDecl -> TPARAM
   declareTypeParams maps declareTypeParam(*, list(*)) = list(*)
   
   declareTypeParam(s_decl, d@TypeParamDecl(name)) = T :- {ty_upper ty_lower}
   	ty_upper == ANY(),
   	ty_lower == NOTHING(),
-  	T == TYPE_PARAM(s_decl, name, ty_upper, ty_lower),
+  	T == TPARAM(s_decl, name, ty_upper, ty_lower),
   	!type_param[T] in s_decl,
     // TODO: Ensure there is only one definition
     @d.type := ty_upper.
@@ -186,11 +186,11 @@ rules declareTypeParam : scope * TypeParamDecl -> TYPE_PARAM
  * @param name the name of the type parameter
  * @return a list of all occurrences (usually one); or an empty list if nothing is found
  */
-rules resolveTypeParam : scope * string -> list((path * TYPE_PARAM))
+rules resolveTypeParam : scope * string -> list((path * TPARAM))
   resolveTypeParam(s, name) = occs :-
     query type_param
       filter P*
-      and { param' :- TYPE_PARAM(_, name, _, _) == param' }
+      and { param' :- TPARAM(_, name, _, _) == param' }
       min $ < P
       in s |-> occs.
 
@@ -201,7 +201,7 @@ rules resolveTypeParam : scope * string -> list((path * TYPE_PARAM))
  * @param s_inst the scope
  * @return the list of type parameters
  */      
-rules getTypeParams : scope -> list(TYPE_PARAM)
+rules getTypeParams : scope -> list(TPARAM)
   getTypeParams(s_inst) = tps :- {tp_occs}
     query type_param
       filter P*
@@ -212,7 +212,7 @@ rules getTypeParams : scope -> list(TYPE_PARAM)
    // This is basically a map over the list, but this is not supported in Statix.
    // Something like this (imaginary syntax):
    //    map(tp_occs) { (_, tp') = tp' }
-   typeParamOccs2list : list((path * TYPE_PARAM)) -> list(TYPE_PARAM)
+   typeParamOccs2list : list((path * TPARAM)) -> list(TPARAM)
    typeParamOccs2list([(_, tp)|tp_occs]) = [tp|typeParamOccs2list(tp_occs)].
    typeParamOccs2list([]) = [].
     
@@ -224,14 +224,14 @@ rules getTypeParams : scope -> list(TYPE_PARAM)
  * @param param the type parameter being set
  * @param T the type assigned to the type parameter 
  */
-rules declareTypeArg : scope * TYPE_PARAM * TYPE
-  declareTypeArgs : scope * list((TYPE_PARAM * TYPE))
+rules declareTypeArg : scope * TPARAM * TYPE
+  declareTypeArgs : scope * list((TPARAM * TYPE))
   declareTypeArgs(s, [(param, T)|args]) :-
     declareTypeArg(s, param, T),
     declareTypeArgs(s, args).
   declareTypeArgs(_, []).
   
-  declareTypeArg(s, param@TYPE_PARAM(_, name, _, _), T) :-
+  declareTypeArg(s, param@TPARAM(_, name, _, _), T) :-
     !type_arg[param, T] in s.
   
 
@@ -242,16 +242,16 @@ rules declareTypeArg : scope * TYPE_PARAM * TYPE
  * @param name the name of the type argument
  * @return a list of all occurrences (usually one); or an empty list if nothing is found
  */
-rules resolveTypeArg : scope * string -> list((path * (TYPE_PARAM * TYPE)))
+rules resolveTypeArg : scope * string -> list((path * (TPARAM * TYPE)))
   resolveTypeArg(s, name) = occs :-
     query type_arg
       filter P*
-      and { TYPE_PARAM(_, name', _, _) :- name == name' }
+      and { TPARAM(_, name', _, _) :- name == name' }
       min $ < P
       in s |-> occs.
 
 /**
- * Given a type parameter and a singleton list of type arguments (TYPE_PARAM * TYPE),
+ * Given a type parameter and a singleton list of type arguments (TPARAM * TYPE),
  * finds the type associated with the type parameter.
  *
  * @param s_inst the scope
@@ -259,11 +259,11 @@ rules resolveTypeArg : scope * string -> list((path * (TYPE_PARAM * TYPE)))
  * @param ta_occs the list of type arguments
  * @return the type associated with the type parameter in a type argument
  */
-rules findTypeOfTypeParam : scope * TYPE_PARAM * list((path * (TYPE_PARAM * TYPE))) -> TYPE
+rules findTypeOfTypeParam : scope * TPARAM * list((path * (TPARAM * TYPE))) -> TYPE
   findTypeOfTypeParam(s_inst, _, [(_, (tp, T))]) = T.
-  findTypeOfTypeParam(s_inst, tp@TYPE_PARAM(_, name, T_UPPER, _),       []) = T_UPPER :-
+  findTypeOfTypeParam(s_inst, tp@TPARAM(_, name, T_UPPER, _),       []) = T_UPPER :-
     false | error $[BUG: no declarations for type argument [name] in [s_inst]].
-  findTypeOfTypeParam(s_inst, tp@TYPE_PARAM(_, name, T_UPPER, _), [_, _|_]) = T_UPPER :-
+  findTypeOfTypeParam(s_inst, tp@TPARAM(_, name, T_UPPER, _), [_, _|_]) = T_UPPER :-
     false | error $[BUG: multiple declarations for type argument [name] in [s_inst]].
 
 /**
@@ -273,10 +273,10 @@ rules findTypeOfTypeParam : scope * TYPE_PARAM * list((path * (TYPE_PARAM * TYPE
  * @param s_inst the scope
  * @return the list of type arguments
  */
-rules resolveTypeArgsOrdered : scope -> list((TYPE_PARAM * TYPE))
+rules resolveTypeArgsOrdered : scope -> list((TPARAM * TYPE))
   resolveTypeArgsOrdered(s_inst) = resolveTypeArgsFromTypeParams(s_inst, getTypeParams(s_inst)).
   
-  resolveTypeArgFromTypeParam : scope * TYPE_PARAM -> (TYPE_PARAM * TYPE)
+  resolveTypeArgFromTypeParam : scope * TPARAM -> (TPARAM * TYPE)
   resolveTypeArgsFromTypeParams maps resolveTypeArgFromTypeParam(*, list(*)) = list(*)
   resolveTypeArgFromTypeParam(s_inst, tp) = (tp, T) :- {ta_occs}
     // Find the type arguments for the given type parameter. 

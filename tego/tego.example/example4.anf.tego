@@ -1,0 +1,13 @@
+module generics-example
+
+    import java/lang::*
+
+    class type SolverState
+    extern def foo1< >( ): SolverState -> SolverState
+    extern def foo2<T>( ): T -> T
+    val bar: ( ) Any -> Class = !SolverState::class.
+
+extern module java/lang
+
+
+    public extern class type Class

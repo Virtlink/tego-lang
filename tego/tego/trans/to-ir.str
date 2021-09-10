@@ -73,12 +73,14 @@ rules
 
   to-imm = to-imm-only <+ to-imm-wrap
 
-  to-imm-only: e@Var(_)          -> (e, [])
-  to-imm-only: e@Int(_)          -> (e, [])
-  to-imm-only: e@Object()        -> (e, [])
-  to-imm-only: e@True()          -> (e, [])
-  to-imm-only: e@False()         -> (e, [])
-  to-imm-only: e@String(_)       -> (e, [])
+  to-imm-only: e@Var(_)              -> (e, [])
+  to-imm-only: e@Int(_)              -> (e, [])
+  to-imm-only: e@Object()            -> (e, [])
+  to-imm-only: e@True()              -> (e, [])
+  to-imm-only: e@False()             -> (e, [])
+  to-imm-only: e@String(_)           -> (e, [])
+  to-imm-only: e@ClassRef(_)         -> (e, [])
+  to-imm-only: LambdaStrategy(ps, e) -> (LambdaStrategy(ps, <to-anf> e), [])
 
   to-imm-wrap: exp -> (Var(tmpVar), <flatten-list> [expCtx, (tmpVar, expCmp)])
   with tmpVar := <newname> "x"

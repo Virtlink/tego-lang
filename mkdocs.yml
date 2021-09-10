@@ -18,13 +18,18 @@ nav:
   - Reference:
     - reference/index.md
     - reference/modules.md
+    - reference/imports.md
+    - reference/declarations.md
     - reference/strategies.md
+    - reference/lambdas.md
     - reference/java-interop.md
   - Background:
     - background/index.md
     - background/declarations-and-references.md
+    - background/lambdas.md
   - Develop:
     - develop/index.md
+    - develop/milestones.md
     - Documentation: develop/documentation.md
 
 theme:

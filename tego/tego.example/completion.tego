@@ -5,6 +5,7 @@ import mb/nabl2/terms::*
 import mb/statix/common::*
 import mb/statix/solver::*
 import mb/statix/constraints::*
+import java/lang::*
 
 public def complete(ITermVar): SolverState -> [SolverState]
 complete(v) =
@@ -92,3 +93,6 @@ class type ITermVar
 extern module mb/tego/runtime
 import mb/statix/common::SolverState
 extern def flatMap(SolverState -> [SolverState]): [SolverState] -> [SolverState]
+
+extern module java/lang
+class type Class

@@ -1,0 +1,6 @@
+module A
+
+  def foo8: Int -> Int
+  foo8 = !10; id2.
+
+  extern def id2<T>: T -> T

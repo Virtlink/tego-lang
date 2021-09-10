@@ -1,0 +1,46 @@
+scope graph
+  #-s_decl_20-3 {
+    relations {
+      statics/types!type_param : TPARAM(#-s_decl_20-3, "T", ANY(), NOTHING())
+    }
+    edges {
+      statics/references!P : #-ms_4-8
+    }
+  }
+  #-ss_40-4 {
+    relations {
+    }
+    edges {
+      statics/references!P : #-ms_4-8
+    }
+  }
+  #-ms_pub_3-9 {
+    relations {
+    }
+    edges {
+      statics/references!P : #-s_1-10
+    }
+  }
+  #-ms_4-8 {
+    relations {
+      statics/references!type : ("id2", STRATEGY([], INT(), INT()))
+                                ("foo8", STRATEGY([], INT(), INT()))
+    }
+    edges {
+      statics/references!P : #-ms_pub_3-9
+    }
+  }
+  #-s_decl_85-6 {
+    relations {
+    }
+    edges {
+      statics/references!P : #-ms_4-8
+    }
+  }
+  #-s_1-10 {
+    relations {
+      statics/references!type : ("A", MODULE(#-ms_pub_3-9))
+    }
+    edges {
+    }
+  }
