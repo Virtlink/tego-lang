@@ -7,5 +7,8 @@ dependencies:
 runtime:
   nabl2:
     debug: analysis files
+  statix:
+    message-trace-length: 10
+    message-term-depth: 5
 build:
   useBuildSystemSpec: true

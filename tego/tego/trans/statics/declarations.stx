@@ -28,18 +28,19 @@ rules declOk : scope * scope * Decl
     declareDeclWithMods(ms, ms_pub, name, T, mods),
     @d.type := T.
 
-  declOk(ms, ms_pub, d@StrategyDecl(mods, name, [], params, inType, outType)) :- {ds TPs T PTs IT OT}
+  declOk(ms, ms_pub, d@StrategyDecl(mods, name, typeParams, params, inType, outType)) :- {s_decl TPs T PTs IT OT T_params}
     // Create strategy declaration scope in which the type variables are declared
-    new ds, ds -P-> ms,
-    typesOfTypes(ds, params) == PTs,
-    typeOfType(ds, inType) == IT,
-    typeOfType(ds, outType) == OT,
+    new s_decl, s_decl -P-> ms,
+    typesOfTypes(s_decl, params) == PTs,
+    typeOfType(s_decl, inType) == IT,
+    typeOfType(s_decl, outType) == OT,
     T == STRATEGY(PTs, IT, OT),
     declareDeclWithMods(ms, ms_pub, name, T, mods),
+    declareTypeParams(s_decl, typeParams) == T_params,
     @d.type := T.
 
-  // TODO: Support generics
-  declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
+   //TODO: Support generics
+//  declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
 
   declOk(ms, ms_pub, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
     // FIXME: Only resolve in the current module scope

@@ -13,7 +13,6 @@ signature
     DECL = (path * (occurrence * TYPE))
 
 signature
-  namespaces
   relations
     type     : ID -> TYPE
   name-resolution
@@ -83,11 +82,14 @@ rules declareModule : scope * string * scope -> TYPE
 
   declareModule(s, name, ms_pub) = T :-
     MODULE(ms_pub) == T,
-    !type[name, T] in s.
+    !type[name, T] in s,
+    // For compilation and to support renaming,
+    // we need @decl on the name of the declaration.
+    @name.decl := name.
 
 
 // Resolves the module with the specified name to its scope
 rules resolveModule : scope * string -> scope
 
   resolveModule(s, name) = ms :-
-    resolveDecl(s, name) == MODULE(ms).
+    resolveDecl(s, name) == MODULE(ms) | error $[Module not found: [name]].

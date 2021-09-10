@@ -148,8 +148,10 @@ context-free syntax
   Exp.Eval                      = [<[Exp]> [Exp]]
   Exp.Let                       = [let [ID] = [Exp],
 [Exp]]
-  Exp.Var                       = <<MOD_ID>>
-  Exp.Member                    = <<Exp>::<ID>>
+  Exp.Var                       = [[MOD_ID]]
+  Exp.GenericVar                = [[MOD_ID]<[{Type ", "}+]>]
+  Exp.Member                    = [[Exp]::[ID]]
+  Exp.GenericMember             = [[Exp]::[ID]<[{Type ", "}+]>]
   Exp.ClassRef                  = <<Type>::<>class>
   Exp.Int = <<INT>>
   Exp.Object = <object>

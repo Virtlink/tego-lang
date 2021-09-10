@@ -8,11 +8,17 @@ imports
   statics/references
   statics/types
 
-rules module_init : scope * scope
-
-  module_init(s, ms) :-
+rules moduleInit : scope * scope
+  moduleInit(s, ms_pub) :-
+    // TODO: Only init non-external modules
     // default imports
-    importAll(ms, resolveModule(s, "java/lang")).
+    importAll(ms_pub, resolveModule(s, "java/lang")).
+
+//rules module_init : scope * scope
+//
+//  module_init(s, ms) :- {java_lang}
+//    // default imports
+//    importAll(ms, resolveModule(s, "java/lang")).
 
 rules moduleOk : scope * Module
   modulesOk maps moduleOk(*, list(*))
@@ -20,9 +26,8 @@ rules moduleOk : scope * Module
   moduleOk(s, m@Module(mods, name, imports, decls)) :- {ms_pub ms is T}
     new ms_pub, ms_pub -P-> s,
     new ms, ms -P-> ms_pub,
-    module_init(s, ms_pub),
-    T == MODULE(ms_pub),
-    declareDecl(s, name, T),
+    //moduleInit(s, ms_pub),
+    declareModule(s, name, ms_pub) == T,
     importsOk(s, ms, imports),
     declsOk(ms, ms_pub, decls),
     @m.type := T.
@@ -45,3 +50,13 @@ rules importOk : scope * scope * Import
 
   importOk(s, ms, Import-Plhdr()).
 
+//rules isExternModuleMod : list(ModuleMod)
+//  isExternModuleMod([ExternModule()|_]).
+//  isExternModuleMod([_|mods]) :- isExternModuleMod(mods).
+//  isExternModuleMod([]) :- false.
+//  
+//rules isNotExternModuleMod : list(ModuleMod)
+//  isNotExternModuleMod([ExternModule()|_]) :- false.
+//  isNotExternModuleMod([_|mods]) :- isExternModuleMod(mods).
+//  isNotExternModuleMod([]) :- true.
+  
