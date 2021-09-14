@@ -95,6 +95,7 @@ Because in the latter case `a()` and `b()` would both be evaluated.
 
 
 ## See Also
+- [ANF Summary](https://www.reddit.com/r/ProgrammingLanguages/comments/8ggx2n/is_llvm_a_good_backend_for_functional_languages/dybo3rl/)
 - Flanagan et. al. (PLDI'93) — [The Essence of Compiling with Continuations](http://users.soe.ucsc.edu/~cormac/papers/pldi93.pdf)
 - Kennedy (ICFP'07) — [Compiling with Continuations, Continued](https://dl.acm.org/doi/10.1145/1291220.1291179)
 - Maurer (2015) — [Intermediate Languages for Optimization](https://www.cs.uoregon.edu/Reports/AREA-201512-Maurer.pdf)

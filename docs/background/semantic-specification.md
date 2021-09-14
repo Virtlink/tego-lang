@@ -12,7 +12,8 @@ The rules follow this naming convention:
 Variables can have a prefix followed by an underscore and a camelCase name. The prefixes can also be used stand-alone if there is no need to specify more:
 
 - `s` — A scope (of type `scope`).
-- `ty` — A semantic type (of type `TYPE`).
+- `ty` — A syntactic type (of type `Type`).
+- `T` — A semantic type (of type `TYPE`).
 - `tp` — A semantic type parameter (of type `TYPE_PARAM`).
 - `ta` — A semantic type argument (of type `TYPE_PARAM * TYPE`).
 - `name` — A name (of type `string`).

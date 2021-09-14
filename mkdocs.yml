@@ -23,14 +23,34 @@ nav:
     - reference/strategies.md
     - reference/lambdas.md
     - reference/java-interop.md
+    - reference/contexts.md
+    - reference/boolean.md
+    - reference/build-operator.md
+    - reference/match-operator.md
+    - reference/congruence-operator.md
+    - IR:
+      - reference/ir/index.md
   - Background:
     - background/index.md
     - background/declarations-and-references.md
     - background/lambdas.md
+    - background/parameterized-types.md
+    - background/semantic-specification.md
   - Develop:
     - develop/index.md
     - develop/milestones.md
+    - develop/extract-reference-docs.md
     - Documentation: develop/documentation.md
+  - Other:
+    - compiler.md
+    - continuation-passing-style.md
+    - coroutines.md
+    - delimited-continuations.md
+    - generators.md
+    - java-interop.md
+    - modifiers.md
+    - sequences.md
+    - strategies.md
 
 theme:
   name: material

@@ -76,7 +76,10 @@ module A
 module A
 
   def foo8: Int -> Int
-  foo8 = !10; id2.
+  foo8 = !10; id2<Int>.
+  
+  def foo9: Bool -> Bool
+  foo9 = !true; id2<Bool>.
 
   extern def id2<T>: T -> T
 ```
