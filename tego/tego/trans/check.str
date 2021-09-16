@@ -27,15 +27,28 @@ rules
   check-error-decl-not-def: ValDef(_, _, _, _) -> <msg-error-decl-not-def>
   check-error-decl-not-def: ValDefNoType(_, _, _) -> <msg-error-decl-not-def>
 
-  check-error-decl-not-def: StrategyDef(_, _, _) -> <msg-error-decl-not-def>
-  check-error-decl-not-def: StrategyDefNoParams(_, _) -> <msg-error-decl-not-def>
-  check-error-decl-not-def: StrategyDefWInput(_, _, _, _) -> <msg-error-decl-not-def>
-  check-error-decl-not-def: StrategyDefWInputNoParams(_, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDef(_, _, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefNoParams(_, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefNoTypeParams(_, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefNoParamsNoTypeParams(_, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefNoType(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefNoType(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: StrategyDefNoTypeNoParams(_, _, _) -> <msg-error-decl-not-def>
 
-  check-error-decl-not-def: RuleDef(_, _, _, _, _) -> <msg-error-decl-not-def>
-  check-error-decl-not-def: RuleDefNoClauses(_, _, _, _) -> <msg-error-decl-not-def>
-  check-error-decl-not-def: RuleDefNoParams(_, _, _, _) -> <msg-error-decl-not-def>
-  check-error-decl-not-def: RuleDefNoParamsNoClauses(_, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDef(_, _, _, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoParams(_, _, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoTypeParams(_, _, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoParamsNoTypeParams(_, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoType(_, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: RuleDefNoTypeNoParams(_, _, _, _) -> <msg-error-decl-not-def>
+
+  check-error-decl-not-def: FunctionDef(_, _, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: FunctionDefNoParams(_, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: FunctionDefNoTypeParams(_, _, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: FunctionDefNoParamsNoTypeParams(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: FunctionDefNoType(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: FunctionDefNoType(_, _, _, _) -> <msg-error-decl-not-def>
+  check-error-decl-not-def: FunctionDefNoTypeNoParams(_, _, _) -> <msg-error-decl-not-def>
 
   msg-error-decl-not-def: d -> (d, $[Definitions are not allowed in external module declarations.])
 
@@ -46,12 +59,42 @@ rules
   check-warn: ValDecl(mods, _, _) -> <check-mods-duplicates> mods
   check-warn: ValDefNoType(mods, _, _) -> <check-mods-duplicates> mods
 
+  check-warn: StrategyDef(mods, _, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDefNoParams(mods, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDefNoTypeParams(mods, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDefNoParamsNoTypeParams(mods, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDefNoType(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDefNoType(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDefNoTypeNoParams(mods, _, _) -> <check-mods-duplicates> mods
+
+  check-warn: RuleDef(mods, _, _, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: RuleDefNoParams(mods, _, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: RuleDefNoTypeParams(mods, _, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: RuleDefNoParamsNoTypeParams(mods, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: RuleDefNoType(mods, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: RuleDefNoTypeNoParams(mods, _, _, _) -> <check-mods-duplicates> mods
+
   check-warn: StrategyDecl(mods, _, _, _, _, _) -> <check-mods-duplicates> mods
   check-warn: StrategyDeclNoParams(mods, _, _, _, _) -> <check-mods-duplicates> mods
   check-warn: StrategyDeclNoTypeParams(mods, _, _, _, _) -> <check-mods-duplicates> mods
-  check-warn: StrategyDeclNoParamsOrTypeParams(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: StrategyDeclNoParamsNoTypeParams(mods, _, _, _) -> <check-mods-duplicates> mods
+  
+  check-warn: FunctionDef(mods, _, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDefNoParams(mods, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDefNoTypeParams(mods, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDefNoParamsNoTypeParams(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDefNoType(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDefNoType(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDefNoTypeNoParams(mods, _, _) -> <check-mods-duplicates> mods
 
+  check-warn: FunctionDecl(mods, _, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDeclNoParams(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDeclNoTypeParams(mods, _, _, _) -> <check-mods-duplicates> mods
+  check-warn: FunctionDeclNoParamsNoTypeParams(mods, _, _) -> <check-mods-duplicates> mods
+  
   check-warn: ClassDecl(mods, _) -> <check-mods-duplicates> mods
+  check-warn: InterfaceDecl(mods, _) -> <check-mods-duplicates> mods
+  check-warn: EnumDecl(mods, _) -> <check-mods-duplicates> mods
 
   check-mods-duplicates: mods -> (mod, $[Duplicate `public` modifier.])
   where mod := <fetch-duplicates(?PublicDecl())> mods
@@ -72,27 +115,87 @@ rules
   check-warn-decl-not-extern: ValDecl(mods, _, _) -> <check-warn-mod-not-extern> mods
   check-warn-decl-not-extern: ValDefNoType(mods, _, _) -> <check-warn-mod-not-extern> mods
 
+  check-warn-decl-not-extern: StrategyDef(mods, _, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDefNoParams(mods, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDefNoTypeParams(mods, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDefNoParamsNoTypeParams(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDefNoType(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDefNoType(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDefNoTypeNoParams(mods, _, _) -> <check-warn-mod-not-extern> mods
+
+  check-warn-decl-not-extern: RuleDef(mods, _, _, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: RuleDefNoParams(mods, _, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: RuleDefNoTypeParams(mods, _, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: RuleDefNoParamsNoTypeParams(mods, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: RuleDefNoType(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: RuleDefNoTypeNoParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+
   check-warn-decl-not-extern: StrategyDecl(mods, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
   check-warn-decl-not-extern: StrategyDeclNoParams(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
   check-warn-decl-not-extern: StrategyDeclNoTypeParams(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
-  check-warn-decl-not-extern: StrategyDeclNoParamsOrTypeParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: StrategyDeclNoParamsNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  
+  check-warn-decl-not-extern: FunctionDef(mods, _, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDefNoParams(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDefNoTypeParams(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDefNoParamsNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDefNoType(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDefNoType(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDefNoTypeNoParams(mods, _, _) -> <check-warn-mod-not-extern> mods
 
+  check-warn-decl-not-extern: FunctionDecl(mods, _, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDeclNoParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDeclNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: FunctionDeclNoParamsNoTypeParams(mods, _, _) -> <check-warn-mod-not-extern> mods
+  
   check-warn-decl-not-extern: ClassDecl(mods, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: InterfaceDecl(mods, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: EnumDecl(mods, _) -> <check-warn-mod-not-extern> mods
 
   check-warn-mod-not-extern: mods -> (mod, $[Declarations in extern modules are implicitly `extern`.])
   where mod := <fetch(?ExternDecl())> mods
 
 
-  check-warn-decl-not-public: ValDef(mods, _, _, _) -> <check-warn-mods-not-public> mods
-  check-warn-decl-not-public: ValDecl(mods, _, _) -> <check-warn-mods-not-public> mods
-  check-warn-decl-not-public: ValDefNoType(mods, _, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: ValDef(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: ValDecl(mods, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: ValDefNoType(mods, _, _) -> <check-warn-mod-not-public> mods
 
-  check-warn-decl-not-public: StrategyDecl(mods, _, _, _, _, _) -> <check-warn-mods-not-public> mods
-  check-warn-decl-not-public: StrategyDeclNoParams(mods, _, _, _, _) -> <check-warn-mods-not-public> mods
-  check-warn-decl-not-public: StrategyDeclNoTypeParams(mods, _, _, _, _) -> <check-warn-mods-not-public> mods
-  check-warn-decl-not-public: StrategyDeclNoParamsOrTypeParams(mods, _, _, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: StrategyDef(mods, _, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDefNoParams(mods, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDefNoTypeParams(mods, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDefNoParamsNoTypeParams(mods, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDefNoType(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDefNoType(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDefNoTypeNoParams(mods, _, _) -> <check-warn-mod-not-public> mods
 
-  check-warn-decl-not-public: ClassDecl(mods, _) -> <check-warn-mods-not-public> mods
+  check-warn-decl-not-public: RuleDef(mods, _, _, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: RuleDefNoParams(mods, _, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: RuleDefNoTypeParams(mods, _, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: RuleDefNoParamsNoTypeParams(mods, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: RuleDefNoType(mods, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: RuleDefNoTypeNoParams(mods, _, _, _) -> <check-warn-mod-not-public> mods
 
-  check-warn-mods-not-public: mods -> (mod, $[Declarations in extern modules are implicitly `public`.])
+  check-warn-decl-not-public: StrategyDecl(mods, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDeclNoParams(mods, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDeclNoTypeParams(mods, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: StrategyDeclNoParamsNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  
+  check-warn-decl-not-public: FunctionDef(mods, _, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDefNoParams(mods, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDefNoTypeParams(mods, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDefNoParamsNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDefNoType(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDefNoType(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDefNoTypeNoParams(mods, _, _) -> <check-warn-mod-not-public> mods
+
+  check-warn-decl-not-public: FunctionDecl(mods, _, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDeclNoParams(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDeclNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: FunctionDeclNoParamsNoTypeParams(mods, _, _) -> <check-warn-mod-not-public> mods
+  
+  check-warn-decl-not-public: ClassDecl(mods, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: InterfaceDecl(mods, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: EnumDecl(mods, _) -> <check-warn-mod-not-public> mods
+
+  check-warn-mod-not-public: mods -> (mod, $[Declarations in extern modules are implicitly `public`.])
   where mod := <fetch(?PublicDecl())> mods

@@ -42,12 +42,12 @@ context-free syntax
   Decl.StrategyDefNoType                = [[{DeclMod " "}*] def [ID]([{Exp ", "}*]) = [Exp]]
   Decl.StrategyDefNoTypeNoParams        = [[{DeclMod " "}*] def [ID] = [Exp]]                                                          // desugared
   
-  Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp]]
-  Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp]]              // desugared
-  Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp]]                  // desugared
-  Decl.RuleDefNoParamsOrTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [Exp]]                                       // desugared
-  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{Exp ", "}*]) :- [Exp]]
-  Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [Exp]]                                                         // desugared
+  Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]
+  Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp] -> [Exp]]     // desugared
+  Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]         // desugared
+  Decl.RuleDefNoParamsNoTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [Exp] -> [Exp]]                              // desugared
+  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{Exp ", "}*]) :- [Exp] -> [Exp]]
+  Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [Exp] -> [Exp]]                                                // desugared
 
   Decl.StrategyDecl                     = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
   Decl.StrategyDeclNoParams             = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]]                       // desugared
