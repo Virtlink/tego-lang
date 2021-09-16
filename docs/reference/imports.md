@@ -6,7 +6,7 @@ module A
 
   import B::foo
 
-  val foo2 = foo.
+  val foo2 = foo
 
 module B
 
@@ -25,7 +25,7 @@ module A
 
   import B::*       // wildcard import
 
-  val foo2 = foo.
+  val foo2 = foo
 
 module B
 

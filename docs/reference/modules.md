@@ -17,6 +17,6 @@ External modules are modules whose members are not defined here, but somewhere e
 
 ```tego
 extern module java/lang
-  class type Class
+  class Class
 ```
 

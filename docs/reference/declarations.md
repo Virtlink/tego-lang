@@ -8,8 +8,8 @@ In a [module](modules.md) you can declare and define members. All definitions re
 A value is declared using the `val` keyword, followed by the name of the value. You can specify the type, but if you define a value then the type is optional and can be inferred. For example:
 
 ```tego
-val a = 10.
-val b: Int = 20.
+val a = 10
+val b: Int = 20
 val c: Int
 ```
 

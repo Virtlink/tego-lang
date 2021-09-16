@@ -66,23 +66,20 @@ and adds it to any strategy applications that don't have an explicit argument.
     Becomes:
 
     ```
-    __input@(c1, c2) -> (<fst; inc> __input, <snd; dec> __input).
+    (c1, c2) ; @__input -> (<fst; inc> __input, <snd; dec> __input).
     ```
 
-## Building a Strategy
-Given a static function `MyFunc` on type `MyClass`, you would normally have to
-invoke it on the class (where `MyClass#MyFunc` has the type
-`(A) Class -> R`):
+## Invoking a Function
+Given a function `f(String): Int`, you cannot use it in a strategy context. One way is to write it in a lambda that ignores the input argument:
 
 ```tego
-@a ; <MyClass#MyFunc(a)> MyClass::class
+<\(s) :- _ -> f(s)\("mystring")> x
 ```
 
-However, the build operator can be used as a short-hand for calling static
-functions:
+However, the build operator can be used as a short-hand for calling functions:
 
 ```tego
-!MyClass#MyFunc(a)
+<!f("mystring")> x
 ```
 
 This is desugared into the above.

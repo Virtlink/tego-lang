@@ -4,7 +4,7 @@ Like strategies, functions perform an operations. However, unlike strategies, th
 In a context of type `T`, calling a function that returns a value of that type works as expected:
 
 ```tego
-def createList: Any -> List<Int> :- _ ->
+fun createList: List<Int> =
   Collection#emptyList<Int>
 ```
 

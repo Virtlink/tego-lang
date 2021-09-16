@@ -11,12 +11,6 @@ A lambda can have more parameters:
 \(i) a -> <add> (a, i)\
 ```
 
-The parameters can be patterns:
-
-```tego
-\(<is-even>) 1 -> <add> (a, i)\
-```
-
 A lambda can be written as a strategy:
 
 ```tego
@@ -36,11 +30,11 @@ Even when it doesn't have any parameters:
 When the compiler cannot figure out the type of the lambda, you can specify it explicitly:
 
 ```tego
-\a : Int -> <add> (a, 1)\
-\(i: Int) a -> <add> (a, i)\
-\(<is-even> : Int) 1 : Int -> <add> (a, i)\
-\(i: Int) = !(<id>, i); add\
+\: Int -> Int :- a -> <add> (a, 1)\
+\(i: Int): Int -> Int :- a -> <add> (a, i)\
+
 \= !(<id>, 1); add\
+\(i: Int): Int -> Int = !(<id>, i); add\
 ```
 
 !!! warning "Not sure yet about this type syntax"

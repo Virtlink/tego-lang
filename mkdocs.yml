@@ -23,7 +23,6 @@ nav:
     - reference/strategies.md
     - reference/lambdas.md
     - reference/java-interop.md
-    - reference/contexts.md
     - reference/boolean.md
     - reference/build-operator.md
     - reference/match-operator.md

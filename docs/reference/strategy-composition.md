@@ -7,17 +7,6 @@ The result will be of type `D`:
 <s3> <s2> <s1> a
 ```
 
-As syntactic sugar, Tego provides the comma operator `,`, which allows you
-to write instead:
-
-```tego
-<s1, s2, s3> a
-```
-
-??? warning "Not sure yet about the comma syntax"
-    We could also overload the semi-colon operator to work on values that are
-    not `Option<T>`.
-
 
 ## Option Monad
 Many strategies return a value that may be absent. While this can be represented
