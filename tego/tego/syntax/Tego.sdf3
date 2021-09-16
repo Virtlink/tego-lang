@@ -11,7 +11,7 @@ context-free start-symbols
 context-free sorts File
 context-free syntax
 
-  File.File = <<{Module "\n\n"}*>>
+  File.File                             = [[{Module "\n\n"}*]]
 
 context-free sorts Module
 context-free syntax
@@ -25,157 +25,156 @@ context-free syntax
 context-free sorts Import
 context-free syntax
 
-  Import.Import                 = [import [MOD_ID]::[ID]]
-  Import.ImportAll              = [import [MOD_ID]::[]*]
+  Import.Import                         = [import [MOD_ID]::[ID]]
+  Import.ImportAll                      = [import [MOD_ID]::[]*]
 
 context-free sorts Decl
 context-free syntax
 
-  Decl.ValDef                   = [[{DeclMod " "}*] val [ID]: [Type] = [Exp].]
-  Decl.ValDecl                  = [[{DeclMod " "}*] val [ID]: [Type]]
-  Decl.ValDefNoType             = [[{DeclMod " "}*] val [ID] = [Exp].]
+  Decl.ValDef                           = [[{DeclMod " "}*] val [ID]: [Type] = [Exp]]
+  Decl.ValDecl                          = [[{DeclMod " "}*] val [ID]: [Type]]
+  Decl.ValDefNoType                     = [[{DeclMod " "}*] val [ID] = [Exp]]
+  
+  Decl.StrategyDef                      = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]]
+  Decl.StrategyDefNoParams              = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] = [Exp]]               // desugared
+  Decl.StrategyDefNoTypeParams          = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]]                   // desugared
+  Decl.StrategyDefNoParamsNoTypeParams  = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] = [Exp]]                                        // desugared
+  Decl.StrategyDefNoType                = [[{DeclMod " "}*] def [ID]([{Exp ", "}*]) = [Exp]]
+  Decl.StrategyDefNoTypeNoParams        = [[{DeclMod " "}*] def [ID] = [Exp]]                                                          // desugared
+  
+  Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp]]
+  Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp]]              // desugared
+  Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp]]                  // desugared
+  Decl.RuleDefNoParamsOrTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [Exp]]                                       // desugared
+  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{Exp ", "}*]) :- [Exp]]
+  Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [Exp]]                                                         // desugared
 
-  Decl.StrategyDecl             = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
-  Decl.StrategyDeclNoParams     = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]] // desugared
-  Decl.StrategyDeclNoTypeParams = [[{DeclMod " "}*] def [ID]([{Type ", "}*]): [Type] -> [Type]] // desugared
-  Decl.StrategyDeclNoParamsOrTypeParams = [[{DeclMod " "}*] def [ID]: [Type] -> [Type]]        // desugared
+  Decl.StrategyDecl                     = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
+  Decl.StrategyDeclNoParams             = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]]                       // desugared
+  Decl.StrategyDeclNoTypeParams         = [[{DeclMod " "}*] def [ID]([{Type ", "}*]): [Type] -> [Type]]                                // desugared
+  Decl.StrategyDeclNoParamsNoTypeParams = [[{DeclMod " "}*] def [ID]: [Type] -> [Type]]                                                // desugared
+  
+  Decl.FunctionDef                      = [[{DeclMod " "}*] fun [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] = [Exp]]
+  Decl.FunctionDefNoParams              = [[{DeclMod " "}*] fun [ID]<[{TypeParamDecl ", "}*]>: [Type] = [Exp]]                         // desugared
+  Decl.FunctionDefNoTypeParams          = [[{DeclMod " "}*] fun [ID]([{ParamDecl ", "}*]): [Type] = [Exp]]                             // desugared
+  Decl.FunctionDefNoParamsNoTypeParams  = [[{DeclMod " "}*] fun [ID]: [Type] = [Exp]]                                                  // desugared
+  Decl.FunctionDefNoType                = [[{DeclMod " "}*] fun [ID]([{Exp ", "}*]) = [Exp]]
+  Decl.FunctionDefNoTypeNoParams        = [[{DeclMod " "}*] fun [ID] = [Exp]]                                                          // desugared
 
-  Decl.StrategyDef              = [[ID]([{ParamDef ", "}*]) =
-  [Exp].]         // desugared
-  Decl.StrategyDefNoParams      = [[ID] =
-  [Exp].]        // desugared
+  Decl.FunctionDecl                     = [[{DeclMod " "}*] fun [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type]]
+  Decl.FunctionDeclNoParams             = [[{DeclMod " "}*] fun [ID]<[{TypeParamDecl ", "}*]>: [Type]]                                 // desugared
+  Decl.FunctionDeclNoTypeParams         = [[{DeclMod " "}*] fun [ID]([{Type ", "}*]): [Type]]                                          // desugared
+  Decl.FunctionDeclNoParamsNoTypeParams = [[{DeclMod " "}*] fun [ID]: [Type]]                                                          // desugared
+  
+  Decl.ClassDecl                        = [[{DeclMod " "}*] class [ID]]
+  Decl.InterfaceDecl                    = [[{DeclMod " "}*] interface [ID]]
+  Decl.EnumDecl                         = [[{DeclMod " "}*] enum [ID]]
 
-  Decl.StrategyDefWInput        = [[ID]([{ParamDef ", "}*]) [ID] =
-  [Exp].]
-  Decl.StrategyDefWInputNoParams= [[ID] [ID] =
-  [Exp].] // desugared
-
-  Decl.RuleDef                  = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp],
-  [{RuleClause ", "}+].]
-  Decl.RuleDefNoClauses         = [[ID]([{ParamDef ", "}*]) :- [Exp] -> [Exp].]        // desugared
-  Decl.RuleDefNoParams          = [[ID] :- [Exp] -> [Exp],
-  [{RuleClause ", "}+].]    // desugared
-  Decl.RuleDefNoParamsNoClauses = [[ID] :- [Exp] -> [Exp].]    // desugared
-
-  Decl.ClassDecl                = [[{DeclMod " "}*] class type [ID]]
-
-context-free sorts RuleClause
+context-free sorts ParamDecl
 context-free syntax
-  RuleClause.WhereClause = <where <Exp>>
+  // TODO: Allow a match pattern here?
+  ParamDecl.ParamDecl                   = [[ID]: [Type]]
 
+context-free sorts TypeParamDecl
+context-free syntax
+  TypeParamDecl.TypeParamDecl           = [[ID]]
+  
 context-free sorts ModuleMod
 context-free syntax
   // TODO: An external module may only contain external declarations
   // TODO: An external module should implicitly add `external` to its declarations
-  ModuleMod.ExternModule = <extern>
+  ModuleMod.ExternModule                = [extern]
 
 context-free sorts DeclMod
 context-free syntax
   // TODO: An external declaration cannot have a definition
   // TODO: An external declaration is implicitly public
-  DeclMod.ExternDecl = <extern>
+  DeclMod.ExternDecl                    = [extern]
   // TODO: A public declaration cannot be imported
-  DeclMod.PublicDecl = <public>
-
-context-free sorts TypeParamDecl
-context-free syntax
-  TypeParamDecl.TypeParamDecl = <<ID>>
-
-context-free sorts ParamDef
-context-free syntax
-  ParamDef.ParamDef = <<ID>: <Type>>
-  ParamDef.ParamDefNoType = <<ID>>
+  DeclMod.PublicDecl                    = [public]
 
 context-free sorts Type
 context-free syntax
 
-  Type.TypeRef              = <<MOD_ID>>
-  Type.MemberTypeRef        = <<Type>::<ID>>
-  Type.ListType             = <[<Type>]>
-  Type.StrategyType         = [([{Type ", "}*]) [Type] -> [Type]] {right}
-  Type.StrategyTypeNoParams = [[Type] -> [Type]] {right} // desugared
-  Type.AnyType              = <Any>     // FIXME: Make built-in
-  Type.UnitType             = <Unit>    // FIXME: Make built-in
-  Type.IntType              = <Int>     // FIXME: Make built-in
-  Type.BoolType             = <Bool>    // FIXME: Make built-in
-  Type.WldType              = <_>
-  Type.TupleType            = <(<{Type ", "}+>)>
-  Type                      = <(<Type>)> {bracket}
+  Type.TypeRef                          = [[MOD_ID]]
+  Type.MemberTypeRef                    = [[Type]::[ID]]
+  Type.ListType                         = <[<Type>]>
+  Type.StrategyType                     = [([{Type ", "}*]) [Type] -> [Type]] {right}
+  Type.StrategyTypeNoParams             = [[Type] -> [Type]] {right} // desugared
+  Type.AnyType                          = [Any]     // FIXME: Make built-in
+  Type.UnitType                         = [Unit]    // FIXME: Make built-in
+  Type.IntType                          = [Int]     // FIXME: Make built-in
+  Type.BoolType                         = [Bool]    // FIXME: Make built-in
+  Type.WldType                          = [_]
+  Type.TupleType                        = [([{Type ", "}+])]
+  Type                                  = [([Type])] {bracket}
 
-//// Statix NAME representation, for pretty-printing only:
-//context-free sorts NAME
-//context-free syntax
-//
-//  NAME.ROOTNAME             = []
-//  NAME.MODULENAME           = [[NAME]::[ID]]
-//  NAME.STRATEGYNAME         = [[NAME]::[ID]]
-//  NAME.CLASSNAME            = [[NAME]::[ID]]
-
-// Statix TYPE representation, for pretty-printing only:
-//context-free sorts TYPE
-//context-free syntax
-//
-//  TYPE.STRATEGY             = [([{TYPE ", "}*]) [TYPE] -> [TYPE]]
-//  //TYPE.STRATEGY             = [strategy [TYPE]::[ID]]
-//  TYPE.CLASS                = [class [TYPE]::[ID]]
-//  TYPE.LIST                 = [List<[TYPE]>]
-//  TYPE.TUPLE                = [Tuple<[{TYPE ", "}+]>]
-//
-////  TYPE.BYTE                 = [Byte]
-////  TYPE.SHORT                = [Short]
-////  TYPE.INT                  = [Int]
-////  TYPE.LONG                 = [Long]
-////
-////  TYPE.UBYTE                = [UByte]
-////  TYPE.USHORT               = [UShort]
-////  TYPE.UINT                 = [UInt]
-////  TYPE.ULONG                = [ULong]
-//
-//  TYPE.ANY                  = [Any]
-////  TYPE.BOOL                 = [Bool]
-//  TYPE.UNIT                 = [Unit]
-//  TYPE.STRING               = [String]
-
-context-free sorts Exp Arg
+/**
+ * Core syntax.
+ */
+context-free sorts Exp
 context-free syntax
 
-  Exp.Seq                       = <<Exp>; <Exp>> {right}
-  Exp.Map                       = [[Exp] |> [Exp]] {right}        // desugared
-  Exp.FlatMap                   = [[Exp] ||> [Exp]] {right}       // desugared
-  Exp.Id                        = <id>
-  Exp.Fail                      = <fail>
-  Exp.Apply                     = [[Exp]([{Exp ", "}*])]
-  Exp.Eval                      = [<[Exp]> [Exp]]
-  Exp.Let                       = [let [ID] = [Exp],
+  // IR
+  Exp.Eval                              = [__eval([Exp], {[Exp] ", "}+)]
+  Exp.Maybe                             = [__maybe([Exp])]
+  Exp.Let                               = [let [ID] = [Exp],
 [Exp]]
-  Exp.Var                       = [[MOD_ID]]
-  Exp.GenericVar                = [[MOD_ID]<[{Type ", "}+]>]
-  Exp.Member                    = [[Exp]::[ID]]
-  Exp.GenericMember             = [[Exp]::[ID]<[{Type ", "}+]>]
-  Exp.ClassRef                  = <<Type>::<>class>
-  Exp.Int = <<INT>>
-  Exp.Object = <object>
-  Exp.True = <true>
-  Exp.False = <false>
-  Exp.String = <<STRING>>
-  Exp.Build = <!<Exp>>
-  Exp.Tuple                     = <(<{Exp ", "}+>)>
-  Exp                           = <(<Exp>)> {bracket}
 
-  Exp.LambdaRule                = [\\([{ParamDef ", "}*]) :- [Exp] -> [Exp].\\]
-  Exp.LambdaRuleNoParams        = [\\[Exp] -> [Exp].\\]    // desugared
-  Exp.LambdaStrategy            = [\\([{ParamDef ", "}*]) = [Exp].\\]
-  Exp.LambdaStrategyNoParams    = [\\= [Exp].\\]           // desugared
+  // (Partial) application
+  Exp.Apply                             = [[Exp]([{Exp ", "}*])]
+  
+  // References
+  Exp.Var                               = [[MOD_ID]]
+  Exp.GenericVar                        = [[MOD_ID]<[{Type ", "}+]>]
+  Exp.Member                            = [[Exp]::[ID]]
+  Exp.GenericMember                     = [[Exp]::[ID]<[{Type ", "}+]>]
+  Exp.ClassRef                          = <<Type>::<>class>
+  
+  // Literals
+  Exp.Int                               = <<INT>>
+  Exp.String                            = <<STRING>>
+  Exp.Object                            = <object>
+  Exp.True                              = <true>
+  Exp.False                             = <false>
+  Exp.Tuple                             = <(<{Exp ", "}+>)>
+  Exp                                   = <(<Exp>)> {bracket}
 
+  // Lambdas
+  Exp.LambdaStrategy                    = [\\<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]\\]
+  Exp.LambdaStrategyNoParams            = [\\<[{TypeParamDecl ", "}*]>: [Type] -> [Type] = [Exp]\\]                                    // desugared
+  Exp.LambdaStrategyNoTypeParams        = [\\([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]\\]                                        // desugared
+  Exp.LambdaStrategyNoParamsNoTypeParams= [\\: [Type] -> [Type] = [Exp]\\]                                                             // desugared
+  Exp.LambdaStrategyNoType              = [\\([{ParamDecl ", "}*]) = [Exp]\\]
+  Exp.LambdaStrategyNoTypeNoParams      = [\\= [Exp]\\]                                                                                // desugared
+  
+  Exp.LambdaRule                        = [\\<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]\\]
+  Exp.LambdaRuleNoParams                = [\\<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp] -> [Exp]\\]                          // desugared
+  Exp.LambdaRuleNoTypeParams            = [\\([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]\\]                              // desugared
+  Exp.LambdaRuleNoParamsNoTypeParams    = [\\: [Type] -> [Type] :- [Exp] -> [Exp]\\]                                                   // desugared
+  Exp.LambdaRuleNoType                  = [\\([{ParamDecl ", "}*]) :- [Exp] -> [Exp]\\]
+  Exp.LambdaRuleNoTypeNoParams          = [\\:- [Exp] -> [Exp]\\]                                                                      // desugared
+  
 
-//context-free sorts Exp
-//context-free syntax
-//
-//  Exp.Var = <<ID>>
+/**
+ * Sugar syntax.
+ */
+context-free syntax
 
-//context-free priorities
-  //Arg = Exp <0> .> Exp.Seq
-
+  // Composition
+  Exp.Seq                               = [[Exp]; [Exp]] {right}
+  Exp.Map                               = [[Exp] |> [Exp]] {right}
+  Exp.FlatMap                           = [[Exp] ||> [Exp]] {right}
+  
+  // Evaluation
+  Exp.EvalOn                            = [<[Exp]> [Exp]]
+  
+  // Build/Match
+  Exp.Build                             = [![Exp]]
+  
+  // Built-ins
+  Exp.Id                                = [id]
+  Exp.Fail                              = [fail]
 
 context-free priorities
   {
