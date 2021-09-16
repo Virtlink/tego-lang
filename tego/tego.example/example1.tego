@@ -14,15 +14,14 @@ module example1
 // has no context, may not be interruptible, will not report progress
 // may not be lazy
 
-class type Var
-class type SolverState
+class Var
+class SolverState
 
-def complete(Var): SolverState -> [SolverState]
-complete(v) =
-  expandAllPredicates(v);
+def complete(v: Var): SolverState -> [SolverState]
+= expandAllPredicates(v);
   expandAllInjections(v);
   expandAllQueries(v);
-  expandDeterministic(v).
+  expandDeterministic(v)
 
 def expandAllPredicates(Var): SolverState -> [SolverState]
 def expandAllInjections(Var): [SolverState] -> [SolverState]
@@ -38,16 +37,16 @@ def expandDeterministic(Var): [SolverState] -> [SolverState]
 //    //limit(1), selectConstraints(CUser, \(constraint, state) = containsVar(v, constraint, state)\)
 //  ).
 
-val A : Int = 10.
-val C : Int -> Int = !10.
-val C : Int -> Int -> Int = !!10.
+val A : Int = 10
+val C : Int -> Int = !10
+val C : Int -> Int -> Int = !!10
 
 def x: Int -> Int
-//x = !10.
+//x = !10
 def y: Any -> Int
-//y = !10.
-def z(Int): Int -> Int
-z(a) = !a.
+//y = !10
+def z(a: Int): Int -> Int
+= !a
 
 
 //decl x(Int): Int -> Int

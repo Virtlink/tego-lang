@@ -145,14 +145,14 @@ context-free syntax
   Exp.LambdaStrategyNoParams            = [\\<[{TypeParamDecl ", "}*]>: [Type] -> [Type] = [Exp]\\]                                    // desugared
   Exp.LambdaStrategyNoTypeParams        = [\\([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]\\]                                        // desugared
   Exp.LambdaStrategyNoParamsNoTypeParams= [\\: [Type] -> [Type] = [Exp]\\]                                                             // desugared
-  Exp.LambdaStrategyNoType              = [\\([{ParamDecl ", "}*]) = [Exp]\\]
+  Exp.LambdaStrategyNoType              = [\\([{Exp ", "}*]) = [Exp]\\]
   Exp.LambdaStrategyNoTypeNoParams      = [\\= [Exp]\\]                                                                                // desugared
   
   Exp.LambdaRule                        = [\\<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]\\]
   Exp.LambdaRuleNoParams                = [\\<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp] -> [Exp]\\]                          // desugared
   Exp.LambdaRuleNoTypeParams            = [\\([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]\\]                              // desugared
   Exp.LambdaRuleNoParamsNoTypeParams    = [\\: [Type] -> [Type] :- [Exp] -> [Exp]\\]                                                   // desugared
-  Exp.LambdaRuleNoType                  = [\\([{ParamDecl ", "}*]) :- [Exp] -> [Exp]\\]
+  Exp.LambdaRuleNoType                  = [\\([{Exp ", "}*]) :- [Exp] -> [Exp]\\]
   Exp.LambdaRuleNoTypeNoParams          = [\\:- [Exp] -> [Exp]\\]                                                                      // desugared
   
 

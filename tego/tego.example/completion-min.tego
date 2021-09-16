@@ -4,14 +4,13 @@ import mb/nabl2/terms::*
 import mb/statix/common::*
 import mb/statix/solver::*
 import mb/statix/constraints::*
+import java/lang::Class
 
-
-def complete(ITermVar): SolverState -> [SolverState]
-complete(v) =
-  expandAllPredicates(v) ||>
+def complete(v: ITermVar): SolverState -> [SolverState]
+= expandAllPredicates(v) ||>
   expandAllInjections(v) ||>
   expandAllQueries(v)    ||>
-  expandDeterministic(v).
+  expandDeterministic(v)
 
 extern def expandAllPredicates(ITermVar): SolverState -> [SolverState]
 
@@ -56,19 +55,20 @@ extern def containsVar(ITermVar, IConstraint): SolverState -> [SolverState]
 
 // Statix & NaBL
 extern module mb/statix/constraints
-  class type CResolveQuery
-  class type CUser
+  class CResolveQuery
+  class CUser
 
 extern module mb/statix/common
-  class type SolverState
+  class SolverState
 
 extern module mb/statix/solver
-  class type IConstraint
+  class IConstraint
 
 extern module mb/nabl2/terms
-  class type ITermVar
+  class ITermVar
 
 // Built-ins
 // Implicitly imported
 extern module java/lang
-  class type Class
+  class Class
+  
