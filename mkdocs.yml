@@ -28,6 +28,11 @@ nav:
     - reference/build-operator.md
     - reference/match-operator.md
     - reference/congruence-operator.md
+    - reference/core.md
+    - reference/do-notation.md
+    - reference/failure.md
+    - reference/functions.md
+    - reference/strategy-composition.md
     - IR:
       - reference/ir/index.md
   - Background:
@@ -36,6 +41,8 @@ nav:
     - background/lambdas.md
     - background/parameterized-types.md
     - background/semantic-specification.md
+    - background/expand-all-predicates.md
+    - background/strategy-class.md
   - Develop:
     - develop/index.md
     - develop/milestones.md

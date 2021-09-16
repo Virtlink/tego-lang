@@ -68,3 +68,21 @@ and adds it to any strategy applications that don't have an explicit argument.
     ```
     __input@(c1, c2) -> (<fst; inc> __input, <snd; dec> __input).
     ```
+
+## Building a Strategy
+Given a static function `MyFunc` on type `MyClass`, you would normally have to
+invoke it on the class (where `MyClass#MyFunc` has the type
+`(A) Class -> R`):
+
+```tego
+@a ; <MyClass#MyFunc(a)> MyClass::class
+```
+
+However, the build operator can be used as a short-hand for calling static
+functions:
+
+```tego
+!MyClass#MyFunc(a)
+```
+
+This is desugared into the above.

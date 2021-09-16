@@ -1,20 +1,104 @@
 # Strategies
-A strategy in Tego is a function that takes an implicit argument and performs an operation on it to produce a value. A strategy needs to be declared, after which it can be defined. For example, the following declares a strategy `stringLength` that takes a `String` and produces an `Int`.
+A strategy in Tego is a function that takes an implicit parameter and performs an operation on it to produce a result. A strategy is generally declared and defined at the same time (except for `extern` strategies, whose definition is somewhere else).
+
+For example, the following declares a strategy `stringLength` that takes a `String` and produces an `Int`. The strategy is defined to use the `String.length()` instance method (in Java) to return the length of the string:
 
 ```tego
-def stringLength: String -> Int
+import java/lang::String
+
+def stringLength: String -> Int = String#length
 ```
 
-The strategy is defined to use the `String.length()` instance method (in Java) to return the length of the string:
+
+## Syntax
+The basic syntax for a strategy definition is:
 
 ```tego
-stringLength = String#length.
+// Strategy
+def $name <$type-params> ($params) $inputType -> $outputType = $body
+
+// Rule
+def $name <$type-params> ($params) $inputType -> $outputType :- $input -> $output
 ```
 
-A single strategy declaration can have multiple strategy definitions. Strategies are evaluated in the order they appear in the module, and the first definition that succeeds determines the final result. For example, the following strategy `inc` increments an integer or floating-point value:
+And when using a lambda:
 
 ```tego
-def inc<T: Number>: T -> T?
-inc = as-Int; Integer#sum(<id>, 1.0)
-inc = as-Float; Float#sum(<id>, 1.0)
+// Strategy
+def $name <$type-params> ($params) $inputType -> $outputType = $body
+
+// Rule
+def $name <$type-params> ($params) $inputType -> $outputType :- $input -> $output
+```
+
+With an implicit input parameter:
+
+```tego
+// Generic
+def foo1 = id
+def foo1<T>(): T -> T = id
+
+def foo2(a) = !a
+def foo2<T>(a: T): Any -> T = !a
+
+// Non-generic
+def foo3 = stringLength
+def foo3(): String -> Int = stringLength
+
+def foo4(a) = <stringLength> a
+def foo4(a: String): Any -> Int = !(<stringLength> a
+```
+
+With an explicit input parameter:
+
+```tego
+// Generic
+def foo1 :- input -> input
+def foo1<T>(): T -> T :- input -> input
+
+def foo2(a) :- input -> a
+def foo2<T>(a: T): Any -> T :- input -> a
+
+// Non-generic
+def foo3 :- input -> <stringLength> input
+def foo3(): String -> Int :- input -> <stringLength> input
+
+def foo4(a) :- input -> <stringLength> a
+def foo4(a: String): Any -> Int :- input -> <stringLength> a
+```
+
+As a lambda with an implicit input parameter:
+
+```tego
+// Generic
+/= id/
+/<T>: T -> T = id/
+
+/(a)= !a/
+/<T>(a: T): Any -> T = !a/
+
+// Non-generic
+/= stringLength/
+/: String -> Int = stringLength/
+
+/(a) = <stringLength> a/
+/(a: String): Any -> Int = !(<stringLength> a)/
+```
+
+As a lambda with explicit input parameter:
+
+```tego
+// Generic
+/:- input -> input/
+/T -> T :- input -> input/
+
+/(a) :- input -> a/
+/(a: T): Any -> T :- input -> a/
+
+// Non-generic
+/:- input -> <stringLength> input/
+/: String -> Int :- input -> <stringLength> input/
+
+/(a) :- input -> <stringLength> a/
+/(a: String): Any -> Int :- input -> <stringLength> a/
 ```
