@@ -39,7 +39,7 @@ rules importOk : scope * scope * Import
 
   importOk(s, ms, d@Import(moduleName, name)) :- {ims is T}
     resolveModule(s, moduleName) == ims,
-    resolveDecl(ims, name) == T,
+    typeOfDecl(ims, name) == T,
     new is, ms -I-> is,
     importOne(is, name, T),
     @d.type := T.

@@ -30,7 +30,18 @@ signature
     DOUBLE   : TYPE
 
     // Misc
+    /**
+     * MODULE(s_module)
+     *
+     * A module, represented by its scope.
+     */
     MODULE   : scope -> TYPE
+    /**
+     * STRATEGY(s_decl, T_params, T_in, T_out)
+     *
+     * A strategy, with the strategy's declaration scope `s_decl`,
+     * and its parameter, input, and output types.
+     */
     STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
     CLASS    : ID -> TYPE
     LIST     : TYPE -> TYPE
@@ -48,12 +59,26 @@ signature
 
   sorts TPARAM
   constructors
+    /**
+     * TPARAM(s_decl, name, ty_upperBound, ty_lowerBound)
+     *
+     * A type parameter, declared in scope `s_decl` with name `name`
+     * and the specified upper and lower bounds. 
+     */
     TPARAM : scope * string * TYPE * TYPE -> TPARAM
   relations
+    /**
+     * type_param(tp)
+     *
+     * Relates a type parameter to a (declaration) scope.
+     */
     type_param : TPARAM
+    /**
+     * type_arg(tp) = T
+     *
+     * Relates a type argument to an (instance) scope.
+     */
     type_arg   : TPARAM -> TYPE
-    //typeParam: TYPEPARAM -> (TYPE * TYPE) // param -> (upperBound * lowerBound)
-    //typeArg  : TYPEPARAM -> TYPE		  // param -> instantiated T
 
 rules getScope : TYPE -> scope
 
@@ -97,7 +122,7 @@ rules typeOfType : scope * Type -> TYPE
   typeOfType(s, t@MemberTypeRef(rcv, name)) = T :- {T_rcv s_rcv}
     typeOfType(s, rcv) == T_rcv,
     getScope(T_rcv) == s_rcv,
-    resolveDecl(s_rcv, name) == T,
+    typeOfDecl(s_rcv, name) == T,
     @t.type := T.
 
   typeOfType(s, t@TupleType(types)) = T@TUPLE(Ts) :-
@@ -130,7 +155,7 @@ rules typeOfTypeRefOrTypeParam : scope * Type * list((path * TPARAM)) -> TYPE
 
   // Not a reference to a type parameter, so must be a type reference.
   typeOfTypeRefOrTypeParam(s, t@TypeRef(name), []) = T :-
-    resolveDecl(s, name) == T | error $[Unknown type [name]],
+    typeOfDecl(s, name) == T | error $[Unknown type [name]],
     @t.type := T.
 
   // An ambigous reference to a type parameter.
@@ -287,4 +312,59 @@ rules resolveTypeArgsOrdered : scope -> list((TPARAM * TYPE))
     // Extract the type (there should be exactly one occurrence).
     findTypeOfTypeParam(s_inst, tp, ta_occs) == T.
 
+/**
+ * Matches the type arguments to their parameters.
+ *
+ * @param s the scope
+ * @param s_inst the instance scope
+ * @param tps the type parameters
+ * @param TAs the type arguments
+ */
+rules typeArgsOk : scope * scope * list(TPARAM) * list(TYPE)
+  // No type parameters and no type arguments.
+  typeArgsOk(_, _, [], []).
+  // Type parameters but no type arguments.
+  typeArgsOk(_, _, tps, []) :-
+    // TODO: Infer type arguments
+  	false | error $[Cannot infer type arguments. Specify them explicitly.].
+  // Both type parameters and type arguments.
+  typeArgsOk(s, s_inst, tps, TAs) :-
+    typeArgsOk_2(s, s_inst, tps, TAs, sameLengthTasTps(tps, TAs)).
+    
+  typeArgsOk_2 : scope * scope * list(TPARAM) * list(TYPE) * (list(string) * list(TYPE))
+  // Equal number of type parameters and type arguments.
+  typeArgsOk_2(s, s_inst, tps, TAs, ([], [])) :-
+    typeArgsOk_3(s, s_inst, tps, TAs).
+  // More type parameters than type arguments.
+  typeArgsOk_2(_, _, _, _, (remaining@[_|_], [])) :-
+    false | error $[Not enough type arguments, unmatched type parameters: [remaining]].
+  // More type arguments than type parameters.
+  typeArgsOk_2(_, _, _, _, ([], remaining@[_|_])) :-
+    false | error $[Not enough type parameters, unmatched type arguments: [remaining]].
   
+rules typeArgOk : scope * scope * TPARAM * TYPE
+  typeArgsOk_3 maps typeArgOk(*, *, list(*), list(*))
+  
+  typeArgOk(s, s_inst, tp@TPARAM(_, name, T_UPPER, T_LOWER), T) :-
+    // typeOfWithTypeArgScope?
+    declareTypeArg(s_inst, tp, T).
+    // TODO: Check assignable to bounds.
+  
+/**
+ * Determines whether the given two lists of type parameters and type arguments
+ * have the same length, and if not, which elements remain.
+ *
+ * @param tps the type parameters
+ * @param tas the type arguments
+ * @return a tuple of the remaining type parameter names and the remaining type arguments
+ */
+rules sameLengthTasTps : list(TPARAM) * list(TYPE) -> (list(string) * list(TYPE))
+  // Both lists are empty, we're done matching.
+  sameLengthTasTps([], []) = ([], []).
+  // Both lists are non-empty, let's match the remaining lists.
+  sameLengthTasTps([_|tps], [_|tas]) = sameLengthTasTps(tps, tas).
+  // There are no more type arguments to match, let's report the remaining type parameter names.
+  sameLengthTasTps([TPARAM(_, name, _, _)|tps], []) = ([name|names], []) :-
+    sameLengthTasTps(tps, []) == (names, _).
+  // There are no more type parameters to match, let's report the remaining type arguments.
+  sameLengthTasTps([], tas@[_|_]) = ([], tas).

@@ -63,9 +63,9 @@ rules declareDecl : scope * string * TYPE
 
 
 // Resolves a declaration with the given name in the given scope to a type
-rules resolveDecl : scope * string -> TYPE
+rules typeOfDecl : scope * string -> TYPE
 
-  resolveDecl(s, name) = T :- {decl}
+  typeOfDecl(s, name) = T :- {decl}
     query type
       filter P* I?
       and { d' :- d' == name }
@@ -75,6 +75,15 @@ rules resolveDecl : scope * string -> TYPE
     // we need @ref on the name of the reference
     // pointing to the name of the declaration.
     @name.ref := decl.
+    
+rules resolveDecl : scope * string -> list((path * (string * TYPE)))
+
+  resolveDecl(s, name) = occs :- {decl}
+    query type
+      filter P* I?
+      and { d' :- d' == name }
+      min $ < P, $ < I
+      in s |-> occs.
 
 
 // Declares the module with the specified name and scope and returns its type
@@ -92,4 +101,4 @@ rules declareModule : scope * string * scope -> TYPE
 rules resolveModule : scope * string -> scope
 
   resolveModule(s, name) = ms :-
-    resolveDecl(s, name) == MODULE(ms) | error $[Module not found: [name]].
+    typeOfDecl(s, name) == MODULE(ms) | error $[Module not found: [name]].
