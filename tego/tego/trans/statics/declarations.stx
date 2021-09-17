@@ -8,78 +8,272 @@ imports
   statics/references
   statics/types
 
+/**
+ * Declares a Decl declaration.
+ *
+ * @param ms the private module scope
+ * @param ms_pub the public module scope
+ * @param d the declaration term
+ */
 rules declOk : scope * scope * Decl
   declsOk maps declOk(*, *, list(*))
 
-  declOk(ms, ms_pub, d@ValDef(mods, name, type, body)) :- {T TBODY}
-    typeOfType(ms, type) == T,
-    typeOfExp(ms, body) == TBODY,
-    TBODY == T,
-    declareDeclWithMods(ms, ms_pub, name, T, mods),
+  declOk(ms, ms_pub, d@ValDef(mods, name, type, exp)) :- {T TEXP}
+    typeOfType(ms, type) == T,                              // get variable type 
+    typeOfExp(ms, exp) == TEXP,                             // get actual expression body type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare variable in one of the module scopes
+    // It is an error if the expression type does not match the expected type,
+    // but we don't need this assertion for the semantic type check, so we'll wrap it in a `try{}`.
+    // Regardless of whether this fails, we will use the T that was specified in the signature.
+    try { T == TEXP } | error $[expected expression of type [T], got [TEXP]] @exp,
     @d.type := T.
 
-  declOk(ms, ms_pub, d@ValDefNoType(mods, name, body)) :- {T TBODY}
-    typeOfExp(ms, body) == T,
-    declareDeclWithMods(ms, ms_pub, name, T, mods),
-    @d.type := T.
+  declOk(ms, ms_pub, d@ValDefNoType(mods, name, exp)) :- {TEXP}
+    typeOfExp(ms, exp) == TEXP,                             // get actual expression body type
+    declareDeclWithMods(ms, ms_pub, name, TEXP, mods),      // declare variable in one of the module scopes
+    @d.type := TEXP.
 
   declOk(ms, ms_pub, d@ValDecl(mods, name, type)) :- {T}
-    typeOfType(ms, type) == T,
-    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    typeOfType(ms, type) == T,                              // get variable type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare variable in one of the module scopes
     @d.type := T.
 
-  declOk(ms, ms_pub, d@StrategyDecl(mods, name, typeParams, params, inType, outType)) :- {s_decl TPs T PTs IT OT T_params}
-    // Create strategy declaration scope in which the type variables are declared
-    new s_decl, s_decl -P-> ms,
-    typesOfTypes(s_decl, params) == PTs,
-    typeOfType(s_decl, inType) == IT,
-    typeOfType(s_decl, outType) == OT,
-    T == STRATEGY(PTs, IT, OT),
-    declareDeclWithMods(ms, ms_pub, name, T, mods),
-    declareTypeParams(s_decl, typeParams) == T_params,
+  declOk(ms, ms_pub, d@StrategyDef(mods, name, typeParams, params, inType, outType, exp)) :- {ds es TTYPEPARAMS TPARAMS TIN TOUT T TBODY TEXP}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
+    typeOfType(ds, inType) == TIN,                          // get strategy input type
+    typeOfType(ds, outType) == TOUT,                        // get strategy output type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
+    STRATEGY([], TIN, TOUT) == TBODY,                       // assign expected expression body type
+    typeOfExp(es, exp) == TEXP,                             // get actual expression body type
+    // It is an error if the expression type does not match the expected type,
+    // but we don't need this assertion for the semantic type check, so we'll wrap it in a `try{}`.
+    // Regardless of whether this fails, we will use the TIN and TOUT that where specified in the signature.
+    try { TBODY == TEXP } | error $[expected expression of type [TBODY], got [TEXP]] @exp,
     @d.type := T.
 
-   //TODO: Support generics
-//  declOk(ms, ms_pub, d@StrategyDecl(_, _, _, _, _, _)).
-
-  declOk(ms, ms_pub, d@StrategyDef(name, paramDefs, body)) :- {T PTs IT OT ss}
-    // FIXME: Only resolve in the current module scope
-    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
-    new ss, ss -P-> ms,
-    typesOfParamDefs(ss, paramDefs) == PTs,
-    typeOfExp(ss, body) == STRATEGY([], IT, OT),
+  declOk(ms, ms_pub, d@StrategyDefNoType(mods, name, params, exp)) :- {ds es TPARAMS TIN TOUT T}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareParamDeclsNoType(es, params) == TPARAMS,         // declare parameters in expression scope
+    // We use fresh variables for types TIN and TOUT, and hope that they get a value
+    // from the expression body.
+    typeOfExp(es, exp) == STRATEGY([], TIN, TOUT),          // get actual expression body type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
+    @d.type := T.
+    
+  declOk(ms, ms_pub, d@RuleDef(mods, name, typeParams, params, inType, outType, inExp, outExp)) :- {ds es TTYPEPARAMS TPARAMS TIN TOUT T TINEXP TOUTEXP}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
+    typeOfType(ds, inType) == TIN,                          // get strategy input type
+    typeOfType(ds, outType) == TOUT,                        // get strategy output type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
+    typeOfExp(es, inExp) == TINEXP,                         // get actual input expression type
+    typeOfExp(es, outExp) == TOUTEXP,                       // get actual output expression type
+    // It is an error if the expression types do not match the expected types,
+    // but we don't need this assertion for the semantic type check, so we'll wrap them in a `try{}`.
+    // Regardless of whether these fail, we will use the TIN and TOUT that where specified in the signature.
+    try { TIN == TINEXP } | error $[expected expression of type [TIN], got [TINEXP]] @inExp,
+    try { TOUT == TOUTEXP } | error $[expected expression of type [TOUT], got [TOUTEXP]] @outExp,
     @d.type := T.
 
-  declOk(ms, ms_pub, d@StrategyDefWInput(name, paramDefs, bindInput, body)) :- {T PTs IT OT ss}
-    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
-    new ss, ss -P-> ms,
-    typesOfParamDefs(ss, paramDefs) == PTs,
-    declareDecl(ss, bindInput, IT),
-    @bindInput.type := IT,
-    typeOfExp(ss, body) == OT,
+  declOk(ms, ms_pub, d@RuleDefNoType(mods, name, params, inExp, outExp)) :- {ds es TPARAMS TIN TOUT T}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareParamDeclsNoType(es, params) == TPARAMS,         // declare parameters in expression scope
+    // We use fresh variables for types TIN and TOUT, and hope that they get a value
+    // from the expression body.
+    typeOfExp(es, inExp) == TIN,                            // get actual input expression type
+    typeOfExp(es, outExp) == TOUT,                          // get actual output expression type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
     @d.type := T.
 
-  declOk(ms, ms_pub, d@RuleDef(name, paramDefs, inExp, outExp, clauses)) :- {T PTs IT OT ss}
-    typeOfType(ms, TypeRef(name)) == T@STRATEGY(PTs, IT, OT),
-    new ss, ss -P-> ms,
-    typesOfParamDefs(ss, paramDefs) == PTs,
-    typeOfExp(ss, inExp) == IT,
-    typeOfExp(ss, outExp) == OT,
-    clausesOk(ss, clauses),
+  declOk(ms, ms_pub, d@StrategyDecl(mods, name, typeParams, paramTypes, inType, outType)) :- {ds TTYPEPARAMS TPARAMS TIN TOUT T}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    typesOfTypes(ds, paramTypes) == TPARAMS,                // get parameter types
+    typeOfType(ds, inType) == TIN,                          // get strategy input type
+    typeOfType(ds, outType) == TOUT,                        // get strategy output type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
+    @d.type := T.
+    
+  declOk(ms, ms_pub, d@FunctionDef(mods, name, typeParams, params, type, exp)) :- {ds es TTYPEPARAMS TPARAMS TOUT T TEXP}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
+    typeOfType(ds, type) == TOUT,                           // get function return type
+    FUNCTION(TPARAMS, TOUT) == T,                           // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
+    typeOfExp(es, exp) == TEXP,                             // get actual expression body type
+    // It is an error if the expression type does not match the expected type,
+    // but we don't need this assertion for the semantic type check, so we'll wrap it in a `try{}`.
+    // Regardless of whether this fails, we will use the TOUT that was specified in the signature.
+    try { TOUT == TEXP } | error $[expected expression of type [TOUT], got [TEXP]] @exp,
     @d.type := T.
 
+  declOk(ms, ms_pub, d@FunctionDefNoType(mods, name, params, exp)) :- {ds es TPARAMS TOUT T}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareParamDeclsNoType(es, params) == TPARAMS,         // declare parameters in expression scope
+    // We use a fresh variable for type TOUT, and hope that it gets a value
+    // from the expression body.
+    typeOfExp(es, exp) == TOUT,                             // get actual expression body type
+    FUNCTION(TPARAMS, TOUT) == T,                           // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
+    @d.type := T.
+    
+  declOk(ms, ms_pub, d@FunctionDecl(mods, name, typeParams, paramTypes, type)) :- {ds es TTYPEPARAMS TPARAMS TOUT T}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    typesOfTypes(ds, paramTypes) == TPARAMS,                // get parameter types
+    typeOfType(ds, type) == TOUT,                           // get function return type
+    FUNCTION(TPARAMS, TOUT) == T,                           // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
+    @d.type := T.
+    
   declOk(ms, ms_pub, d@ClassDecl(mods, name)) :- {T}
-    T == CLASS(name),
-    declareDeclWithMods(ms, ms_pub, name, T, mods),
+    CLASS(name) == T,                                       // assign declaration type
+    declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
     @d.type := T.
-
+    
+  declOk(ms, ms_pub, d@InterfaceDecl(mods, name)) :-
+    false | error $[Interfaces are not yet supported.].
+  
+  declOk(ms, ms_pub, d@EnumDecl(mods, name)) :-
+    false | error $[Enums are not yet supported.].
 
   declOk(ms, ms_pub, Decl-Plhdr()).
 
+/**
+ * Declares a parameter in the given scope.
+ *
+ * @param s the scope to declare the parameter in
+ * @param ts the scope to resolve the type in
+ * @param param the parameter declaration
+ * @return the semantic type of the declared parameter
+ */
+rules declareParamDecl : scope * scope * ParamDecl -> TYPE
+  declareParamDecls maps declareParamDecl(*, *, list(*)) = list(*)
+  
+  declareParamDecl(s, ts, param@ParamDecl(name, type)) = T :-
+    typeOfType(ts, type) == T,                              // get the semantic type of the parameter's syntactic type
+    !type[name, T] in s,                                    // declare the parameter in the scope
+    // The name of a declaration needs the @decl annotation
+    // for compilation and to support renaming.
+    @name.decl := name.
+    
+/**
+ * Declares a parameter in the given scope.
+ *
+ * @param s the scope to declare the parameter in
+ * @param param the parameter declaration
+ * @return the semantic type of the declared parameter
+ */
+rules declareParamDeclNoType : scope * ParamDeclNoType -> TYPE
+  declareParamDeclsNoType maps declareParamDeclNoType(*, list(*)) = list(*)
+  
+  declareParamDeclNoType(s, param@ParamDeclNoType(name)) = T :-
+    !type[name, T] in s,                                    // declare the parameter in the scope
+    // The name of a declaration needs the @decl annotation
+    // for compilation and to support renaming.
+    @name.decl := name.
 
-rules clauseOk : scope * RuleClause
-  clausesOk maps clauseOk(*, list(*))
 
-  clauseOk(s, WhereClause(exp)) :-
-    typeOfExp(s, exp) == UNIT().
+/**
+ * Gets the semantic type of a parameter declaration.
+ * 
+ * @param ts the scope to resolve the type in
+ * @param param the parameter declaration
+ * @return the semantic type of the parameter
+ */
+rules typeOfParamDecl : scope * ParamDecl -> TYPE
+  typesOfParamDecls maps typeOfParamDecl(*, list(*)) = list(*)
+  
+  // This assigns a fresh variable to each parameter declaration's type,
+  // because we don't know the type yet. It should infer the type from
+  // the body of the strategy/function. Let's hope this works.
+  typeOfParamDecl(ts, param@ParamDecl(name, type)) = T :-
+    typeOfType(ts, type) == T.                              // get the semantic type of the parameter's syntactic type
+    
+/**
+ * Declares a declaration of a given name, type, and a list of modifiers
+ * in the scope dictated by the modifiers.
+ *
+ * @param s_priv the private scope
+ * @param s_pub the public scope
+ * @param name the name of the declaration
+ * @param T the semantic type of the declaration
+ * @param mods the list of declaration modifiers
+ */
+rules declareDeclWithMods : scope * scope * string * TYPE * list(DeclMod)
 
+  // public
+  declareDeclWithMods(s_priv, s_pub, name, T, [PublicDecl()|_]) :-
+    declareDecl(s_pub, name, T).                            // declare the declaration in the public scope
+
+  declareDeclWithMods(s_priv, s_pub, name, T, [_|mods]) :-
+    declareDeclWithMods(s_priv, s_pub, name, T, mods).
+
+  // private
+  declareDeclWithMods(s_priv, s_pub, name, T, []) :-
+    declareDecl(s_priv, name, T).                           // declare the declaration in the private scope
+
+/**
+ * Declares a declaration of a given name and type
+ * in the given scope.
+ *
+ * @param s the scope
+ * @param name the name of the declaration
+ * @param T the semantic type of the declaration
+ */
+rules declareDecl : scope * string * TYPE
+
+  declareDecl(s, name, T) :-
+    !type[name, T] in s,                                    // declare the declaration in the scope
+    // The name of a declaration needs the @decl annotation
+    // for compilation and to support renaming.
+    @name.decl := name.
+
+/**
+ * Resolves a declaration with the given name in the given scope in the given scope.
+ *
+ * @param s the scope to resolve in
+ * @param name the name of the declaration
+ * @return a list of resolution paths
+ */
+rules resolveDecl : scope * string -> list((path * (string * TYPE)))
+
+  resolveDecl(s, name) = occs :- {decl}
+    query type
+      filter P* I?
+      and { d' :- d' == name }
+      min $ < P, $ < I
+      in s |-> occs.
+    
+/**
+ * Resolves a declaration with the given name in the given scope to a type.
+ *
+ * @param s the scope to resolve in
+ * @param name the name of the declaration
+ * @return the type of the declaration
+ */
+rules typeOfDecl : scope * string -> TYPE
+
+  typeOfDecl(s, name) = T :- {decl}
+    resolveDecl(s, name) == [(_, (decl, T))] | error $[could not resolve [name]],
+    // For compilation and to support renaming,
+    // we need @ref on the name of the reference
+    // pointing to the name of the declaration.
+    @name.ref := decl.
+    

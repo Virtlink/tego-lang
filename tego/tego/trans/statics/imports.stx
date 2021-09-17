@@ -1,0 +1,60 @@
+module statics/imports
+
+imports
+  signatures/Tego-sig
+
+  statics/modules
+  statics/declarations
+  statics/expressions
+  statics/references
+  statics/types
+
+/**
+ * Checks and declares an import.
+ *
+ * @param ms the module private scope in which the import is declared
+ * @param rs the scope used to resolve modules
+ * @param d the import
+ */
+rules importOk : scope * scope * Import
+  importsOk maps importOk(*, *, list(*))
+
+  importOk(ms, rs, d@Import(moduleName, name)) :- {ims_pub is T}
+    resolveModule(rs, moduleName) == ims_pub,               // get imported module's public scope
+    typeOfDecl(ims_pub, name) == T,                         // get imported declaration type
+    importOne(ms, name, T),                                 // declare the imported type in the import scope
+    @d.type := T.
+
+  importOk(ms, rs, d@ImportAll(moduleName)) :- {ims_pub}
+    resolveModule(rs, moduleName) == ims_pub,               // get imported module's public scope
+    importAll(ms, ims_pub).                                 // declare all imported declarations in the import scope
+
+  importOk(ms, rs, Import-Plhdr()).
+
+/**
+ * Imports all declarations of the specified module's public scope
+ * into the current module's private scope.
+ *
+ * @param ms the current module's private scope
+ * @param ims_pub the imported module's public scope
+ */
+rules importAll : scope * scope
+
+  importAll(ms, ims_pub) :-
+    ms -I-> ims_pub.
+
+/**
+ * Imports one declaration with the specified name and type
+ * into the current module's private scope.
+ *
+ * @param ms the current module's private scope
+ * @param name the name of the declaration
+ * @param T the semantic type of the declaration
+ */
+rules importOne : scope * string * TYPE
+
+  importOne(ms, name, T) :- {is}
+    new is, ms -I-> is,                                     // create new import scope
+    !type[name, T] in is.                                   // declare the imported declaration in the import scope
+
+  

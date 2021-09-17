@@ -45,11 +45,11 @@ rules typeOfExp : scope * Exp -> TYPE
     typeOfDecl(s, name) == T,
     @e.type := T.
     
-  typeOfExp(s, e@GenericVar(name, typeArgs)) = T :-
-    // TODO: Find corresponding type params, declare type args
-    resolveDecl(s, name)
-    typeOfDecl(s, name) == T,
-    @e.type := T.
+//  typeOfExp(s, e@GenericVar(name, typeArgs)) = T :-
+//    // TODO: Find corresponding type params, declare type args
+//    resolveDecl(s, name),
+//    typeOfDecl(s, name) == T,
+//    @e.type := T.
 
   typeOfExp(s, e@Member(rcv, name)) = T :- {T_rcv s_rcv}
     typeOfExp(s, rcv) == T_rcv,
@@ -101,50 +101,50 @@ rules typeOfExp : scope * Exp -> TYPE
     typesOfExps(s, exps) == Ts,
     @e.type := T.
 
-  typeOfExp(s, e@LambdaRule(paramDefs, inExp, outExp)) = T :- {ss}
-    new ss, ss -P-> s,
-    new s_decl,
-    typesOfParamDefs(ss, paramDefs) == PTs,
-    typeOfExp(ss, inExp) == IT,
-    typeOfExp(ss, outExp) == OT,
-    T == STRATEGY(s_decl, PTs, IT, OT),
-    @e.type := T.
-
-  typeOfExp(s, e@LambdaStrategy(paramDefs, exp)) = T :- {ss}
-    new ss, ss -P-> s,
-    new s_decl,
-    typesOfParamDefs(ss, paramDefs) == PTs,
-    typeOfExp(ss, exp) == STRATEGY(_, [], IT, OT),
-    T == STRATEGY(s_decl, PTs, IT, OT),
-    @e.type := T.
+//  typeOfExp(s, e@LambdaRule(paramDefs, inExp, outExp)) = T :- {ss}
+//    new ss, ss -P-> s,
+//    new s_decl,
+//    typesOfParamDefs(ss, paramDefs) == PTs,
+//    typeOfExp(ss, inExp) == IT,
+//    typeOfExp(ss, outExp) == OT,
+//    T == STRATEGY(s_decl, PTs, IT, OT),
+//    @e.type := T.
+//
+//  typeOfExp(s, e@LambdaStrategy(paramDefs, exp)) = T :- {ss}
+//    new ss, ss -P-> s,
+//    new s_decl,
+//    typesOfParamDefs(ss, paramDefs) == PTs,
+//    typeOfExp(ss, exp) == STRATEGY(_, [], IT, OT),
+//    T == STRATEGY(s_decl, PTs, IT, OT),
+//    @e.type := T.
 
   typeOfExp(s, Exp-Plhdr()) = T.
 
-rules typeOfGenericVar : scope * Exp * list((path * (string * TYPE))) -> TYPE
-  // One declaration found.
-  typeOfGenericVar(s, GenericVar(name, tas), [(_, (name', TE))]) = T :- {s_inst tps TAs}
-    // Create instance scope with P to the declaration scope
-    new s_inst, s_inst -P-> s_decl,
-    getTypeParams(s_decl) == tps,	// TODO: get s_decl by storing the declaration scope in the type
-    typesOfTypes(tas) == TAs,
-    typeArgsOk(s, s_inst, tps, TAs).
-  // No declarations found.
-  typeOfGenericVar(s, GenericVar(name, _), []) = T :-
-  	false | error $[Undefined: [name]] @name.
-  // Multiple declarations found.
-  typeOfGenericVar(s, GenericVar(name, _), [_,_|_]) = T :-
-  	false | error $[Multiple declarations of: [name]] @name.
+//rules typeOfGenericVar : scope * Exp * list((path * (string * TYPE))) -> TYPE
+//  // One declaration found.
+//  typeOfGenericVar(s, GenericVar(name, tas), [(_, (name', TE))]) = T :- {s_inst tps TAs}
+//    // Create instance scope with P to the declaration scope
+//    new s_inst, s_inst -P-> s_decl,
+//    getTypeParams(s_decl) == tps,	// TODO: get s_decl by storing the declaration scope in the type
+//    typesOfTypes(tas) == TAs,
+//    typeArgsOk(s, s_inst, tps, TAs).
+//  // No declarations found.
+//  typeOfGenericVar(s, GenericVar(name, _), []) = T :-
+//  	false | error $[Undefined: [name]] @name.
+//  // Multiple declarations found.
+//  typeOfGenericVar(s, GenericVar(name, _), [_,_|_]) = T :-
+//  	false | error $[Multiple declarations of: [name]] @name.
 
-rules typeOfParamDef : scope * ParamDef -> TYPE
-  typesOfParamDefs maps typeOfParamDef(*, list(*)) = list(*)
-
-  typeOfParamDef(s, p@ParamDef(name, type)) = T :-
-    typeOfType(s, type) == T,
-    declareDecl(s, name, T),
-    @p.type := T.
-
-  typeOfParamDef(s, p@ParamDefNoType(name)) = T :-
-    declareDecl(s, name, T),
-    @p.type := T.
-
-  typeOfParamDef(s, ParamDef-Plhdr()) = T.
+//rules typeOfParamDef : scope * ParamDef -> TYPE
+//  typesOfParamDefs maps typeOfParamDef(*, list(*)) = list(*)
+//
+//  typeOfParamDef(s, p@ParamDef(name, type)) = T :-
+//    typeOfType(s, type) == T,
+//    declareDecl(s, name, T),
+//    @p.type := T.
+//
+//  typeOfParamDef(s, p@ParamDefNoType(name)) = T :-
+//    declareDecl(s, name, T),
+//    @p.type := T.
+//
+//  typeOfParamDef(s, ParamDef-Plhdr()) = T.

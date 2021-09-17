@@ -9,6 +9,10 @@ imports
   statics/references
 
 signature
+  sorts
+    DECL = (path * (occurrence * TYPE))
+
+signature
   sorts TYPE
   constructors
 
@@ -31,18 +35,26 @@ signature
 
     // Misc
     /**
-     * MODULE(s_module)
-     *
-     * A module, represented by its scope.
+     * A module type.
+     * 
+     * @param ms_pub the module's public scope
      */
     MODULE   : scope -> TYPE
     /**
-     * STRATEGY(s_decl, T_params, T_in, T_out)
+     * A strategy type.
      *
-     * A strategy, with the strategy's declaration scope `s_decl`,
-     * and its parameter, input, and output types.
+     * @param TPARAMS the parameter types
+     * @param TIN the input type
+     * @param TOUT the output type
      */
     STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
+    /**
+     * A function type.
+     * 
+     * @param TPARAMS the parameter types
+     * @param TRET the return type
+     */
+    FUNCTION : list(TYPE) * TYPE -> TYPE
     CLASS    : ID -> TYPE
     LIST     : TYPE -> TYPE
     TUPLE    : list(TYPE) -> TYPE
@@ -56,6 +68,11 @@ signature
 
   relations
     withType: -> TYPE
+    type     : ID -> TYPE
+  name-resolution
+    labels
+      P      // laxical parent
+      I      // import edge
 
   sorts TPARAM
   constructors

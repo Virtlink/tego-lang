@@ -4,15 +4,18 @@ imports
 
   Common
 
-context-free start-symbols
-
-  File
-
+/**
+ * A file.
+ */
+context-free start-symbols File
 context-free sorts File
 context-free syntax
 
   File.File                             = [[{Module "\n\n"}*]]
 
+/**
+ * A module.
+ */
 context-free sorts Module
 context-free syntax
 
@@ -22,31 +25,39 @@ context-free syntax
 
     <{Decl "\n"}*>>
 
+/**
+ * A top-level import of a module or a specific declaration from a module.
+ */
 context-free sorts Import
 context-free syntax
 
   Import.Import                         = [import [MOD_ID]::[ID]]
   Import.ImportAll                      = [import [MOD_ID]::[]*]
 
+/**
+ * A top-level declaration.
+ */
 context-free sorts Decl
 context-free syntax
 
   Decl.ValDef                           = [[{DeclMod " "}*] val [ID]: [Type] = [Exp]]
-  Decl.ValDecl                          = [[{DeclMod " "}*] val [ID]: [Type]]
   Decl.ValDefNoType                     = [[{DeclMod " "}*] val [ID] = [Exp]]
+  Decl.ValDecl                          = [[{DeclMod " "}*] val [ID]: [Type]]
   
   Decl.StrategyDef                      = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]]
   Decl.StrategyDefNoParams              = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] = [Exp]]               // desugared
   Decl.StrategyDefNoTypeParams          = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]]                   // desugared
   Decl.StrategyDefNoParamsNoTypeParams  = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] = [Exp]]                                        // desugared
-  Decl.StrategyDefNoType                = [[{DeclMod " "}*] def [ID]([{Exp ", "}*]) = [Exp]]
+  
+  Decl.StrategyDefNoType                = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) = [Exp]]
   Decl.StrategyDefNoTypeNoParams        = [[{DeclMod " "}*] def [ID] = [Exp]]                                                          // desugared
   
   Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]
   Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp] -> [Exp]]     // desugared
   Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]         // desugared
   Decl.RuleDefNoParamsNoTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [Exp] -> [Exp]]                              // desugared
-  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{Exp ", "}*]) :- [Exp] -> [Exp]]
+
+  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) :- [Exp] -> [Exp]]
   Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [Exp] -> [Exp]]                                                // desugared
 
   Decl.StrategyDecl                     = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
@@ -58,7 +69,8 @@ context-free syntax
   Decl.FunctionDefNoParams              = [[{DeclMod " "}*] fun [ID]<[{TypeParamDecl ", "}*]>: [Type] = [Exp]]                         // desugared
   Decl.FunctionDefNoTypeParams          = [[{DeclMod " "}*] fun [ID]([{ParamDecl ", "}*]): [Type] = [Exp]]                             // desugared
   Decl.FunctionDefNoParamsNoTypeParams  = [[{DeclMod " "}*] fun [ID]: [Type] = [Exp]]                                                  // desugared
-  Decl.FunctionDefNoType                = [[{DeclMod " "}*] fun [ID]([{Exp ", "}*]) = [Exp]]
+ 
+  Decl.FunctionDefNoType                = [[{DeclMod " "}*] fun [ID]([{ParamDeclNoType ", "}*]) = [Exp]]
   Decl.FunctionDefNoTypeNoParams        = [[{DeclMod " "}*] fun [ID] = [Exp]]                                                          // desugared
 
   Decl.FunctionDecl                     = [[{DeclMod " "}*] fun [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type]]
@@ -70,21 +82,24 @@ context-free syntax
   Decl.InterfaceDecl                    = [[{DeclMod " "}*] interface [ID]]
   Decl.EnumDecl                         = [[{DeclMod " "}*] enum [ID]]
 
-context-free sorts ParamDecl
+context-free sorts ParamDecl ParamDeclNoType TypeParamDecl
 context-free syntax
-  // TODO: Allow a match pattern here?
   ParamDecl.ParamDecl                   = [[ID]: [Type]]
-
-context-free sorts TypeParamDecl
-context-free syntax
+  ParamDeclNoType.ParamDeclNoType       = [[ID]]
   TypeParamDecl.TypeParamDecl           = [[ID]]
-  
+
+/**
+ * Modifiers for a module declaration.
+ */
 context-free sorts ModuleMod
 context-free syntax
   // TODO: An external module may only contain external declarations
   // TODO: An external module should implicitly add `external` to its declarations
   ModuleMod.ExternModule                = [extern]
 
+/**
+ * Modifiers for a top-level declaration.
+ */
 context-free sorts DeclMod
 context-free syntax
   // TODO: An external declaration cannot have a definition
@@ -93,6 +108,9 @@ context-free syntax
   // TODO: A public declaration cannot be imported
   DeclMod.PublicDecl                    = [public]
 
+/**
+ * Syntactic types.
+ */
 context-free sorts Type
 context-free syntax
 
@@ -110,7 +128,7 @@ context-free syntax
   Type                                  = [([Type])] {bracket}
 
 /**
- * Core syntax.
+ * Core expressions.
  */
 context-free sorts Exp
 context-free syntax
@@ -157,7 +175,7 @@ context-free syntax
   
 
 /**
- * Sugar syntax.
+ * Sugar expressions.
  */
 context-free syntax
 
