@@ -41,7 +41,7 @@ rules declOk : scope * scope * Decl
   declOk(ms, ms_pub, d@StrategyDef(mods, name, typeParams, params, inType, outType, exp)) :- {ds es TTYPEPARAMS TPARAMS TIN TOUT T TBODY TEXP}
     new ds, ds -P-> ms,	                                    // create declaration scope
     new es, es -P-> ds,                                     // create expression scope
-    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
     declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
     typeOfType(ds, inType) == TIN,                          // get strategy input type
     typeOfType(ds, outType) == TOUT,                        // get strategy output type
@@ -69,7 +69,7 @@ rules declOk : scope * scope * Decl
   declOk(ms, ms_pub, d@RuleDef(mods, name, typeParams, params, inType, outType, inExp, outExp)) :- {ds es TTYPEPARAMS TPARAMS TIN TOUT T TINEXP TOUTEXP}
     new ds, ds -P-> ms,	                                    // create declaration scope
     new es, es -P-> ds,                                     // create expression scope
-    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
     declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
     typeOfType(ds, inType) == TIN,                          // get strategy input type
     typeOfType(ds, outType) == TOUT,                        // get strategy output type
@@ -98,7 +98,7 @@ rules declOk : scope * scope * Decl
 
   declOk(ms, ms_pub, d@StrategyDecl(mods, name, typeParams, paramTypes, inType, outType)) :- {ds TTYPEPARAMS TPARAMS TIN TOUT T}
     new ds, ds -P-> ms,	                                    // create declaration scope
-    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
     typesOfTypes(ds, paramTypes) == TPARAMS,                // get parameter types
     typeOfType(ds, inType) == TIN,                          // get strategy input type
     typeOfType(ds, outType) == TOUT,                        // get strategy output type
@@ -109,7 +109,7 @@ rules declOk : scope * scope * Decl
   declOk(ms, ms_pub, d@FunctionDef(mods, name, typeParams, params, type, exp)) :- {ds es TTYPEPARAMS TPARAMS TOUT T TEXP}
     new ds, ds -P-> ms,	                                    // create declaration scope
     new es, es -P-> ds,                                     // create expression scope
-    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
     declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
     typeOfType(ds, type) == TOUT,                           // get function return type
     FUNCTION(TPARAMS, TOUT) == T,                           // assign declaration type
@@ -135,7 +135,7 @@ rules declOk : scope * scope * Decl
   declOk(ms, ms_pub, d@FunctionDecl(mods, name, typeParams, paramTypes, type)) :- {ds es TTYPEPARAMS TPARAMS TOUT T}
     new ds, ds -P-> ms,	                                    // create declaration scope
     new es, es -P-> ds,                                     // create expression scope
-    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
     typesOfTypes(ds, paramTypes) == TPARAMS,                // get parameter types
     typeOfType(ds, type) == TOUT,                           // get function return type
     FUNCTION(TPARAMS, TOUT) == T,                           // assign declaration type
@@ -144,7 +144,7 @@ rules declOk : scope * scope * Decl
     
   declOk(ms, ms_pub, d@ClassDecl(mods, name, typeParams)) :- {ds TTYPEPARAMS T}
     new ds, ds -P-> ms,	                                    // create declaration scope
-    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
     CLASS(name, ds) == T,                                   // assign declaration type
     declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
     @d.type := T.

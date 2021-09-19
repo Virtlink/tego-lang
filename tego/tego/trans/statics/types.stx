@@ -76,20 +76,8 @@ signature
     UNIT     : TYPE
     STRING   : TYPE
     
-    /**
-     * Parameterizes a type over a type parameter.
-     *
-     * @param name the name of the type parameter
-     * @param s_decl the declaration scope
-     */
-    FORALL   : string * scope -> TYPE
-    
     // A reference to a type parameter
     TPARAMREF: TPARAM -> TYPE
-    
-  sorts TVAR
-  constructors
-    TVAR     : string -> TVAR
 
   relations
     withType: -> TYPE
@@ -115,7 +103,7 @@ signature
      * Relates a type parameter to a declaration scope.
      */
     type_param : TPARAM
-    typeParams : -> list(TVAR)
+    typeParams : -> list(TPARAM)
     /**
      * Relates a type argument to an instance scope.
      */
@@ -299,21 +287,10 @@ rules typeOfTPARAM : TPARAM * list((path * (TPARAM * TYPE))) -> TYPE
  * @param s_decl the declaration scope
  * @param typeParams the syntactic type parameters 
  */
-rules declareTypeParams : scope * list(TypeParamDecl)
-  declareTypeParams(s_decl, typeParams) :- {tvars}
-    typesOfTypeParams(s_decl, typeParams) == tvars,         // get the type variables
-    !typeParams[tvars] in s_decl.                           // declare the list of type parameters in declaration scope
-
-rules typeOfTypeParam : scope * TypeParamDecl -> TVAR
-  typesOfTypeParams maps typeOfTypeParam(*, list(*)) = list(*)
-  
-  typeOfTypeParam(s_decl, d@TypeParamDecl(name)) = TVAR(name).// :- {TUPPER TLOWER}
-  	//TUPPER == NULLABLE(ANY()),                              // upper bound
-  	//TLOWER == NOTHING(),                                    // lower bound
-  	//T == TPARAM(s_decl, name, TUPPER, TLOWER),              // assign type parameter
-  	//!type[T] in s_decl,                               // declare type parameter in declaration scope
-    // TODO: Ensure there is only one definition
-    //@d.type := TUPPER.
+rules declareAllTypeParams : scope * list(TypeParamDecl) -> list(TPARAM)
+  declareAllTypeParams(s_decl, typeParams) = TPARAMS :- {tvars}
+    declareTypeParams(s_decl, typeParams) == TPARAMS,       // get the type variables
+    !typeParams[TPARAMS] in s_decl.                         // declare the list of type parameters in declaration scope
   
 
 /**
@@ -323,16 +300,16 @@ rules typeOfTypeParam : scope * TypeParamDecl -> TVAR
  * @param d the type parameter
  * @return the semantic type of the type parameter
  */
-//rules declareTypeParam : scope * TypeParamDecl -> TPARAM
-  //declareTypeParamsx maps declareTypeParam(*, list(*)) = list(*)
+rules declareTypeParam : scope * TypeParamDecl -> TPARAM
+  declareTypeParams maps declareTypeParam(*, list(*)) = list(*)
   
-//  declareTypeParam(s_decl, d@TypeParamDecl(name)) = T :- {TUPPER TLOWER}
-//  	TUPPER == NULLABLE(ANY()),                              // upper bound
-//  	TLOWER == NOTHING(),                                    // lower bound
-//  	T == TPARAM(s_decl, name, TUPPER, TLOWER),              // assign type parameter
-//  	!type_param[T] in s_decl,                               // declare type parameter in declaration scope
-//    // TODO: Ensure there is only one definition
-//    @d.type := TUPPER.
+  declareTypeParam(s_decl, d@TypeParamDecl(name)) = T :- {TUPPER TLOWER}
+  	TUPPER == NULLABLE(ANY()),                              // upper bound
+  	TLOWER == NOTHING(),                                    // lower bound
+  	T == TPARAM(s_decl, name, TUPPER, TLOWER),              // assign type parameter
+  	!type_param[T] in s_decl,                               // declare type parameter in declaration scope
+    // TODO: Ensure there is only one definition
+    @d.type := TUPPER.
     
 /**
  * Resolves a name of a type parameter to a list of all its occurrences.
