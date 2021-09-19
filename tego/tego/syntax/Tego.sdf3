@@ -78,7 +78,8 @@ context-free syntax
   Decl.FunctionDeclNoTypeParams         = [[{DeclMod " "}*] fun [ID]([{Type ", "}*]): [Type]]                                          // desugared
   Decl.FunctionDeclNoParamsNoTypeParams = [[{DeclMod " "}*] fun [ID]: [Type]]                                                          // desugared
   
-  Decl.ClassDecl                        = [[{DeclMod " "}*] class [ID]]
+  Decl.ClassDecl                        = [[{DeclMod " "}*] class [ID]<[{TypeParamDecl ", "}*]>]
+  Decl.ClassDeclNoTypeParams            = [[{DeclMod " "}*] class [ID]]                                                                // desugared
   Decl.InterfaceDecl                    = [[{DeclMod " "}*] interface [ID]]
   Decl.EnumDecl                         = [[{DeclMod " "}*] enum [ID]]
 
@@ -114,6 +115,7 @@ context-free syntax
 context-free sorts Type
 context-free syntax
 
+  Type.NullableType                     = [[Type]?]
   Type.TypeRef                          = [[MOD_ID]]
   Type.MemberTypeRef                    = [[Type]::[ID]]
   Type.ListType                         = <[<Type>]>
@@ -144,9 +146,9 @@ context-free syntax
   
   // References
   Exp.Var                               = [[MOD_ID]]
-  Exp.GenericVar                        = [[MOD_ID]<[{Type ", "}+]>]
+  Exp.GenericInst                       = [[MOD_ID]<[{Type ", "}+]>]
   Exp.Member                            = [[Exp]::[ID]]
-  Exp.GenericMember                     = [[Exp]::[ID]<[{Type ", "}+]>]
+  Exp.GenericMemberInst                 = [[Exp]::[ID]<[{Type ", "}+]>]
   Exp.ClassRef                          = <<Type>::<>class>
   
   // Literals
@@ -178,6 +180,8 @@ context-free syntax
  * Sugar expressions.
  */
 context-free syntax
+
+  Exp.Capture                           = [@[ID]]
 
   // Composition
   Exp.Seq                               = [[Exp]; [Exp]] {right}

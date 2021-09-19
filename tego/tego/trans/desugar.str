@@ -40,6 +40,8 @@ rules
   desugar-decl: FunctionDeclNoTypeParams(mods, name, params, type) -> FunctionDecl(mods, name, [], params, type)
   desugar-decl: FunctionDeclNoParamsNoTypeParams(mods, name, type) -> FunctionDecl(mods, name, [], [], type)
   
+  desugar-decl: ClassDeclNoTypeParams(mods, name) -> ClassDecl(mods, name, [])
+  
 rules
 
   desugar-type: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)
@@ -66,12 +68,12 @@ rules
   where <not(fetch(?ExternDecl()))> mods
   make-decl-extern: StrategyDecl(mods, name, typeParams, paramTypes, inType, outType) -> StrategyDecl([ExternDecl()|mods], name, typeParams, paramTypes, inType, outType)
   where <not(fetch(?ExternDecl()))> mods
-  make-decl-extern: ClassDecl(mods, name) -> ClassDecl([ExternDecl()|mods], name)
+  make-decl-extern: ClassDecl(mods, name, tparams) -> ClassDecl([ExternDecl()|mods], name, tparams)
   where <not(fetch(?ExternDecl()))> mods
 
   make-decl-public: ValDecl(mods, name, type) -> ValDecl([PublicDecl()|mods], name, type)
   where <not(fetch(?PublicDecl()))> mods
   make-decl-public: StrategyDecl(mods, name, typeParams, paramTypes, inType, outType) -> StrategyDecl([PublicDecl()|mods], name, typeParams, paramTypes, inType, outType)
   where <not(fetch(?PublicDecl()))> mods
-  make-decl-public: ClassDecl(mods, name) -> ClassDecl([PublicDecl()|mods], name)
+  make-decl-public: ClassDecl(mods, name, tparams) -> ClassDecl([PublicDecl()|mods], name, tparams)
   where <not(fetch(?PublicDecl()))> mods

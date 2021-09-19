@@ -1,0 +1,57 @@
+module imports
+
+language Tego
+
+test should import all public declarations from a module [[
+module A
+  import B::*
+  
+  val x: X
+  val y: Y
+  
+module B
+  public class X
+  public class Y
+]] analysis succeeds
+
+test should import a specific public declaration from a module [[
+module A
+  import B::X
+  
+  val x: X
+  
+module B
+  public class X
+  public class Y
+]] analysis succeeds
+
+test should not import public declarations that where not mentioned [[
+module A
+  import B::X
+  
+  val y: [[Y]]
+  
+module B
+  public class X
+  public class Y
+]] 1 error at #1
+
+test should not import any non-public declarations [[
+module A
+  import B::*
+  
+  val x: [[X]]
+  
+module B
+  class X
+]] 1 error at #1
+
+test should not import specific non-public declarations [[
+module A
+  import B::[[X]]
+  
+  val x: X
+  
+module B
+  class X
+]] 1 error at #1

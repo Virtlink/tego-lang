@@ -34,7 +34,7 @@ rules moduleOk : scope * Module
   moduleOk(rs, m@Module(mods, name, imports, decls)) :- {ms_pub ms is T}
     new ms_pub, ms_pub -P-> rs,                             // create module public scope
     new ms, ms -P-> ms_pub,                                 // create module private scope
-    moduleInit(ms, rs),                                     // initialize module
+    //moduleInit(ms, rs),                                     // initialize module
     declareModule(rs, name, ms_pub) == T,                   // declare module in root scope
     importsOk(ms, rs, imports),                             // check imports
     declsOk(ms, ms_pub, decls),                             // check declarations

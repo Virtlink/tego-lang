@@ -32,7 +32,7 @@ rules typeOfExp : scope * Exp -> TYPE
   typeOfExp(s, e@Id()) = T@STRATEGY([], ANY(), ANY()) :-
     @e.type := T.
 
-  typeOfExp(s, e@Fail()) = T :- //@STRATEGY([], ANY(), ANY()) :-
+  typeOfExp(s, e@Fail()) = T@STRATEGY([], NULLABLE(ANY()), NOTHING()) :-
     @e.type := T.
 
   typeOfExp(s, e@Apply(rcv, args)) = T :- {ET TAs PTs IT OT}
@@ -43,6 +43,10 @@ rules typeOfExp : scope * Exp -> TYPE
 
   typeOfExp(s, e@Var(name)) = T :-
     typeOfDecl(s, name) == T,
+    @e.type := T.
+    
+  typeOfExp(s, e@Capture(name)) = T :-
+    // TODO: Declare variable
     @e.type := T.
     
 //  typeOfExp(s, e@GenericVar(name, typeArgs)) = T :-
@@ -59,7 +63,7 @@ rules typeOfExp : scope * Exp -> TYPE
 
   // FIXME: Should be Class<T> where T is the type
   typeOfExp(s, e@ClassRef(type)) = T :- //@CLASS("Class") :-
-    typeOfType(s, type) == CLASS(_),
+    typeOfType(s, type) == CLASS(_, _),
     typeOfDecl(s, "Class") == T,
     @e.type := T.
 
@@ -120,6 +124,13 @@ rules typeOfExp : scope * Exp -> TYPE
 
   typeOfExp(s, Exp-Plhdr()) = T.
 
+///**
+// * Determines the type of a generic type instantiation.
+// *
+// * @param s the scope of the expression
+// * @param exp the expression
+// * @param 
+// */
 //rules typeOfGenericVar : scope * Exp * list((path * (string * TYPE))) -> TYPE
 //  // One declaration found.
 //  typeOfGenericVar(s, GenericVar(name, tas), [(_, (name', TE))]) = T :- {s_inst tps TAs}

@@ -25,7 +25,7 @@ rules declOk : scope * scope * Decl
     // It is an error if the expression type does not match the expected type,
     // but we don't need this assertion for the semantic type check, so we'll wrap it in a `try{}`.
     // Regardless of whether this fails, we will use the T that was specified in the signature.
-    try { T == TEXP } | error $[expected expression of type [T], got [TEXP]] @exp,
+    try { subtypeOf(TEXP, T) } | error $[expected expression of type [T], got [TEXP]] @exp,
     @d.type := T.
 
   declOk(ms, ms_pub, d@ValDefNoType(mods, name, exp)) :- {TEXP}
@@ -52,7 +52,7 @@ rules declOk : scope * scope * Decl
     // It is an error if the expression type does not match the expected type,
     // but we don't need this assertion for the semantic type check, so we'll wrap it in a `try{}`.
     // Regardless of whether this fails, we will use the TIN and TOUT that where specified in the signature.
-    try { TBODY == TEXP } | error $[expected expression of type [TBODY], got [TEXP]] @exp,
+    try { subtypeOf(TEXP, TBODY) } | error $[expected expression of type [TBODY], got [TEXP]] @exp,
     @d.type := T.
 
   declOk(ms, ms_pub, d@StrategyDefNoType(mods, name, params, exp)) :- {ds es TPARAMS TIN TOUT T}
@@ -80,8 +80,8 @@ rules declOk : scope * scope * Decl
     // It is an error if the expression types do not match the expected types,
     // but we don't need this assertion for the semantic type check, so we'll wrap them in a `try{}`.
     // Regardless of whether these fail, we will use the TIN and TOUT that where specified in the signature.
-    try { TIN == TINEXP } | error $[expected expression of type [TIN], got [TINEXP]] @inExp,
-    try { TOUT == TOUTEXP } | error $[expected expression of type [TOUT], got [TOUTEXP]] @outExp,
+    try { subtypeOf(TINEXP, TIN) } | error $[expected expression of type [TIN], got [TINEXP]] @inExp,
+    try { subtypeOf(TOUTEXP, TOUT) } | error $[expected expression of type [TOUT], got [TOUTEXP]] @outExp,
     @d.type := T.
 
   declOk(ms, ms_pub, d@RuleDefNoType(mods, name, params, inExp, outExp)) :- {ds es TPARAMS TIN TOUT T}
@@ -118,7 +118,7 @@ rules declOk : scope * scope * Decl
     // It is an error if the expression type does not match the expected type,
     // but we don't need this assertion for the semantic type check, so we'll wrap it in a `try{}`.
     // Regardless of whether this fails, we will use the TOUT that was specified in the signature.
-    try { TOUT == TEXP } | error $[expected expression of type [TOUT], got [TEXP]] @exp,
+    try { subtypeOf(TEXP, TOUT) } | error $[expected expression of type [TOUT], got [TEXP]] @exp,
     @d.type := T.
 
   declOk(ms, ms_pub, d@FunctionDefNoType(mods, name, params, exp)) :- {ds es TPARAMS TOUT T}
@@ -142,8 +142,10 @@ rules declOk : scope * scope * Decl
     declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
     @d.type := T.
     
-  declOk(ms, ms_pub, d@ClassDecl(mods, name)) :- {T}
-    CLASS(name) == T,                                       // assign declaration type
+  declOk(ms, ms_pub, d@ClassDecl(mods, name, typeParams)) :- {ds TTYPEPARAMS T}
+    new ds, ds -P-> ms,	                                    // create declaration scope
+    declareTypeParams(ds, typeParams) == TTYPEPARAMS,       // declare type parameters in declaration scope
+    CLASS(name, ds) == T,                                   // assign declaration type
     declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
     @d.type := T.
     

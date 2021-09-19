@@ -1,0 +1,107 @@
+module declarations
+
+language Tego
+
+fixture [[
+module A
+
+[[...]]
+]]
+
+test should define a generic strategy with parameters [[
+  def foo<T>(b: Bool): T -> T = fail
+]] analysis succeeds
+test should define a generic strategy [[
+  def foo<T>: T -> T = fail
+]] analysis succeeds
+test should define a strategy with parameters [[
+  def foo(b: Bool): Int -> Int = id
+]] analysis succeeds
+test should define a strategy [[
+  def foo: Int -> Int = id
+]] analysis succeeds
+test should define an untyped strategy with parameters [[
+  def foo(b) = fail
+]] analysis succeeds
+test should define an untyped strategy [[
+  def foo = fail
+]] analysis succeeds
+
+
+test should declare a generic strategy with parameters [[
+  def foo<T>(Bool): T -> T
+]]
+test should declare a generic strategy [[
+  def foo<T>: T -> T
+]]
+test should declare a strategy with parameters [[
+  def foo(Bool): Int -> Int
+]]
+test should declare a strategy [[
+  def foo: Int -> Int
+]]
+
+
+test should define a generic rule with parameters [[
+  def foo<T>(b: Bool): T -> T :- @x -> x
+]] analysis succeeds
+test should define a generic rule [[
+  def foo<T>: T -> T :- @x -> x
+]] analysis succeeds
+test should define a rule with parameters [[
+  def foo(b: Bool): Int -> Int :- @x -> x
+]] analysis succeeds
+test should define a rule [[
+  def foo: Int -> Int :- @x -> x
+]] analysis succeeds
+test should define an untyped rule with parameters [[
+  def foo(b) :- @x -> x
+]] analysis succeeds
+test should define an untyped rule [[
+  def foo :- @x -> x
+]] analysis succeeds
+
+
+test should define a generic function with parameters [[
+  fun foo<T>(b: Bool): T = null
+]] analysis succeeds
+test should define a generic function [[
+  fun foo<T>: T = null
+]] analysis succeeds
+test should define a function with parameters [[
+  fun foo(b: Bool): Int = 10
+]] analysis succeeds
+test should define a function [[
+  fun foo: Int = 10
+]] analysis succeeds
+test should define an untyped function with parameters [[
+  fun foo(b) = null
+]] analysis succeeds
+test should define an untyped function [[
+  fun foo = 10
+]] analysis succeeds
+
+
+test should declare a generic function with parameters [[
+  fun foo<T>(Bool): T
+]] analysis succeeds
+test should declare a generic function [[
+  fun foo<T>: T
+]] analysis succeeds
+test should declare a function with parameters [[
+  fun foo(Bool): Int
+]] analysis succeeds
+test should declare a function [[
+  fun foo: Int
+]] analysis succeeds
+
+
+test should declare a class [[
+  class C
+]] analysis succeeds
+test should declare an interface [[
+  interface I
+]] analysis succeeds
+test should declare an enum [[
+  enum E
+]] analysis succeeds

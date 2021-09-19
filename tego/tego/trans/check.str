@@ -92,7 +92,7 @@ rules
   check-warn: FunctionDeclNoTypeParams(mods, _, _, _) -> <check-mods-duplicates> mods
   check-warn: FunctionDeclNoParamsNoTypeParams(mods, _, _) -> <check-mods-duplicates> mods
   
-  check-warn: ClassDecl(mods, _) -> <check-mods-duplicates> mods
+  check-warn: ClassDecl(mods, _, _) -> <check-mods-duplicates> mods
   check-warn: InterfaceDecl(mods, _) -> <check-mods-duplicates> mods
   check-warn: EnumDecl(mods, _) -> <check-mods-duplicates> mods
 
@@ -148,7 +148,7 @@ rules
   check-warn-decl-not-extern: FunctionDeclNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-extern> mods
   check-warn-decl-not-extern: FunctionDeclNoParamsNoTypeParams(mods, _, _) -> <check-warn-mod-not-extern> mods
   
-  check-warn-decl-not-extern: ClassDecl(mods, _) -> <check-warn-mod-not-extern> mods
+  check-warn-decl-not-extern: ClassDecl(mods, _, _) -> <check-warn-mod-not-extern> mods
   check-warn-decl-not-extern: InterfaceDecl(mods, _) -> <check-warn-mod-not-extern> mods
   check-warn-decl-not-extern: EnumDecl(mods, _) -> <check-warn-mod-not-extern> mods
 
@@ -193,7 +193,7 @@ rules
   check-warn-decl-not-public: FunctionDeclNoTypeParams(mods, _, _, _) -> <check-warn-mod-not-public> mods
   check-warn-decl-not-public: FunctionDeclNoParamsNoTypeParams(mods, _, _) -> <check-warn-mod-not-public> mods
   
-  check-warn-decl-not-public: ClassDecl(mods, _) -> <check-warn-mod-not-public> mods
+  check-warn-decl-not-public: ClassDecl(mods, _, _) -> <check-warn-mod-not-public> mods
   check-warn-decl-not-public: InterfaceDecl(mods, _) -> <check-warn-mod-not-public> mods
   check-warn-decl-not-public: EnumDecl(mods, _) -> <check-warn-mod-not-public> mods
 

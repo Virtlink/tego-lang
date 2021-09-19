@@ -1,0 +1,7 @@
+module A
+  import B::*
+  
+  val x: X
+  
+module B
+  public class X
