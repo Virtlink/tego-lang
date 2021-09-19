@@ -1,0 +1,19 @@
+module generics-example
+
+import java/lang::*
+
+class SolverState
+
+extern def foo1: SolverState -> SolverState
+extern def foo2<T>: T -> T
+
+//def bar: Int -> Int
+val bar: Any -> Class = \= !SolverState::class; !SolverState::class\
+val bar2: Any -> Class = !SolverState::class; !SolverState::class
+
+val bar3: Int -> Int = \:- a -> <add> (a, 1)\
+
+def add: (Int, Int) -> Int
+
+extern module java/lang
+class Class

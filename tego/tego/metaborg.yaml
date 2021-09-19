@@ -38,6 +38,10 @@ language:
     - stratego-sdf
     - -la
     - strc
+runtime:
+  statix:
+    message-trace-length: 10
+    message-term-depth: 5
 exports:
 - language: ATerm
   directory: src-gen/statix

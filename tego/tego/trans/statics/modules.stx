@@ -3,45 +3,81 @@ module statics/modules
 imports
   signatures/Tego-sig
 
+  statics/imports
   statics/declarations
   statics/expressions
   statics/references
   statics/types
 
-rules module_init : scope * scope
+/**
+ * Initializes a module.
+ *
+ * @param ms the module private scope
+ * @param ts the scope used to resolve types
+ */
+rules moduleInit : scope * scope
 
-  module_init(s, ms) :-
+  moduleInit(ms, ts) :-
+    // TODO: Only init non-external modules
     // default imports
-    importAll(ms, resolveModule(s, "java/lang")).
+    importAll(ms, resolveModule(ts, "java/lang")).          // import java/lang::*
 
+/**
+ * Checks and declares a module.
+ *
+ * @param rs the root scope
+ * @param m the module
+ */
 rules moduleOk : scope * Module
   modulesOk maps moduleOk(*, list(*))
 
-  moduleOk(s, m@Module(mods, name, imports, decls)) :- {ms_pub ms is T}
-    new ms_pub, ms_pub -P-> s,
-    new ms, ms -P-> ms_pub,
-    module_init(s, ms_pub),
-    T == MODULE(ms_pub),
-    declareDecl(s, name, T),
-    importsOk(s, ms, imports),
-    declsOk(ms, ms_pub, decls),
+  moduleOk(rs, m@Module(mods, name, imports, decls)) :- {ms_pub ms is T}
+    new ms_pub, ms_pub -P-> rs,                             // create module public scope
+    new ms, ms -P-> ms_pub,                                 // create module private scope
+    //moduleInit(ms, rs),                                     // initialize module
+    declareModule(rs, name, ms_pub) == T,                   // declare module in root scope
+    importsOk(ms, rs, imports),                             // check imports
+    declsOk(ms, ms_pub, decls),                             // check declarations
     @m.type := T.
 
   moduleOk(s, Module-Plhdr()).
 
-rules importOk : scope * scope * Import
-  importsOk maps importOk(*, *, list(*))
+/**
+ * Declares the module with the specified name and scope and returns its type.
+ *
+ * @param rs the root scope
+ * @param name the name of the module
+ * @param ms_pub the module's public scope
+ * @return the module's semantic type
+ */
+rules declareModule : scope * string * scope -> TYPE
 
-  importOk(s, ms, d@Import(moduleName, name)) :- {ims is T}
-    resolveModule(s, moduleName) == ims,
-    resolveDecl(ims, name) == T,
-    new is, ms -I-> is,
-    importOne(is, name, T),
-    @d.type := T.
+  declareModule(rs, name, ms_pub) = T :-
+    MODULE(ms_pub) == T,                                    // assign module type
+    !type[name, T] in rs,                                   // declare the module in the root scope
+    // The name of a declaration needs the @decl annotation
+    // for compilation and to support renaming.
+    @name.decl := name.
 
-  importOk(s, ms, d@ImportAll(moduleName)) :- {ims}
-    resolveModule(s, moduleName) == ims,
-    importAll(ms, ims).
+/**
+ * Resolves the module with the specified name to its scope.
+ *
+ * @param rs the scope from which to resolve modules
+ * @param name the name of the module
+ * @return the scope of the module
+ */
+rules resolveModule : scope * string -> scope
 
-  importOk(s, ms, Import-Plhdr()).
-
+  resolveModule(rs, name) = ms :-
+    typeOfDecl(rs, name) == MODULE(ms) | error $[module not found: [name]].
+    
+//rules isExternModuleMod : list(ModuleMod)
+//  isExternModuleMod([ExternModule()|_]).
+//  isExternModuleMod([_|mods]) :- isExternModuleMod(mods).
+//  isExternModuleMod([]) :- false.
+//  
+//rules isNotExternModuleMod : list(ModuleMod)
+//  isNotExternModuleMod([ExternModule()|_]) :- false.
+//  isNotExternModuleMod([_|mods]) :- isExternModuleMod(mods).
+//  isNotExternModuleMod([]) :- true.
+  

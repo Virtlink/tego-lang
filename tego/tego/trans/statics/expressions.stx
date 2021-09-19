@@ -32,7 +32,7 @@ rules typeOfExp : scope * Exp -> TYPE
   typeOfExp(s, e@Id()) = T@STRATEGY([], ANY(), ANY()) :-
     @e.type := T.
 
-  typeOfExp(s, e@Fail()) = T :- //@STRATEGY([], ANY(), ANY()) :-
+  typeOfExp(s, e@Fail()) = T@STRATEGY([], NULLABLE(ANY()), NOTHING()) :-
     @e.type := T.
 
   typeOfExp(s, e@Apply(rcv, args)) = T :- {ET TAs PTs IT OT}
@@ -42,19 +42,29 @@ rules typeOfExp : scope * Exp -> TYPE
     @e.type := T.
 
   typeOfExp(s, e@Var(name)) = T :-
-    resolveDecl(s, name) == T,
+    typeOfDecl(s, name) == T,
     @e.type := T.
+    
+  typeOfExp(s, e@Capture(name)) = T :-
+    // TODO: Declare variable
+    @e.type := T.
+    
+//  typeOfExp(s, e@GenericVar(name, typeArgs)) = T :-
+//    // TODO: Find corresponding type params, declare type args
+//    resolveDecl(s, name),
+//    typeOfDecl(s, name) == T,
+//    @e.type := T.
 
   typeOfExp(s, e@Member(rcv, name)) = T :- {T_rcv s_rcv}
     typeOfExp(s, rcv) == T_rcv,
     getScope(T_rcv) == s_rcv,
-    resolveDecl(s_rcv, name) == T,
+    typeOfDecl(s_rcv, name) == T,
     @e.type := T.
 
   // FIXME: Should be Class<T> where T is the type
   typeOfExp(s, e@ClassRef(type)) = T :- //@CLASS("Class") :-
-    typeOfType(s, type) == CLASS(_),
-    resolveDecl(s, "Class") == T,
+    typeOfType(s, type) == CLASS(_, _),
+    typeOfDecl(s, "Class") == T,
     @e.type := T.
 
   // FIXME: This is incorrect since we want to be able to cast literals to any of the integer types
@@ -95,34 +105,57 @@ rules typeOfExp : scope * Exp -> TYPE
     typesOfExps(s, exps) == Ts,
     @e.type := T.
 
-  typeOfExp(s, e@LambdaRule(paramDefs, inExp, outExp)) = T@STRATEGY(PTs, IT, OT) :- {ss}
-    new ss, ss -P-> s,
-    typesOfParamDefs(ss, paramDefs) == PTs,
-    typeOfExp(ss, inExp) == IT,
-    typeOfExp(ss, outExp) == OT,
-    T == STRATEGY(PTs, IT, OT),
-    @e.type := T.
-
-  typeOfExp(s, e@LambdaStrategy(paramDefs, exp)) = T@STRATEGY(PTs, IT, OT) :- {ss}
-    new ss, ss -P-> s,
-    typesOfParamDefs(ss, paramDefs) == PTs,
-    typeOfExp(ss, exp) == STRATEGY([], IT, OT),
-    T == STRATEGY(PTs, IT, OT),
-    @e.type := T.
+//  typeOfExp(s, e@LambdaRule(paramDefs, inExp, outExp)) = T :- {ss}
+//    new ss, ss -P-> s,
+//    new s_decl,
+//    typesOfParamDefs(ss, paramDefs) == PTs,
+//    typeOfExp(ss, inExp) == IT,
+//    typeOfExp(ss, outExp) == OT,
+//    T == STRATEGY(s_decl, PTs, IT, OT),
+//    @e.type := T.
+//
+//  typeOfExp(s, e@LambdaStrategy(paramDefs, exp)) = T :- {ss}
+//    new ss, ss -P-> s,
+//    new s_decl,
+//    typesOfParamDefs(ss, paramDefs) == PTs,
+//    typeOfExp(ss, exp) == STRATEGY(_, [], IT, OT),
+//    T == STRATEGY(s_decl, PTs, IT, OT),
+//    @e.type := T.
 
   typeOfExp(s, Exp-Plhdr()) = T.
 
+///**
+// * Determines the type of a generic type instantiation.
+// *
+// * @param s the scope of the expression
+// * @param exp the expression
+// * @param 
+// */
+//rules typeOfGenericVar : scope * Exp * list((path * (string * TYPE))) -> TYPE
+//  // One declaration found.
+//  typeOfGenericVar(s, GenericVar(name, tas), [(_, (name', TE))]) = T :- {s_inst tps TAs}
+//    // Create instance scope with P to the declaration scope
+//    new s_inst, s_inst -P-> s_decl,
+//    getTypeParams(s_decl) == tps,	// TODO: get s_decl by storing the declaration scope in the type
+//    typesOfTypes(tas) == TAs,
+//    typeArgsOk(s, s_inst, tps, TAs).
+//  // No declarations found.
+//  typeOfGenericVar(s, GenericVar(name, _), []) = T :-
+//  	false | error $[Undefined: [name]] @name.
+//  // Multiple declarations found.
+//  typeOfGenericVar(s, GenericVar(name, _), [_,_|_]) = T :-
+//  	false | error $[Multiple declarations of: [name]] @name.
 
-rules typeOfParamDef : scope * ParamDef -> TYPE
-  typesOfParamDefs maps typeOfParamDef(*, list(*)) = list(*)
-
-  typeOfParamDef(s, p@ParamDef(name, type)) = T :-
-    typeOfType(s, type) == T,
-    declareDecl(s, name, T),
-    @p.type := T.
-
-  typeOfParamDef(s, p@ParamDefNoType(name)) = T :-
-    declareDecl(s, name, T),
-    @p.type := T.
-
-  typeOfParamDef(s, ParamDef-Plhdr()) = T.
+//rules typeOfParamDef : scope * ParamDef -> TYPE
+//  typesOfParamDefs maps typeOfParamDef(*, list(*)) = list(*)
+//
+//  typeOfParamDef(s, p@ParamDef(name, type)) = T :-
+//    typeOfType(s, type) == T,
+//    declareDecl(s, name, T),
+//    @p.type := T.
+//
+//  typeOfParamDef(s, p@ParamDefNoType(name)) = T :-
+//    declareDecl(s, name, T),
+//    @p.type := T.
+//
+//  typeOfParamDef(s, ParamDef-Plhdr()) = T.

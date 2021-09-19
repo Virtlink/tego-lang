@@ -9,38 +9,105 @@ imports
   statics/references
 
 signature
+  sorts
+    DECL = (path * (occurrence * TYPE))
+
+signature
   sorts TYPE
   constructors
 
     // Primitive Types
-    BOOL    : TYPE
-    CHAR    : TYPE
+    BOOL     : TYPE
+    CHAR     : TYPE
 
-    BYTE    : TYPE
-    SHORT   : TYPE
-    INT     : TYPE
-    LONG    : TYPE
+    BYTE     : TYPE
+    SHORT    : TYPE
+    INT      : TYPE
+    LONG     : TYPE
 
-    UBYTE   : TYPE
-    USHORT  : TYPE
-    UINT    : TYPE
-    ULONG   : TYPE
+    UBYTE    : TYPE
+    USHORT   : TYPE
+    UINT     : TYPE
+    ULONG    : TYPE
 
-    FLOAT   : TYPE
-    DOUBLE  : TYPE
+    FLOAT    : TYPE
+    DOUBLE   : TYPE
+    
+    /**
+     * A nullable type.
+     *
+     * @param T the wrapped type
+     */
+    NULLABLE : TYPE -> TYPE
 
     // Misc
-    MODULE  : scope -> TYPE
-    STRATEGY: list(TYPE) * TYPE * TYPE -> TYPE
-    CLASS   : ID -> TYPE
-    LIST    : TYPE -> TYPE
-    TUPLE   : list(TYPE) -> TYPE
-    ANY     : TYPE
-    UNIT    : TYPE
-    STRING  : TYPE
+    /**
+     * A module type.
+     * 
+     * @param ms_pub the module's public scope
+     */
+    MODULE   : scope -> TYPE
+    /**
+     * A strategy type.
+     *
+     * @param TPARAMS the parameter types
+     * @param TIN the input type
+     * @param TOUT the output type
+     */
+    STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
+    /**
+     * A function type.
+     * 
+     * @param TPARAMS the parameter types
+     * @param TRET the return type
+     */
+    FUNCTION : list(TYPE) * TYPE -> TYPE
+    /**
+     * A class type.
+     *
+     * @param name the name of the class
+     * @param s_decl the class declaration scope
+     */
+    CLASS    : ID * scope -> TYPE
+    LIST     : TYPE -> TYPE
+    TUPLE    : list(TYPE) -> TYPE
+    ANY      : TYPE
+    NOTHING  : TYPE
+    UNIT     : TYPE
+    STRING   : TYPE
+    
+    // A reference to a type parameter
+    TPARAMREF: TPARAM -> TYPE
 
   relations
     withType: -> TYPE
+    type     : ID -> TYPE
+  name-resolution
+    labels
+      P      // lexical parent
+      I      // import edge
+
+  sorts TPARAM
+  constructors
+    /**
+     * A type parameter declaration.
+     * 
+     * @param s_decl the declaration scope
+     * @param name the name
+     * @param TUPPER the upper bound
+     * @param TLOWER the lower bound
+     */
+    TPARAM : scope * string * TYPE * TYPE -> TPARAM
+  relations
+    /**
+     * Relates a type parameter to a declaration scope.
+     */
+    type_param : TPARAM
+    typeParams : -> list(TPARAM)
+    /**
+     * Relates a type argument to an instance scope.
+     */
+    type_arg   : TPARAM -> TYPE
 
 rules getScope : TYPE -> scope
 
@@ -50,11 +117,76 @@ rules isPublicDecl : list(DeclMod)
 
   isPublicDecl([PublicDecl()|_]).
   isPublicDecl([_|mods]) :- isPublicDecl(mods).
+  
+/**
+ * Determines whether the first list of types are subtypes of the second list of types,
+ * and no unmatched types.
+ *
+ * @param TAS the possible subtypes
+ * @param TBS the possible supertypes
+ */
+rules subtypesOf : list(TYPE) * list(TYPE)
+  subtypesOf([TA|TAS], [TB|TBS]) :-
+    subtypeOf(TA, TB),
+    subtypesOf(TAS, TBS).
+  subtypesOf([], []).
 
+/**
+ * Determines whether the first type is a subtype of the second type.
+ *
+ * @param TA the possible subtype
+ * @param TB the possible supertype
+ */
+rules subtypeOf : TYPE * TYPE
+
+  // nullable TA? is a subtype of nullable TB? iff TA is a subtype of TB
+  subtypeOf(NULLABLE(TA), NULLABLE(TB)) :-
+  	subtypeOf_2(TA, TB).
+  // nullable TA? is never subtype of non-nullable TB
+  subtypeOf(NULLABLE(_), _) :-
+    false.
+  // non-nullable TA is a subtype of nullable TB? iff TA is a subtype of TB
+  subtypeOf(TA, NULLABLE(TB)) :-
+    subtypeOf_2(TA, TB).
+  // non-nullable TA is a subtype of non-nullable TB iff TA is a subtype of TB
+  subtypeOf(TA, TB) :-
+    subtypeOf_2(TA, TB).
+
+rules subtypeOf_2 : TYPE * TYPE
+
+  // T is a subtype of itself
+  subtypeOf_2(T, T) :- true.
+  // A strategy TA is a subtype of a strategy TB
+  // iff the parameters and input of TA are supertypes of those of TB
+  // and the return type of TA is a subtype of the return type of TB
+  subtypeOf_2(STRATEGY(TPARAMS1, TIN1, TOUT1), STRATEGY(TPARAMS2, TIN2, TOUT2)) :-
+    subtypesOf(TPARAMS2, TPARAMS1), // contravariant
+    subtypeOf(TIN2, TIN1),          // contravariant
+    subtypeOf(TOUT1, TOUT2).        // covariant
+  // A function TA is a subtype of a function TB
+  // iff the parameters of TA are supertypes of those of TB
+  // and the return type of TA is a subtype of the return type of TB
+  subtypeOf_2(FUNCTION(TPARAMS1, TOUT1), FUNCTION(TPARAMS2, TOUT2)) :-
+    subtypesOf(TPARAMS2, TPARAMS1), // contravariant
+    subtypeOf(TOUT1, TOUT2).        // covariant
+  // T is a subtype of Any
+  subtypeOf_2(T, ANY()) :- true.
+  // Nothing is a subtype of T
+  subtypeOf_2(NOTHING(), T) :- true.
+  
+  // at this step we should not find any nullables
+  subtypeOf_2(NULLABLE(_), _) :-
+    false | error $[BUG: Nullable is not allowed here.].
+  subtypeOf_2(_, NULLABLE(_)) :-
+    false | error $[BUG: Nullable is not allowed here.].
 
 
 rules typeOfType : scope * Type -> TYPE
   typesOfTypes maps typeOfType(*, list(*)) = list(*)
+
+  typeOfType(s, t@NullableType(innerType)) = T@NULLABLE(IT) :-
+    typeOfType(s, innerType) == IT,
+    @T.type := T.
 
   typeOfType(s, t@StrategyType(paramTypes, inputType, outputType)) = T@STRATEGY(PTs, IT, OT) :-
     typesOfTypes(s, paramTypes) == PTs,
@@ -79,13 +211,12 @@ rules typeOfType : scope * Type -> TYPE
     @t.type := T.
 
   typeOfType(s, t@TypeRef(name)) = T :-
-    resolveDecl(s, name) == T,
-    @t.type := T.
+    typeOfTypeRefOrTypeParam(s, t, resolveTypeParam(s, name)) == T.
 
   typeOfType(s, t@MemberTypeRef(rcv, name)) = T :- {T_rcv s_rcv}
     typeOfType(s, rcv) == T_rcv,
     getScope(T_rcv) == s_rcv,
-    resolveDecl(s_rcv, name) == T,
+    typeOfDecl(s_rcv, name) == T,
     @t.type := T.
 
   typeOfType(s, t@TupleType(types)) = T@TUPLE(Ts) :-
@@ -96,3 +227,251 @@ rules typeOfType : scope * Type -> TYPE
     @t.type := T.
 
   typeOfType(s, Type-Plhdr()) = _.
+
+
+/**
+ * Determines the type of a type reference. It either refers to a type parameter,
+ * in which case the upper bound is returned; or to another type,
+ * in which case that type is returned.
+ *
+ * @param s the scope
+ * @param t the type reference
+ * @param occs the list of type parameter occurrences
+ * @return the type of the type reference
+ */ 
+rules typeOfTypeRefOrTypeParam : scope * Type * list((path * TPARAM)) -> TYPE
+    
+  // A reference to a type parameter.
+  typeOfTypeRefOrTypeParam(s, t@TypeRef(name), [(_, param@TPARAM(_, name', TUPPER, _))]) = T :-
+    typeOfTPARAM(param, resolveTypeArg(s, name)) == T,
+    @name.ref := name',
+    @t.type := T.
+
+  // Not a reference to a type parameter, so must be a type reference.
+  typeOfTypeRefOrTypeParam(s, t@TypeRef(name), []) = T :-
+    typeOfDecl(s, name) == T | error $[Unknown type [name]],
+    @t.type := T.
+
+  // An ambigous reference to a type parameter.
+  typeOfTypeRefOrTypeParam(s, t@TypeRef(name), [_,_|_]) = T :-
+    false | error $[Duplicate declaration of type [name]].
+
+
+/**
+ * Determines the type of a given type parameter.
+ *
+ * If no type argument with the specified name could be found,
+ * then the type is the type parameter itself. Whatever type argument assigns a type
+ * to the type parameter will determine its type later.
+ *
+ * @param param the type parameter
+ * @param occs the list of type argument occurrences, which may be empty
+ * @return the type of the type parameter
+ */
+rules typeOfTPARAM : TPARAM * list((path * (TPARAM * TYPE))) -> TYPE
+
+  // Exactly one type argument found for the type parameter with the specified name.
+  typeOfTPARAM(_, [(_, (_, T))]) = T.
+  
+  // No type arguments found for the type parameter with the specified name.
+  typeOfTPARAM(param, []) = TPARAMREF(param).
+  
+  // Two or more type arguments found for the type parameter with the specified name.
+  typeOfTPARAM(_, [(_, (TPARAM(_, name, _, _), _)), _|_]) = T :-
+    false | error $[BUG: multiple type arguments named [name]].
+
+
+/**
+ * Declares multiple syntactic type parameters in the specified declaration scope.
+ *
+ * @param s_decl the declaration scope
+ * @param typeParams the syntactic type parameters 
+ */
+rules declareAllTypeParams : scope * list(TypeParamDecl) -> list(TPARAM)
+  declareAllTypeParams(s_decl, typeParams) = TPARAMS :- {tvars}
+    declareTypeParams(s_decl, typeParams) == TPARAMS,       // get the type variables
+    !typeParams[TPARAMS] in s_decl.                         // declare the list of type parameters in declaration scope
+  
+
+/**
+ * Declares a syntactic type parameter in the specified scope.
+ *
+ * @param s_decl the declaration scope
+ * @param d the type parameter
+ * @return the semantic type of the type parameter
+ */
+rules declareTypeParam : scope * TypeParamDecl -> TPARAM
+  declareTypeParams maps declareTypeParam(*, list(*)) = list(*)
+  
+  declareTypeParam(s_decl, d@TypeParamDecl(name)) = T :- {TUPPER TLOWER}
+  	TUPPER == NULLABLE(ANY()),                              // upper bound
+  	TLOWER == NOTHING(),                                    // lower bound
+  	T == TPARAM(s_decl, name, TUPPER, TLOWER),              // assign type parameter
+  	!type_param[T] in s_decl,                               // declare type parameter in declaration scope
+    // TODO: Ensure there is only one definition
+    @d.type := TUPPER.
+    
+/**
+ * Resolves a name of a type parameter to a list of all its occurrences.
+ *
+ * @param s the scope
+ * @param name the name of the type parameter
+ * @return a list of all occurrences (usually one); or an empty list if nothing is found
+ */
+rules resolveTypeParam : scope * string -> list((path * TPARAM))
+  resolveTypeParam(s, name) = occs :-
+    query type_param
+      filter P*
+      and { param' :- TPARAM(_, name, _, _) == param' }
+      min $ < P
+      in s |-> occs.
+
+/**
+ * Gets a list of all type parameters in the given scope,
+ * taking shadowing rules into account.
+ *
+ * @param s_inst the scope
+ * @return the list of type parameters
+ */      
+rules getTypeParams : scope -> list(TPARAM)
+  getTypeParams(s_inst) = tps :- {tp_occs}
+    query type_param
+      filter P*
+      min $ < P
+      in s_inst |-> tp_occs,
+    typeParamOccs2list(tp_occs) == tps.
+   
+   // This is basically a map over the list, but this is not supported in Statix.
+   // Something like this (imaginary syntax):
+   //    map(tp_occs) { (_, tp') = tp' }
+   typeParamOccs2list : list((path * TPARAM)) -> list(TPARAM)
+   typeParamOccs2list([(_, tp)|tp_occs]) = [tp|typeParamOccs2list(tp_occs)].
+   typeParamOccs2list([]) = [].
+    
+
+/**
+ * Declares a type argument with the specified type.
+ *
+ * @param s the scope in which to declare the type argument
+ * @param param the type parameter being set
+ * @param T the type assigned to the type parameter 
+ */
+rules declareTypeArg : scope * TPARAM * TYPE
+  declareTypeArgs : scope * list((TPARAM * TYPE))
+  declareTypeArgs(s, [(param, T)|args]) :-
+    declareTypeArg(s, param, T),
+    declareTypeArgs(s, args).
+  declareTypeArgs(_, []).
+  
+  declareTypeArg(s, param@TPARAM(_, name, _, _), T) :-
+    !type_arg[param, T] in s.
+  
+
+/**
+ * Resolves a name of a type argument to a list of all its occurrences.
+ *
+ * @param s the scope
+ * @param name the name of the type argument
+ * @return a list of all occurrences (usually one); or an empty list if nothing is found
+ */
+rules resolveTypeArg : scope * string -> list((path * (TPARAM * TYPE)))
+  resolveTypeArg(s, name) = occs :-
+    query type_arg
+      filter P*
+      and { TPARAM(_, name', _, _) :- name == name' }
+      min $ < P
+      in s |-> occs.
+
+/**
+ * Given a type parameter and a singleton list of type arguments (TPARAM * TYPE),
+ * finds the type associated with the type parameter.
+ *
+ * @param s_inst the scope
+ * @param tp the type parameter
+ * @param ta_occs the list of type arguments
+ * @return the type associated with the type parameter in a type argument
+ */
+rules findTypeOfTypeParam : scope * TPARAM * list((path * (TPARAM * TYPE))) -> TYPE
+  findTypeOfTypeParam(s_inst, _, [(_, (tp, T))]) = T.
+  findTypeOfTypeParam(s_inst, tp@TPARAM(_, name, T_UPPER, _),       []) = T_UPPER :-
+    false | error $[BUG: no declarations for type argument [name] in [s_inst]].
+  findTypeOfTypeParam(s_inst, tp@TPARAM(_, name, T_UPPER, _), [_, _|_]) = T_UPPER :-
+    false | error $[BUG: multiple declarations for type argument [name] in [s_inst]].
+
+/**
+ * Resolves the type arguments from the given scope into a list that has the same order
+ * as the type parameters.
+ *
+ * @param s_inst the scope
+ * @return the list of type arguments
+ */
+rules resolveTypeArgsOrdered : scope -> list((TPARAM * TYPE))
+  resolveTypeArgsOrdered(s_inst) = resolveTypeArgsFromTypeParams(s_inst, getTypeParams(s_inst)).
+  
+  resolveTypeArgFromTypeParam : scope * TPARAM -> (TPARAM * TYPE)
+  resolveTypeArgsFromTypeParams maps resolveTypeArgFromTypeParam(*, list(*)) = list(*)
+  resolveTypeArgFromTypeParam(s_inst, tp) = (tp, T) :- {ta_occs}
+    // Find the type arguments for the given type parameter. 
+    query type_arg
+      filter e
+      and { tp' :- tp' == tp }
+      in s_inst |-> ta_occs,
+    // Extract the type (there should be exactly one occurrence).
+    findTypeOfTypeParam(s_inst, tp, ta_occs) == T.
+
+/**
+ * Matches the type arguments to their parameters.
+ *
+ * @param s the scope
+ * @param s_inst the instance scope
+ * @param tps the type parameters
+ * @param TAs the type arguments
+ */
+rules typeArgsOk : scope * scope * list(TPARAM) * list(TYPE)
+  // No type parameters and no type arguments.
+  typeArgsOk(_, _, [], []).
+  // Type parameters but no type arguments.
+  typeArgsOk(_, _, tps, []) :-
+    // TODO: Infer type arguments
+  	false | error $[Cannot infer type arguments. Specify them explicitly.].
+  // Both type parameters and type arguments.
+  typeArgsOk(s, s_inst, tps, TAs) :-
+    typeArgsOk_2(s, s_inst, tps, TAs, sameLengthTasTps(tps, TAs)).
+    
+  typeArgsOk_2 : scope * scope * list(TPARAM) * list(TYPE) * (list(string) * list(TYPE))
+  // Equal number of type parameters and type arguments.
+  typeArgsOk_2(s, s_inst, tps, TAs, ([], [])) :-
+    typeArgsOk_3(s, s_inst, tps, TAs).
+  // More type parameters than type arguments.
+  typeArgsOk_2(_, _, _, _, (remaining@[_|_], [])) :-
+    false | error $[Not enough type arguments, unmatched type parameters: [remaining]].
+  // More type arguments than type parameters.
+  typeArgsOk_2(_, _, _, _, ([], remaining@[_|_])) :-
+    false | error $[Not enough type parameters, unmatched type arguments: [remaining]].
+  
+rules typeArgOk : scope * scope * TPARAM * TYPE
+  typeArgsOk_3 maps typeArgOk(*, *, list(*), list(*))
+  
+  typeArgOk(s, s_inst, tp@TPARAM(_, name, T_UPPER, T_LOWER), T) :-
+    // typeOfWithTypeArgScope?
+    declareTypeArg(s_inst, tp, T).
+    // TODO: Check assignable to bounds.
+  
+/**
+ * Determines whether the given two lists of type parameters and type arguments
+ * have the same length, and if not, which elements remain.
+ *
+ * @param tps the type parameters
+ * @param tas the type arguments
+ * @return a tuple of the remaining type parameter names and the remaining type arguments
+ */
+rules sameLengthTasTps : list(TPARAM) * list(TYPE) -> (list(string) * list(TYPE))
+  // Both lists are empty, we're done matching.
+  sameLengthTasTps([], []) = ([], []).
+  // Both lists are non-empty, let's match the remaining lists.
+  sameLengthTasTps([_|tps], [_|tas]) = sameLengthTasTps(tps, tas).
+  // There are no more type arguments to match, let's report the remaining type parameter names.
+  sameLengthTasTps([TPARAM(_, name, _, _)|tps], []) = ([name|names], []) :-
+    sameLengthTasTps(tps, []) == (names, _).
+  // There are no more type parameters to match, let's report the remaining type arguments.
+  sameLengthTasTps([], tas@[_|_]) = ([], tas).

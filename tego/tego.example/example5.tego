@@ -1,0 +1,9 @@
+module A
+
+  def foo8: Int -> Int
+  = !10; id2<Int>
+  
+  def foo9: Bool -> Bool
+  = !true; id2<Bool>
+
+  extern def id2<T>: T -> T

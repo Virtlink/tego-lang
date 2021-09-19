@@ -29,7 +29,8 @@ rules
     Seq(Apply(Var("flatMap"), [lhs]), rhs)
 
   // Makes a strategy with an implicit input argument using an explicit input argument
-  to-ir: StrategyDef(name, params, body) -> StrategyDefWInput(name, params, inputVar, Eval(body, Var(inputVar)))
+  to-ir: StrategyDef(mods, name, typeParams, params, inType, outType, exp)
+      -> RuleDef(mods, name, typeParams, params, inType, outType, Var(inputVar), EvalOn(exp, Var(inputVar)))
   with inputVar := "__input"    // TODO: Generate unique var
 
   // <a; b> x -> <b> <a> x
@@ -42,7 +43,7 @@ rules
   ))
 
   // ANF
-  to-ir-anf = StrategyDefWInput(id, id, id, to-anf)
+  to-ir-anf = RuleDef(id, id, id, id, id, id, to-anf, to-anf)
 
 rules
   to-anf: exp -> newExp
@@ -73,12 +74,14 @@ rules
 
   to-imm = to-imm-only <+ to-imm-wrap
 
-  to-imm-only: e@Var(_)          -> (e, [])
-  to-imm-only: e@Int(_)          -> (e, [])
-  to-imm-only: e@Object()        -> (e, [])
-  to-imm-only: e@True()          -> (e, [])
-  to-imm-only: e@False()         -> (e, [])
-  to-imm-only: e@String(_)       -> (e, [])
+  to-imm-only: e@Var(_)              -> (e, [])
+  to-imm-only: e@Int(_)              -> (e, [])
+  to-imm-only: e@Object()            -> (e, [])
+  to-imm-only: e@True()              -> (e, [])
+  to-imm-only: e@False()             -> (e, [])
+  to-imm-only: e@String(_)           -> (e, [])
+  to-imm-only: e@ClassRef(_)         -> (e, [])
+  //to-imm-only: LambdaStrategy(ps, e) -> (LambdaStrategy(ps, <to-anf> e), [])
 
   to-imm-wrap: exp -> (Var(tmpVar), <flatten-list> [expCtx, (tmpVar, expCmp)])
   with tmpVar := <newname> "x"

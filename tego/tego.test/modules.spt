@@ -1,0 +1,13 @@
+module modules
+
+language Tego
+
+test should declare a module [[
+module A
+]] analysis succeeds
+
+test should declare two modules [[
+module A
+
+module B
+]] analysis succeeds

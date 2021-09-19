@@ -1,55 +1,53 @@
 module example1
 
-class type Var
-class type Constraint
-class type SolverState
-class type Class
+class Var
+class Constraint
+class SolverState
+class Class
 
 
-def complete(Var): SolverState -> [SolverState]
-// Definition
-complete(v) =
-  expandAllPredicates(v) ||>
+def complete(v: Var): SolverState -> [SolverState]
+= expandAllPredicates(v) ||>
   expandAllInjections(v) ||>
   expandAllQueries(v)    ||>
-  expandDeterministic(v).
+  expandDeterministic(v)
 
 // Explicit flatmap
-complete(v) =
+def complete(v) =
   expandAllPredicates(v) ;
   flatmap(expandAllInjections(v) ;
   flatmap(expandAllQueries(v) ;
-  flatmap(expandDeterministic(v)))).
+  flatmap(expandDeterministic(v))))
 
 // Explicit flatmap
-complete(v) =
+def complete(v) =
   expandAllPredicates(v) ;
   flatmap(expandAllInjections(v)) ;
   flatmap(expandAllQueries(v)) ;
-  flatmap(expandDeterministic(v)).
+  flatmap(expandDeterministic(v))
 
 // Explicit evaluation
-complete(v) t =
+def complete(v) :- t ->
   <expandAllPredicates(v) ;
   flatmap(expandAllInjections(v)) ;
   flatmap(expandAllQueries(v)) ;
-  flatmap(expandDeterministic(v))> t.
+  flatmap(expandDeterministic(v))> t
 
 // Lift evaluation through seq
-complete(v) t =
+def complete(v) :- t ->
   // Note how it is inside out
   <flatmap(expandDeterministic(v))>
   <flatmap(expandAllQueries(v))>
   <flatmap(expandAllInjections(v))>
-  <expandAllPredicates(v)> t.
+  <expandAllPredicates(v)> t
 
 // Seq to let
-complete(v) t =
+def complete(v) :- t ->
   let x1 = <expandAllPredicates(v)> t,                // returns a lazy list
   let x2 = <flatmap(expandAllInjections(v))> x1,      // returns a lazy list
   let x3 = <flatmap(expandAllQueries(v))> x2,         // returns a lazy list
   let x4 = <flatmap(expandDeterministic(v))> x3,      // returns a lazy list
-  x4.
+  x4
 
 //// Explicit evaluation and yield
 //complete(v) t = seq {
@@ -81,35 +79,34 @@ complete(v) t =
 
 val cls: Class // TODO: Write specific class
 
-def expandAllPredicates(Var): SolverState -> [SolverState]
-expandAllPredicates(v) = repeatSS(
-    limitSS(1, selectConstraints(cls, \(constraint) = containsVar(v, constraint).\)) ||>
+def expandAllPredicates(v: Var): SolverState -> [SolverState]
+= repeatSS(
+    limitSS(1, selectConstraints(cls, \(constraint) = containsVar(v, constraint)\)) ||>
     expandPredicateConstraint(v) ||>
     assertValid(v)
-  ).
+  )
 
-def expandAllInjections(Var): SolverState -> [SolverState]
-expandAllInjections(v) =
-  fixsetSS(trySS(
+def expandAllInjections(v: Var): SolverState -> [SolverState]
+= fixsetSS(trySS(
     expandInjection(v)
   )) ||>
-  assertValid(v).
+  assertValid(v)
 
-def expandAllQueries(Var): SolverState -> [SolverState]
-expandAllQueries(v) = distinctSS(orSS(idSS, fixsetSS(
+def expandAllQueries(v: Var): SolverState -> [SolverState]
+= distinctSS(orSS(idSS, fixsetSS(
   ifSS(
-    limitSS(1, selectConstraints(cls, \(constraint) = fail /*TODO*/.\)),
+    limitSS(1, selectConstraints(cls, \(constraint) = fail /*TODO*/\)),
     expandQueryConstraint(v),
     idSS
   )
-))).
+)))
 
-def expandDeterministic(Var): SolverState -> [SolverState]
-expandDeterministic(v) = singleSS(
+def expandDeterministic(v: Var): SolverState -> [SolverState]
+= singleSS(
   expandPredicateConstraint(v) ||>
   assertValid(v) ||>
   filterPlaceholders(v)
-).
+)
 
 
 // Core

@@ -3,36 +3,56 @@ module statics
 imports
   signatures/Tego-sig
 
+  statics/imports
   statics/declarations
   statics/expressions
   statics/modules
   statics/references
   statics/types
 
-// Single-file entry point
+/**
+ * Checks a single-file entry point.
+ *
+ * @param file the file
+ */
 rules programOk : File
 
-  programOk(file) :- {s}
-    new s,
-    init(s),
-    fileOk(s, file).
+  programOk(file) :- {rs}
+    new rs,                                                 // create root scope
+    init(rs),                                               // initialize root scope
+    fileOk(rs, file).                                       // assert file ok
 
-// Multi-file entry point
+/**
+ * Checks a multi-file entry point.
+ *
+ * @param rs the root scope
+ */
 rules projectOk : scope
 
-  projectOk(s) :-
-    init(s).
+  projectOk(rs) :-
+    init(rs).                                               // initialize root scope
 
+/**
+ * Check a file.
+ *
+ * @param rs the root scope
+ * @param file the file
+ */
 rules fileOk : scope * File
 
-  fileOk(s, f@File(modules)) :- {N}
-    modulesOk(s, modules).
+  fileOk(rs, File(modules)) :- {N}
+    modulesOk(rs, modules).                                 // assert modules ok
 
-  fileOk(s, File-Plhdr()).
+  fileOk(rs, File-Plhdr()).
 
+/**
+ * Initializes the scope graph with built-ins.
+ *
+ * @param rs the root scope
+ */
 rules init : scope
 
-  init(s) :-
+  init(rs) :-
     true.
     // FIXME: Doing built-ins like this doesn't generate term indices for them,
     // making it impossible for the compiler to find the resolution

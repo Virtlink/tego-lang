@@ -1,0 +1,529 @@
+module statics/types.normalized
+
+imports
+  signatures/Tego-sig
+  statics/declarations
+  statics/expressions
+  statics/modules
+  statics/references
+
+signature
+
+  sorts
+    DECL = (path * (occurrence * TYPE))
+
+signature
+
+  sorts
+    TYPE
+
+  constructors
+    BOOL : TYPE
+    CHAR : TYPE
+    BYTE : TYPE
+    SHORT : TYPE
+    INT : TYPE
+    LONG : TYPE
+    UBYTE : TYPE
+    USHORT : TYPE
+    UINT : TYPE
+    ULONG : TYPE
+    FLOAT : TYPE
+    DOUBLE : TYPE
+    NULLABLE : TYPE -> TYPE
+    MODULE : scope -> TYPE
+    STRATEGY : list(TYPE) * TYPE * TYPE -> TYPE
+    FUNCTION : list(TYPE) * TYPE -> TYPE
+    CLASS : ID * scope -> TYPE
+    LIST : TYPE -> TYPE
+    TUPLE : list(TYPE) -> TYPE
+    ANY : TYPE
+    NOTHING : TYPE
+    UNIT : TYPE
+    STRING : TYPE
+    FORALL : string * scope -> TYPE
+    TPARAMREF : TPARAM -> TYPE
+
+  sorts
+    TVAR
+
+  constructors
+    TVAR : string -> TVAR
+
+  relations
+    withType : TYPE
+    type : ID * TYPE
+
+  name-resolution
+    labels P I
+
+  sorts
+    TPARAM
+
+  constructors
+    TPARAM : scope * string * TYPE * TYPE -> TPARAM
+
+  relations
+    type_param : TPARAM
+    typeParams : list(TVAR)
+    type_arg : TPARAM * TYPE
+
+rules
+
+  constraint getScope : TYPE * scope
+
+  getScope(MODULE( s ), out202) :-
+    out202 == s,
+    true.
+
+rules
+
+  constraint isPublicDecl : list(DeclMod)
+
+  isPublicDecl([PublicDecl( )|_]) :-
+    true.
+
+  isPublicDecl([_|mods]) :-
+    isPublicDecl(mods).
+
+rules
+
+  constraint subtypesOf : list(TYPE) * list(TYPE)
+
+  subtypesOf([TA|TAS], [TB|TBS]) :-
+    subtypeOf(TA, TB),
+    subtypesOf(TAS, TBS).
+
+  subtypesOf([ ], [ ]) :-
+    true.
+
+rules
+
+  constraint subtypeOf : TYPE * TYPE
+
+  subtypeOf(NULLABLE( TA ), NULLABLE( TB )) :-
+    subtypeOf_2(TA, TB).
+
+  subtypeOf(NULLABLE( _ ), _) :-
+    false.
+
+  subtypeOf(TA, NULLABLE( TB )) :-
+    subtypeOf_2(TA, TB).
+
+  subtypeOf(TA, TB) :-
+    subtypeOf_2(TA, TB).
+
+rules
+
+  constraint subtypeOf_2 : TYPE * TYPE
+
+  subtypeOf_2(T, T) :-
+    true.
+
+  subtypeOf_2(STRATEGY( TPARAMS1, TIN1, TOUT1 ), STRATEGY( TPARAMS2, TIN2, TOUT2 )) :-
+    subtypesOf(TPARAMS2, TPARAMS1),
+    subtypeOf(TIN2, TIN1),
+    subtypeOf(TOUT1, TOUT2).
+
+  subtypeOf_2(FUNCTION( TPARAMS1, TOUT1 ), FUNCTION( TPARAMS2, TOUT2 )) :-
+    subtypesOf(TPARAMS2, TPARAMS1),
+    subtypeOf(TOUT1, TOUT2).
+
+  subtypeOf_2(T, ANY( )) :-
+    true.
+
+  subtypeOf_2(NOTHING( ), T) :-
+    true.
+
+  subtypeOf_2(NULLABLE( _ ), _) :-
+    false | error $[BUG: Nullable is not allowed here.].
+
+  subtypeOf_2(_, NULLABLE( _ )) :-
+    false | error $[BUG: Nullable is not allowed here.].
+
+rules
+
+  constraint typeOfType : scope * Type * TYPE
+
+  constraint typesOfTypes : scope * list(Type) * list(TYPE)
+
+  typesOfTypes(_, [ ], out203) :-
+    out203 == [ ],
+    true.
+
+  typesOfTypes(x_1, [x_2|xs_2], out204) :-
+    {y_1 ys_1 typeOfType27 typesOfTypes8}
+      out204 == [y_1|ys_1],
+      (typeOfType(x_1, x_2, typeOfType27),
+       typeOfType27 == y_1),
+      typesOfTypes(x_1, xs_2, typesOfTypes8),
+      typesOfTypes8 == ys_1.
+
+  typeOfType(s, t@NullableType( innerType ), out205) :-
+    {T IT typeOfType28 astId138}
+      (T == NULLABLE( IT ),
+       out205 == T),
+      (typeOfType(s, innerType, typeOfType28),
+       typeOfType28 == IT),
+      astId(T, astId138),
+      @astId138.type := T.
+
+  typeOfType(s, t@StrategyType( paramTypes, inputType, outputType ), out206) :-
+    {T PTs IT OT typesOfTypes9 typeOfType29 typeOfType30 astId139}
+      (T == STRATEGY( PTs, IT, OT ),
+       out206 == T),
+      (typesOfTypes(s, paramTypes, typesOfTypes9),
+       typesOfTypes9 == PTs),
+      (typeOfType(s, inputType, typeOfType29),
+       typeOfType29 == IT),
+      (typeOfType(s, outputType, typeOfType30),
+       typeOfType30 == OT),
+      astId(t, astId139),
+      @astId139.type := T.
+
+  typeOfType(s, t@AnyType( ), out207) :-
+    {T astId140}
+      (T == ANY( ),
+       out207 == T),
+      astId(t, astId140),
+      @astId140.type := T.
+
+  typeOfType(s, t@UnitType( ), out208) :-
+    {T astId141}
+      (T == UNIT( ),
+       out208 == T),
+      astId(t, astId141),
+      @astId141.type := T.
+
+  typeOfType(s, t@BoolType( ), out209) :-
+    {T astId142}
+      (T == BOOL( ),
+       out209 == T),
+      astId(t, astId142),
+      @astId142.type := T.
+
+  typeOfType(s, t@IntType( ), out210) :-
+    {T astId143}
+      (T == INT( ),
+       out210 == T),
+      astId(t, astId143),
+      @astId143.type := T.
+
+  typeOfType(s, t@ListType( type ), out211) :-
+    {T ET typeOfType31 astId144}
+      (T == LIST( ET ),
+       out211 == T),
+      (typeOfType(s, type, typeOfType31),
+       typeOfType31 == ET),
+      astId(t, astId144),
+      @astId144.type := T.
+
+  typeOfType(s, t@TypeRef( name ), out212) :-
+    {T typeOfTypeRefOrTypeParam3 resolveTypeParam3}
+      out212 == T,
+      typeOfTypeRefOrTypeParam(s, t, resolveTypeParam3, typeOfTypeRefOrTypeParam3),
+      resolveTypeParam(s, name, resolveTypeParam3),
+      typeOfTypeRefOrTypeParam3 == T.
+
+  typeOfType(s, t@MemberTypeRef( rcv, name ), out213) :-
+    {T}
+      out213 == T,
+      ({T_rcv s_rcv typeOfType32 getScope6 typeOfDecl19 astId145}
+         (typeOfType(s, rcv, typeOfType32),
+          typeOfType32 == T_rcv),
+         (getScope(T_rcv, getScope6),
+          getScope6 == s_rcv),
+         (typeOfDecl(s_rcv, name, typeOfDecl19),
+          typeOfDecl19 == T),
+         astId(t, astId145),
+         @astId145.type := T).
+
+  typeOfType(s, t@TupleType( types ), out214) :-
+    {T Ts typesOfTypes13 astId146}
+      (T == TUPLE( Ts ),
+       out214 == T),
+      (typesOfTypes(s, types, typesOfTypes13),
+       typesOfTypes13 == Ts),
+      astId(t, astId146),
+      @astId146.type := T.
+
+  typeOfType(s, t@WldType( ), out215) :-
+    {T astId147}
+      out215 == T,
+      astId(t, astId147),
+      @astId147.type := T.
+
+  typeOfType(s, Type-Plhdr( ), out216) :-
+    {wld21}
+      out216 == wld21,
+      true.
+
+rules
+
+  constraint typeOfTypeRefOrTypeParam : scope * Type * list((path * TPARAM)) * TYPE
+
+  typeOfTypeRefOrTypeParam(s, t@TypeRef( name ), [(_, param@TPARAM( _, name', TUPPER, _ ))], out217) :-
+    {T typeOfTPARAM1 resolveTypeArg2 astId148 astId149}
+      out217 == T,
+      (typeOfTPARAM(param, resolveTypeArg2, typeOfTPARAM1),
+       resolveTypeArg(s, name, resolveTypeArg2),
+       typeOfTPARAM1 == T),
+      (astId(name, astId148),
+       @astId148.ref := name'),
+      astId(t, astId149),
+      @astId149.type := T.
+
+  typeOfTypeRefOrTypeParam(s, t@TypeRef( name ), [ ], out218) :-
+    {T typeOfDecl20 astId150}
+      out218 == T,
+      (typeOfDecl(s, name, typeOfDecl20) | error $[Unknown type [name]],
+       typeOfDecl20 == T | error $[Unknown type [name]]),
+      astId(t, astId150),
+      @astId150.type := T.
+
+  typeOfTypeRefOrTypeParam(s, t@TypeRef( name ), [_, _|_], out219) :-
+    {T}
+      out219 == T,
+      false | error $[Duplicate declaration of type [name]].
+
+rules
+
+  constraint typeOfTPARAM : TPARAM * list((path * (TPARAM * TYPE))) * TYPE
+
+  typeOfTPARAM(_, [(_, (_, T))], out220) :-
+    out220 == T,
+    true.
+
+  typeOfTPARAM(param, [ ], out221) :-
+    out221 == TPARAMREF( param ),
+    true.
+
+  typeOfTPARAM(_, [(_, (TPARAM( _, name, _, _ ), _)), _|_], out222) :-
+    {T}
+      out222 == T,
+      false | error $[BUG: multiple type arguments named [name]].
+
+rules
+
+  constraint declareTypeParams : scope * list(TypeParamDecl)
+
+  declareTypeParams(s_decl, typeParams) :-
+    {tvars typesOfTypeParams2 t248 wld27}
+      (typesOfTypeParams(s_decl, typeParams, typesOfTypeParams2),
+       typesOfTypeParams2 == tvars),
+      !typeParams[tvars] in s_decl,
+      query typeParams
+        filter e and { _ :- ( ) == ( ) }
+        min and { _, _ :- false }
+        in s_decl |-> [(wld27, t248)],
+      t248 == Xs.
+
+rules
+
+  constraint typeOfTypeParam : scope * TypeParamDecl * TVAR
+
+  constraint typesOfTypeParams : scope * list(TypeParamDecl) * list(TVAR)
+
+  typesOfTypeParams(_, [ ], out223) :-
+    out223 == [ ],
+    true.
+
+  typesOfTypeParams(x_1, [x_2|xs_2], out224) :-
+    {y_1 ys_1 typeOfTypeParam1 typesOfTypeParams3}
+      out224 == [y_1|ys_1],
+      (typeOfTypeParam(x_1, x_2, typeOfTypeParam1),
+       typeOfTypeParam1 == y_1),
+      typesOfTypeParams(x_1, xs_2, typesOfTypeParams3),
+      typesOfTypeParams3 == ys_1.
+
+  typeOfTypeParam(s_decl, d@TypeParamDecl( name ), out225) :-
+    out225 == TVAR( name ),
+    true.
+
+rules
+
+  constraint resolveTypeParam : scope * string * list((path * TPARAM))
+
+  resolveTypeParam(s, name, out226) :-
+    {occs}
+      out226 == occs,
+      query type_param
+        filter P* and { param' :- {wld28 wld29 wld30}
+                                    TPARAM( wld28, name, wld29, wld30 ) == param' }
+        min $ < P and { _, _ :- true }
+        in s |-> occs.
+
+rules
+
+  constraint getTypeParams : scope * list(TPARAM)
+
+  getTypeParams(s_inst, out227) :-
+    {tps}
+      out227 == tps,
+      ({tp_occs typeParamOccs2list4}
+         query type_param
+           filter P* and { _ :- true }
+           min $ < P and { _, _ :- true }
+           in s_inst |-> tp_occs,
+         typeParamOccs2list(tp_occs, typeParamOccs2list4),
+         typeParamOccs2list4 == tps).
+
+  constraint typeParamOccs2list : list((path * TPARAM)) * list(TPARAM)
+
+  typeParamOccs2list([(_, tp)|tp_occs], out228) :-
+    {typeParamOccs2list5}
+      (typeParamOccs2list(tp_occs, typeParamOccs2list5),
+       out228 == [tp|typeParamOccs2list5]),
+      true.
+
+  typeParamOccs2list([ ], out229) :-
+    out229 == [ ],
+    true.
+
+rules
+
+  constraint declareTypeArg : scope * TPARAM * TYPE
+
+  constraint declareTypeArgs : scope * list((TPARAM * TYPE))
+
+  declareTypeArgs(s, [(param, T)|args]) :-
+    declareTypeArg(s, param, T),
+    declareTypeArgs(s, args).
+
+  declareTypeArgs(_, [ ]) :-
+    true.
+
+  declareTypeArg(s, param@TPARAM( _, name, _, _ ), T) :-
+    !type_arg[param, T] in s.
+
+rules
+
+  constraint resolveTypeArg : scope * string * list((path * (TPARAM * TYPE)))
+
+  resolveTypeArg(s, name, out230) :-
+    {occs}
+      out230 == occs,
+      query type_arg
+        filter P* and { (TPARAM( _, name', _, _ ), _) :- name == name' }
+        min $ < P and { _, _ :- true }
+        in s |-> occs.
+
+rules
+
+  constraint findTypeOfTypeParam : scope * TPARAM * list((path * (TPARAM * TYPE))) * TYPE
+
+  findTypeOfTypeParam(s_inst, _, [(_, (tp, T))], out231) :-
+    out231 == T,
+    true.
+
+  findTypeOfTypeParam(s_inst, tp@TPARAM( _, name, T_UPPER, _ ), [ ], out232) :-
+    out232 == T_UPPER,
+    false | error $[BUG: no declarations for type argument [name] in [s_inst]].
+
+  findTypeOfTypeParam(s_inst, tp@TPARAM( _, name, T_UPPER, _ ), [_, _|_], out233) :-
+    out233 == T_UPPER,
+    false | error $[BUG: multiple declarations for type argument [name] in [s_inst]].
+
+rules
+
+  constraint resolveTypeArgsOrdered : scope * list((TPARAM * TYPE))
+
+  resolveTypeArgsOrdered(s_inst, out234) :-
+    {resolveTypeArgsFromTypeParams4 getTypeParams2}
+      (resolveTypeArgsFromTypeParams(s_inst, getTypeParams2, resolveTypeArgsFromTypeParams4),
+       getTypeParams(s_inst, getTypeParams2),
+       out234 == resolveTypeArgsFromTypeParams4),
+      true.
+
+  constraint resolveTypeArgFromTypeParam : scope * TPARAM * (TPARAM * TYPE)
+
+  constraint resolveTypeArgsFromTypeParams : scope * list(TPARAM) * list((TPARAM * TYPE))
+
+  resolveTypeArgsFromTypeParams(_, [ ], out235) :-
+    out235 == [ ],
+    true.
+
+  resolveTypeArgsFromTypeParams(x_1, [x_2|xs_2], out236) :-
+    {y_1 ys_1 resolveTypeArgFromTypeParam2 resolveTypeArgsFromTypeParams5}
+      out236 == [y_1|ys_1],
+      (resolveTypeArgFromTypeParam(x_1, x_2, resolveTypeArgFromTypeParam2),
+       resolveTypeArgFromTypeParam2 == y_1),
+      resolveTypeArgsFromTypeParams(x_1, xs_2, resolveTypeArgsFromTypeParams5),
+      resolveTypeArgsFromTypeParams5 == ys_1.
+
+  resolveTypeArgFromTypeParam(s_inst, tp, out237) :-
+    {T}
+      out237 == (tp, T),
+      ({ta_occs findTypeOfTypeParam2}
+         query type_arg
+           filter e and { (tp', _) :- tp' == tp }
+           min and { _, _ :- true }
+           in s_inst |-> ta_occs,
+         findTypeOfTypeParam(s_inst, tp, ta_occs, findTypeOfTypeParam2),
+         findTypeOfTypeParam2 == T).
+
+rules
+
+  constraint typeArgsOk : scope * scope * list(TPARAM) * list(TYPE)
+
+  typeArgsOk(_, _, [ ], [ ]) :-
+    true.
+
+  typeArgsOk(_, _, tps, [ ]) :-
+    false | error $[Cannot infer type arguments. Specify them explicitly.].
+
+  typeArgsOk(s, s_inst, tps, TAs) :-
+    {sameLengthTasTps6}
+      sameLengthTasTps(tps, TAs, sameLengthTasTps6),
+      typeArgsOk_2(s, s_inst, tps, TAs, sameLengthTasTps6).
+
+  constraint typeArgsOk_2 : scope * scope * list(TPARAM) * list(TYPE) * (list(string) * list(TYPE))
+
+  typeArgsOk_2(s, s_inst, tps, TAs, ([ ], [ ])) :-
+    typeArgsOk_3(s, s_inst, tps, TAs).
+
+  typeArgsOk_2(_, _, _, _, (remaining@[_|_], [ ])) :-
+    false | error $[Not enough type arguments, unmatched type parameters: [remaining]].
+
+  typeArgsOk_2(_, _, _, _, ([ ], remaining@[_|_])) :-
+    false | error $[Not enough type parameters, unmatched type arguments: [remaining]].
+
+rules
+
+  constraint typeArgOk : scope * scope * TPARAM * TYPE
+
+  constraint typeArgsOk_3 : scope * scope * list(TPARAM) * list(TYPE)
+
+  typeArgsOk_3(_, _, [ ], [ ]) :-
+    true.
+
+  typeArgsOk_3(x_1, x_2, [x_3|xs_3], [x_4|xs_4]) :-
+    typeArgOk(x_1, x_2, x_3, x_4),
+    typeArgsOk_3(x_1, x_2, xs_3, xs_4).
+
+  typeArgOk(s, s_inst, tp@TPARAM( _, name, T_UPPER, T_LOWER ), T) :-
+    declareTypeArg(s_inst, tp, T).
+
+rules
+
+  constraint sameLengthTasTps : list(TPARAM) * list(TYPE) * (list(string) * list(TYPE))
+
+  sameLengthTasTps([ ], [ ], out238) :-
+    out238 == ([ ], [ ]),
+    true.
+
+  sameLengthTasTps([_|tps], [_|tas], out239) :-
+    {sameLengthTasTps7}
+      (sameLengthTasTps(tps, tas, sameLengthTasTps7),
+       out239 == sameLengthTasTps7),
+      true.
+
+  sameLengthTasTps([TPARAM( _, name, _, _ )|tps], [ ], out240) :-
+    {names sameLengthTasTps8 wld31}
+      out240 == ([name|names], [ ]),
+      sameLengthTasTps(tps, [ ], sameLengthTasTps8),
+      sameLengthTasTps8 == (names, wld31).
+
+  sameLengthTasTps([ ], tas@[_|_], out241) :-
+    out241 == ([ ], tas),
+    true.

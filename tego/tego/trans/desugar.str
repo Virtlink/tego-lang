@@ -9,6 +9,7 @@ rules
   // Desugar to existing constructors defined in the syntax
   desugar-all = topdown(try(
     desugar-decl +
+    desugar-type +
     desugar-exp
   )); topdown(try(
     desugar-module
@@ -16,23 +17,46 @@ rules
 
 rules
 
+  desugar-decl: StrategyDefNoParams(mods, name, typeParams, inType, outType, exp) -> StrategyDef(mods, name, typeParams, [], inType, outType, exp)
+  desugar-decl: StrategyDefNoTypeParams(mods, name, params, inType, outType, exp) -> StrategyDef(mods, name, [], params, inType, outType, exp)
+  desugar-decl: StrategyDefNoParamsNoTypeParams(mods, name, inType, outType, exp) -> StrategyDef(mods, name, [], [], inType, outType, exp)
+  desugar-decl: StrategyDefNoTypeNoParams(mods, name, exp) -> StrategyDefNoType(mods, name, [], exp)
+  
+  desugar-decl: RuleDefNoParams(mods, name, typeParams, inType, outType, inExp, outExp) -> RuleDef(mods, name, typeParams, [], inType, outType, inExp, outExp)
+  desugar-decl: RuleDefNoTypeParams(mods, name, params, inType, outType, inExp, outExp) -> RuleDef(mods, name, [], params, inType, outType, inExp, outExp)
+  desugar-decl: RuleDefNoParamsNoTypeParams(mods, name, inType, outType, inExp, outExp) -> RuleDef(mods, name, [], [], inType, outType, inExp, outExp)
+  desugar-decl: RuleDefNoTypeNoParams(mods, name, inExp, outExp) -> RuleDefNoType(mods, name, [], inExp, outExp)
+  
   desugar-decl: StrategyDeclNoParams(mods, name, typeParams, inType, outType) -> StrategyDecl(mods, name, typeParams, [], inType, outType)
   desugar-decl: StrategyDeclNoTypeParams(mods, name, params, inType, outType) -> StrategyDecl(mods, name, [], params, inType, outType)
-  desugar-decl: StrategyDeclNoParamsOrTypeParams(mods, name, inType, outType) -> StrategyDecl(mods, name, [], [], inType, outType)
+  desugar-decl: StrategyDeclNoParamsNoTypeParams(mods, name, inType, outType) -> StrategyDecl(mods, name, [], [], inType, outType)
 
-  desugar-decl: StrategyDefNoParams(name, body) -> StrategyDef(name, [], body)
-  desugar-decl: StrategyDefWInputNoParams(name, inputBind, body) -> StrategyDefWInput(name, [], inputBind, body)
-  desugar-decl: RuleDefNoParams(name, inExp, outExp, clauses) -> RuleDef(name, [], inExp, outExp, clauses)
-  desugar-decl: RuleDefNoClauses(name, params, inExp, outExp) -> RuleDef(name, params, inExp, outExp, [])
-  desugar-decl: RuleDefNoParamsNoClauses(name, inExp, outExp) -> RuleDef(name, [], inExp, outExp, [])
+  desugar-decl: FunctionDefNoParams(mods, name, typeParams, type, exp) -> FunctionDef(mods, name, typeParams, [], type, exp)
+  desugar-decl: FunctionDefNoTypeParams(mods, name, params, type, exp) -> FunctionDef(mods, name, [], params, type, exp)
+  desugar-decl: FunctionDefNoParamsNoTypeParams(mods, name, type, exp) -> FunctionDef(mods, name, [], [], type, exp)
+  desugar-decl: FunctionDefNoTypeNoParams(mods, name, exp) -> FunctionDefNoType(mods, name, [], exp)
+  
+  desugar-decl: FunctionDeclNoParams(mods, name, typeParams, type) -> FunctionDecl(mods, name, typeParams, [], type)
+  desugar-decl: FunctionDeclNoTypeParams(mods, name, params, type) -> FunctionDecl(mods, name, [], params, type)
+  desugar-decl: FunctionDeclNoParamsNoTypeParams(mods, name, type) -> FunctionDecl(mods, name, [], [], type)
+  
+  desugar-decl: ClassDeclNoTypeParams(mods, name) -> ClassDecl(mods, name, [])
+  
+rules
 
-
-  desugar-decl: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)
+  desugar-type: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)
 
 rules
 
-  desugar-exp: LambdaRuleNoParams(inExp, outExp) -> LambdaRule([], inExp, outExp)
-  desugar-exp: LambdaStrategyNoParams(exp) -> LambdaStrategy([], exp)
+  desugar-exp: LambdaStrategyNoParams(typeParams, inType, outType, exp) -> LambdaStrategy(typeParams, [], inType, outType, exp)
+  desugar-exp: LambdaStrategyNoTypeParams(params, inType, outType, exp) -> LambdaStrategy([], params, inType, outType, exp)
+  desugar-exp: LambdaStrategyNoParamsNoTypeParams(inType, outType, exp) -> LambdaStrategy([], [], inType, outType, exp)
+  desugar-exp: LambdaStrategyNoTypeNoParams(exp) -> LambdaStrategyNoType([], exp)
+  
+  desugar-exp: LambdaRuleNoParams(typeParams, inType, outType, inExp, outExp) -> LambdaRule(typeParams, [], inType, outType, inExp, outExp)
+  desugar-exp: LambdaRuleNoTypeParams(params, inType, outType, inExp, outExp) -> LambdaRule([], params, inType, outType, inExp, outExp)
+  desugar-exp: LambdaRuleNoParamsNoTypeParams(inType, outType, inExp, outExp) -> LambdaRule([], [], inType, outType, inExp, outExp)
+  desugar-exp: LambdaRuleNoTypeNoParams(inExp, outExp) -> LambdaRuleNoType([], inExp, outExp)
 
 rules
 
@@ -44,12 +68,12 @@ rules
   where <not(fetch(?ExternDecl()))> mods
   make-decl-extern: StrategyDecl(mods, name, typeParams, paramTypes, inType, outType) -> StrategyDecl([ExternDecl()|mods], name, typeParams, paramTypes, inType, outType)
   where <not(fetch(?ExternDecl()))> mods
-  make-decl-extern: ClassDecl(mods, name) -> ClassDecl([ExternDecl()|mods], name)
+  make-decl-extern: ClassDecl(mods, name, tparams) -> ClassDecl([ExternDecl()|mods], name, tparams)
   where <not(fetch(?ExternDecl()))> mods
 
   make-decl-public: ValDecl(mods, name, type) -> ValDecl([PublicDecl()|mods], name, type)
   where <not(fetch(?PublicDecl()))> mods
   make-decl-public: StrategyDecl(mods, name, typeParams, paramTypes, inType, outType) -> StrategyDecl([PublicDecl()|mods], name, typeParams, paramTypes, inType, outType)
   where <not(fetch(?PublicDecl()))> mods
-  make-decl-public: ClassDecl(mods, name) -> ClassDecl([PublicDecl()|mods], name)
+  make-decl-public: ClassDecl(mods, name, tparams) -> ClassDecl([PublicDecl()|mods], name, tparams)
   where <not(fetch(?PublicDecl()))> mods
