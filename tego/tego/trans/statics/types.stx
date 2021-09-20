@@ -34,6 +34,15 @@ signature
     FLOAT    : TYPE
     DOUBLE   : TYPE
     
+    ANY      : TYPE
+    NOTHING  : TYPE
+    
+    UNIT     : TYPE
+    STRING   : TYPE
+    
+    INTLIT   : TYPE	// Special type for literals, assignable to any of the normal integer types and to floating-point types
+    FLOATLIT : TYPE // Special type for floating-point literals, assignable to any of the normal floating-point types
+    
     /**
      * A nullable type.
      *
@@ -72,10 +81,6 @@ signature
     CLASS    : ID * scope -> TYPE
     LIST     : TYPE -> TYPE
     TUPLE    : list(TYPE) -> TYPE
-    ANY      : TYPE
-    NOTHING  : TYPE
-    UNIT     : TYPE
-    STRING   : TYPE
     
     /**
      * A reference to a type parameter.
@@ -164,6 +169,7 @@ rules subtypeOf_2 : TYPE * TYPE
 
   // T is a subtype of itself
   subtypeOf_2(T, T) :- true.
+  
   // A strategy TA is a subtype of a strategy TB
   // iff the parameters and input of TA are supertypes of those of TB
   // and the return type of TA is a subtype of the return type of TB
@@ -171,16 +177,37 @@ rules subtypeOf_2 : TYPE * TYPE
     subtypesOf(TPARAMS2, TPARAMS1), // contravariant
     subtypeOf(TIN2, TIN1),          // contravariant
     subtypeOf(TOUT1, TOUT2).        // covariant
+    
   // A function TA is a subtype of a function TB
   // iff the parameters of TA are supertypes of those of TB
   // and the return type of TA is a subtype of the return type of TB
   subtypeOf_2(FUNCTION(TPARAMS1, TOUT1), FUNCTION(TPARAMS2, TOUT2)) :-
     subtypesOf(TPARAMS2, TPARAMS1), // contravariant
     subtypeOf(TOUT1, TOUT2).        // covariant
+    
   // T is a subtype of Any
   subtypeOf_2(T, ANY()) :- true.
+  
   // Nothing is a subtype of T
   subtypeOf_2(NOTHING(), T) :- true.
+  
+  // Integer literals can be assigned to any integer type, or any floating-point type
+  // TODO: Error if the literal is too big
+  subtypeOf_2(INTLIT(), BYTE())    :- true.
+  subtypeOf_2(INTLIT(), SHORT())   :- true.
+  subtypeOf_2(INTLIT(), INT())     :- true.
+  subtypeOf_2(INTLIT(), LONG())    :- true.
+  subtypeOf_2(INTLIT(), UBYTE())   :- true.
+  subtypeOf_2(INTLIT(), USHORT())  :- true.
+  subtypeOf_2(INTLIT(), UINT())    :- true.
+  subtypeOf_2(INTLIT(), ULONG())   :- true.
+  subtypeOf_2(INTLIT(), FLOAT())   :- true.
+  subtypeOf_2(INTLIT(), DOUBLE())  :- true.
+  
+  // Floating-point literals can be assigned to any floating-point type
+  // TODO: Error if the literal is too big
+  subtypeOf_2(FLOATLIT(), FLOAT()) :- true.
+  subtypeOf_2(FLOATLIT(), DOUBLE()):- true.
   
   // at this step we should not find any nullables
   subtypeOf_2(NULLABLE(_), _) :-
@@ -202,18 +229,6 @@ rules typeOfType : scope * Type -> TYPE
     typeOfType(s, outputType) == OT,
     @t.type := T.
 
-  typeOfType(s, t@AnyType()) = T@ANY() :-
-    @t.type := T.
-
-  typeOfType(s, t@UnitType()) = T@UNIT() :-
-    @t.type := T.
-
-  typeOfType(s, t@BoolType()) = T@BOOL() :-
-    @t.type := T.
-
-  typeOfType(s, t@IntType()) = T@INT() :-
-    @t.type := T.
-
   typeOfType(s, t@ListType(type)) = T@LIST(ET) :-
     typeOfType(s, type) == ET,
     @t.type := T.
@@ -233,6 +248,29 @@ rules typeOfType : scope * Type -> TYPE
 
   typeOfType(s, t@WldType()) = T :-
     @t.type := T.
+    
+  
+  typeOfType(s, t@BoolType())    = T@BOOL()    :- @t.type := T.
+  typeOfType(s, t@CharType())    = T@CHAR()    :- @t.type := T.
+  
+  typeOfType(s, t@ByteType())    = T@BYTE()    :- @t.type := T.
+  typeOfType(s, t@ShortType())   = T@SHORT()   :- @t.type := T.
+  typeOfType(s, t@IntType())     = T@INT()     :- @t.type := T.
+  typeOfType(s, t@LongType())    = T@LONG()    :- @t.type := T.
+  
+  typeOfType(s, t@UByteType())   = T@UBYTE()   :- @t.type := T.
+  typeOfType(s, t@UShortType())  = T@USHORT()  :- @t.type := T.
+  typeOfType(s, t@UIntType())    = T@UINT()    :- @t.type := T.
+  typeOfType(s, t@ULongType())   = T@ULONG()   :- @t.type := T.
+  
+  typeOfType(s, t@FloatType())   = T@FLOAT()   :- @t.type := T.
+  typeOfType(s, t@DoubleType())  = T@DOUBLE()  :- @t.type := T.
+    
+  typeOfType(s, t@AnyType())     = T@ANY()     :- @t.type := T.
+  typeOfType(s, t@NothingType()) = T@NOTHING() :- @t.type := T.
+
+  typeOfType(s, t@UnitType())    = T@UNIT()    :- @t.type := T.
+  typeOfType(s, t@StringType())  = T@STRING()  :- @t.type := T.
 
   typeOfType(s, Type-Plhdr()) = _.
 

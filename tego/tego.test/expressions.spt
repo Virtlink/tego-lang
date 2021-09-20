@@ -1,0 +1,13 @@
+module expressions
+
+language Tego
+
+fixture [[
+module A
+
+fun foo(i: Int, b: Bool): Int = [[...]]
+]]
+
+test reference a parameter [[
+  i
+]] analysis succeeds

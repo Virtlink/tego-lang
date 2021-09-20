@@ -1,0 +1,197 @@
+module expressions
+
+language Tego
+
+fixture [[
+module A
+
+[[...]]
+]]
+
+test boolean literal [[
+  val b: Bool = true
+]] analysis succeeds
+
+test character literal [[
+  val c: Char = 'c'
+]] analysis succeeds
+
+test signed byte literal [[
+  val i: Byte = -20
+]] analysis succeeds
+
+test signed short literal [[
+  val i: Short = -200
+]] analysis succeeds
+
+test signed int literal [[
+  val i: Int = -200000
+]] analysis succeeds
+
+test signed long literal [[
+  val i: Long = -200000000000
+]] analysis succeeds
+
+test unsigned byte literal [[
+  val i: UByte = 20
+]] analysis succeeds
+
+test unsigned short literal [[
+  val i: UShort = 200
+]] analysis succeeds
+
+test unsigned int literal [[
+  val i: UInt = 200000
+]] analysis succeeds
+
+test unsigned long literal [[
+  val i: ULong = 200000000000
+]] analysis succeeds
+
+test float literal [[
+  val f: Float = 0.42
+]] analysis succeeds
+
+test double literal [[
+  val f: Double = 0.42
+]] analysis succeeds
+
+test any literal [[
+  val a: Any = object
+]] analysis succeeds
+
+test unit literal [[
+  val u: Unit = unit
+]] analysis succeeds
+
+test string literal [[
+  val s: String = "abc"
+]] analysis succeeds
+
+// -- //
+
+test boolean nullable literal [[
+  val b: Bool? = true
+]] analysis succeeds
+
+test character nullable literal [[
+  val c: Char? = 'c'
+]] analysis succeeds
+
+test signed byte nullable literal [[
+  val i: Byte? = -20
+]] analysis succeeds
+
+test signed short nullable literal [[
+  val i: Short? = -200
+]] analysis succeeds
+
+test signed int nullable literal [[
+  val i: Int? = -200000
+]] analysis succeeds
+
+test signed long nullable literal [[
+  val i: Long? = -200000000000
+]] analysis succeeds
+
+test unsigned byte nullable literal [[
+  val i: UByte? = 20
+]] analysis succeeds
+
+test unsigned short nullable literal [[
+  val i: UShort? = 200
+]] analysis succeeds
+
+test unsigned int nullable literal [[
+  val i: UInt? = 200000
+]] analysis succeeds
+
+test unsigned long nullable literal [[
+  val i: ULong? = 200000000000
+]] analysis succeeds
+
+test float nullable literal [[
+  val f: Float? = 0.42
+]] analysis succeeds
+
+test double nullable literal [[
+  val f: Double? = 0.42
+]] analysis succeeds
+
+test any nullable literal [[
+  val a: Any? = object
+]] analysis succeeds
+
+test unit nullable literal [[
+  val u: Unit? = unit
+]] analysis succeeds
+
+test string nullable literal [[
+  val s: String? = "abc"
+]] analysis succeeds
+
+// -- //
+
+test boolean nullable literal null [[
+  val b: Bool? = null
+]] analysis succeeds
+
+test character nullable literal null [[
+  val c: Char? = null
+]] analysis succeeds
+
+test signed byte nullable literal null [[
+  val i: Byte? = null
+]] analysis succeeds
+
+test signed short nullable literal null [[
+  val i: Short? = null
+]] analysis succeeds
+
+test signed int nullable literal null [[
+  val i: Int? = null
+]] analysis succeeds
+
+test signed long nullable literal null [[
+  val i: Long? = null
+]] analysis succeeds
+
+test unsigned byte nullable literal null [[
+  val i: UByte? = null
+]] analysis succeeds
+
+test unsigned short nullable literal null [[
+  val i: UShort? = null
+]] analysis succeeds
+
+test unsigned int nullable literal null [[
+  val i: UInt? = null
+]] analysis succeeds
+
+test unsigned long nullable literal null [[
+  val i: ULong? = null
+]] analysis succeeds
+
+test float nullable literal null [[
+  val f: Float? = null
+]] analysis succeeds
+
+test double nullable literal null [[
+  val f: Double? = null
+]] analysis succeeds
+
+test any nullable literal null [[
+  val a: Any? = null
+]] analysis succeeds
+
+test nothing nullable literal null [[
+  val n: Nothing? = null
+]] analysis succeeds
+
+test unit nullable literal null [[
+  val u: Unit? = null
+]] analysis succeeds
+
+test string nullable literal null [[
+  val s: String? = null
+]] analysis succeeds

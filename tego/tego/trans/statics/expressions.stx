@@ -86,12 +86,10 @@ rules typeOfExp : scope * Exp -> TYPE
     typeOfDecl(s, "Class") == T,
     @e.type := T.
 
-  // FIXME: This is incorrect since we want to be able to cast literals to any of the integer types
-  typeOfExp(s, e@Int(_)) = T@INT() :-
-    @e.type := T.
-
-  typeOfExp(s, e@String(_)) = T@STRING() :-
-    @e.type := T.
+  typeOfExp(s, e@Int(_)) = T@INTLIT() :- @e.type := T.
+  typeOfExp(s, e@String(_)) = T@STRING() :- @e.type := T.
+  typeOfExp(s, e@Char(_)) = T@CHAR() :- @e.type := T.
+  typeOfExp(s, e@Float(_)) = T@FLOATLIT() :- @e.type := T.
 
   typeOfExp(s, e@Object()) = T@ANY() :-
     @e.type := T.
@@ -100,6 +98,12 @@ rules typeOfExp : scope * Exp -> TYPE
     @e.type := T.
 
   typeOfExp(s, e@False()) = T@BOOL() :-
+    @e.type := T.
+    
+  typeOfExp(s, e@Null()) = T@NULLABLE(NOTHING()) :-
+    @e.type := T.
+    
+  typeOfExp(s, e@Unit()) = T@UNIT() :-
     @e.type := T.
 
   // TODO: Accept ANY() as input type

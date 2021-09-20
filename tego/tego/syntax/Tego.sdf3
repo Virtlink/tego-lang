@@ -52,13 +52,13 @@ context-free syntax
   Decl.StrategyDefNoType                = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) = [Exp]]
   Decl.StrategyDefNoTypeNoParams        = [[{DeclMod " "}*] def [ID] = [Exp]]                                                          // desugared
   
-  Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]
-  Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp] -> [Exp]]     // desugared
-  Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]         // desugared
-  Decl.RuleDefNoParamsNoTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [Exp] -> [Exp]]                              // desugared
+  Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [ID] -> [Exp]]
+  Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [ID] -> [Exp]]      // desugared
+  Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [ID] -> [Exp]]          // desugared
+  Decl.RuleDefNoParamsNoTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [ID] -> [Exp]]                               // desugared
 
-  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) :- [Exp] -> [Exp]]
-  Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [Exp] -> [Exp]]                                                // desugared
+  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) :- [ID] -> [Exp]]
+  Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [ID] -> [Exp]]                                                 // desugared
 
   Decl.StrategyDecl                     = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
   Decl.StrategyDeclNoParams             = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]]                       // desugared
@@ -115,19 +115,40 @@ context-free syntax
 context-free sorts Type
 context-free syntax
 
-  Type.NullableType                     = [[Type]?]
   Type.TypeRef                          = [[MOD_ID]]
   Type.MemberTypeRef                    = [[Type]::[ID]]
   Type.ListType                         = <[<Type>]>
   Type.StrategyType                     = [([{Type ", "}*]) [Type] -> [Type]] {right}
   Type.StrategyTypeNoParams             = [[Type] -> [Type]] {right} // desugared
-  Type.AnyType                          = [Any]     // FIXME: Make built-in
-  Type.UnitType                         = [Unit]    // FIXME: Make built-in
-  Type.IntType                          = [Int]     // FIXME: Make built-in
-  Type.BoolType                         = [Bool]    // FIXME: Make built-in
   Type.WldType                          = [_]
   Type.TupleType                        = [([{Type ", "}+])]
   Type                                  = [([Type])] {bracket}
+  
+  // Primitive types
+  // FIXME: Should be built-in types:
+  Type.BoolType                         = [Bool]
+  Type.CharType                         = [Char]
+  
+  Type.ByteType                         = [Byte]
+  Type.ShortType                        = [Short]
+  Type.IntType                          = [Int]
+  Type.LongType                         = [Long]
+  
+  Type.UByteType                        = [UByte]
+  Type.UShortType                       = [UShort]
+  Type.UIntType                         = [UInt]
+  Type.ULongType                        = [ULong]
+  
+  Type.FloatType                        = [Float]
+  Type.DoubleType                       = [Double]
+  
+  Type.AnyType                          = [Any]
+  Type.NothingType                      = [Nothing]
+  
+  Type.UnitType                         = [Unit]
+  Type.StringType                       = [String]
+  
+  Type.NullableType                     = [[Type]?]
 
 /**
  * Core expressions.
@@ -153,10 +174,14 @@ context-free syntax
   
   // Literals
   Exp.Int                               = <<INT>>
-  Exp.String                            = <<STRING>>
+  Exp.String                            = <<STRINGLIT>>
+  Exp.Char                              = <<CHARLIT>>
+  Exp.Float                             = <<FLOATLIT>>
   Exp.Object                            = <object>
   Exp.True                              = <true>
   Exp.False                             = <false>
+  Exp.Null                              = <null>
+  Exp.Unit                              = <unit>
   Exp.Tuple                             = <(<{Exp ", "}+>)>
   Exp                                   = <(<Exp>)> {bracket}
 

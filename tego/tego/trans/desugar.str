@@ -22,10 +22,10 @@ rules
   desugar-decl: StrategyDefNoParamsNoTypeParams(mods, name, inType, outType, exp) -> StrategyDef(mods, name, [], [], inType, outType, exp)
   desugar-decl: StrategyDefNoTypeNoParams(mods, name, exp) -> StrategyDefNoType(mods, name, [], exp)
   
-  desugar-decl: RuleDefNoParams(mods, name, typeParams, inType, outType, inExp, outExp) -> RuleDef(mods, name, typeParams, [], inType, outType, inExp, outExp)
-  desugar-decl: RuleDefNoTypeParams(mods, name, params, inType, outType, inExp, outExp) -> RuleDef(mods, name, [], params, inType, outType, inExp, outExp)
-  desugar-decl: RuleDefNoParamsNoTypeParams(mods, name, inType, outType, inExp, outExp) -> RuleDef(mods, name, [], [], inType, outType, inExp, outExp)
-  desugar-decl: RuleDefNoTypeNoParams(mods, name, inExp, outExp) -> RuleDefNoType(mods, name, [], inExp, outExp)
+  desugar-decl: RuleDefNoParams(mods, name, typeParams, inType, outType, inVar, outExp) -> RuleDef(mods, name, typeParams, [], inType, outType, inVar, outExp)
+  desugar-decl: RuleDefNoTypeParams(mods, name, params, inType, outType, inVar, outExp) -> RuleDef(mods, name, [], params, inType, outType, inVar, outExp)
+  desugar-decl: RuleDefNoParamsNoTypeParams(mods, name, inType, outType, inVar, outExp) -> RuleDef(mods, name, [], [], inType, outType, inVar, outExp)
+  desugar-decl: RuleDefNoTypeNoParams(mods, name, inVar, outExp) -> RuleDefNoType(mods, name, [], inVar, outExp)
   
   desugar-decl: StrategyDeclNoParams(mods, name, typeParams, inType, outType) -> StrategyDecl(mods, name, typeParams, [], inType, outType)
   desugar-decl: StrategyDeclNoTypeParams(mods, name, params, inType, outType) -> StrategyDecl(mods, name, [], params, inType, outType)

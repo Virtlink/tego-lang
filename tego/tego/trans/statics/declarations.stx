@@ -76,7 +76,7 @@ rules declOk : scope * scope * Decl
     declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
     @d.type := T.
     
-  declOk(ms, ms_pub, d@RuleDef(mods, name, typeParams, params, inType, outType, inExp, outExp)) :- {ds es TTYPEPARAMS TPARAMS TIN TOUT T TINEXP TOUTEXP}
+  declOk(ms, ms_pub, d@RuleDef(mods, name, typeParams, params, inType, outType, inVar, outExp)) :- {ds es TTYPEPARAMS TPARAMS TIN TOUT T TINEXP TOUTEXP}
     new ds, ds -P-> ms,	                                    // create declaration scope
     new es, es -P-> ds,                                     // create expression scope
     declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
@@ -85,22 +85,21 @@ rules declOk : scope * scope * Decl
     typeOfType(ds, outType) == TOUT,                        // get strategy output type
     STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
     declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
-    typeOfExp(es, inExp) == TINEXP,                         // get actual input expression type
+    declareParam(es, inVar, TIN),                           // declare the input parameter
     typeOfExp(es, outExp) == TOUTEXP,                       // get actual output expression type
-    // It is an error if the expression types do not match the expected types,
+    // It is an error if the expression type does not match the expected type,
     // but we don't need this assertion for the semantic type check, so we'll wrap them in a `try{}`.
     // Regardless of whether these fail, we will use the TIN and TOUT that where specified in the signature.
-    try { subtypeOf(TINEXP, TIN) } | error $[expected expression of type [TIN], got [TINEXP]] @inExp,
     try { subtypeOf(TOUTEXP, TOUT) } | error $[expected expression of type [TOUT], got [TOUTEXP]] @outExp,
     @d.type := T.
 
-  declOk(ms, ms_pub, d@RuleDefNoType(mods, name, params, inExp, outExp)) :- {ds es TPARAMS TIN TOUT T}
+  declOk(ms, ms_pub, d@RuleDefNoType(mods, name, params, inVar, outExp)) :- {ds es TPARAMS TIN TOUT T}
     new ds, ds -P-> ms,	                                    // create declaration scope
     new es, es -P-> ds,                                     // create expression scope
     declareParamDeclsNoType(es, params) == TPARAMS,         // declare parameters in expression scope
     // We use fresh variables for types TIN and TOUT, and hope that they get a value
     // from the expression body.
-    typeOfExp(es, inExp) == TIN,                            // get actual input expression type
+    declareParam(es, inVar, TIN),                           // declare the input parameter
     typeOfExp(es, outExp) == TOUT,                          // get actual output expression type
     STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
     declareDeclWithMods(ms, ms_pub, name, T, mods),         // declare strategy in one of the module scopes
@@ -180,10 +179,7 @@ rules declareParamDecl : scope * scope * ParamDecl -> TYPE
   
   declareParamDecl(s, ts, param@ParamDecl(name, type)) = T :-
     typeOfType(ts, type) == T,                              // get the semantic type of the parameter's syntactic type
-    !type[name, T] in s,                                    // declare the parameter in the scope
-    // The name of a declaration needs the @decl annotation
-    // for compilation and to support renaming.
-    @name.decl := name.
+    declareParam(s, name, T).                               // declare the parameter in the scope
     
 /**
  * Declares a parameter in the given scope.
@@ -196,6 +192,11 @@ rules declareParamDeclNoType : scope * ParamDeclNoType -> TYPE
   declareParamDeclsNoType maps declareParamDeclNoType(*, list(*)) = list(*)
   
   declareParamDeclNoType(s, param@ParamDeclNoType(name)) = T :-
+    // NOTE: We leave the type unbound, let's hope this works
+    declareParam(s, name, T).                               // declare the parameter in the scope
+    
+rules declareParam : scope * string * TYPE
+  declareParam(s, name, T) :-
     !type[name, T] in s,                                    // declare the parameter in the scope
     // The name of a declaration needs the @decl annotation
     // for compilation and to support renaming.

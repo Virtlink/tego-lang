@@ -1,8 +1,8 @@
 module Common
 
 lexical sorts
-  ID MOD_ID INT STRING
-  STRING_CHAR BACKSLASH_CHAR
+  ID MOD_ID INT
+  BACKSLASH_CHAR
   COMMENT_CHAR INSIDE_COMMENT
   NEWLINE_EOF EOF
 
@@ -16,9 +16,6 @@ lexical syntax
   MOD_ID           = (ID "/")* ID
 
   INT              = "-"? [0-9]+
-  STRING           = "\"" STRING_CHAR* "\""
-  STRING_CHAR      = ~[\\\"\n]
-  STRING_CHAR      = "\\" [\\\"]
   LAYOUT           = [\ \t\n\r]
   COMMENT_CHAR     = [\*]
   LAYOUT           = "/*" INSIDE_COMMENT* "*/"
@@ -28,6 +25,32 @@ lexical syntax
   NEWLINE_EOF      = [\n\r]
   NEWLINE_EOF      = EOF
   EOF              =
+  
+lexical sorts FLOATLIT
+lexical syntax
+
+  FLOATLIT         = [0-9]+ "." [0-9]+ FLOATLIT_EXP?
+  FLOATLIT         = "." [0-9]+ FLOATLIT_EXP?
+  FLOATLIT         = [0-9]+ FLOATLIT_EXP
+  
+  FLOATLIT_EXP     = [eE] [\+\-]? [0-9]+
+  
+lexical sorts CHARLIT CHARLIT_CHAR CHAR_ESC
+lexical syntax
+
+  CHARLIT          = "'" CHARLIT_CHAR "'"
+  CHARLIT_CHAR     = ~[\\\'\n\r]
+  CHARLIT_CHAR     = CHAR_ESC
+  CHAR_ESC         = "\\" [\\\"\'tbnr0\$]
+  CHAR_ESC         = "\\" "u" [0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]
+  CHAR_ESC         = "\\" "x" [0-9a-fA-F][0-9a-fA-F]?[0-9a-fA-F]?[0-9a-fA-F]?
+
+lexical sorts STRINGLIT STRINGLIT_CHAR
+lexical syntax
+
+  STRINGLIT        = "\"" STRINGLIT_CHAR* "\""
+  STRINGLIT_CHAR   = ~[\\\"\n\r]
+  STRINGLIT_CHAR   = CHAR_ESC
 
 lexical restrictions
 
