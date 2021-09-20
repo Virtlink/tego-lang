@@ -7,6 +7,7 @@ imports
   statics/expressions
   statics/modules
   statics/references
+  statics/normalization
 
 signature
   sorts
@@ -66,7 +67,7 @@ signature
      * A class type.
      *
      * @param name the name of the class
-     * @param s_decl the class instance scope
+     * @param s_class the class declaration or instance scope
      */
     CLASS    : ID * scope -> TYPE
     LIST     : TYPE -> TYPE
@@ -76,12 +77,19 @@ signature
     UNIT     : TYPE
     STRING   : TYPE
     
-    // A reference to a type parameter
-    TPARAMREF: TPARAM -> TYPE
+    /**
+     * A reference to a type parameter.
+     *
+     * @param tparam the type parameter
+     */
+    TVAR     : TPARAM -> TYPE
+    // Delayed projection
+    PROJ     : scope * occurrence -> TYPE
 
   relations
     withType: -> TYPE
     type     : ID -> TYPE
+    subst : TPARAM -> TYPE
   name-resolution
     labels
       P      // lexical parent
@@ -274,7 +282,7 @@ rules typeOfTPARAM : TPARAM * list((path * (TPARAM * TYPE))) -> TYPE
   typeOfTPARAM(_, [(_, (_, T))]) = T.
   
   // No type arguments found for the type parameter with the specified name.
-  typeOfTPARAM(param, []) = TPARAMREF(param).
+  typeOfTPARAM(param, []) = TVAR(param).
   
   // Two or more type arguments found for the type parameter with the specified name.
   typeOfTPARAM(_, [(_, (TPARAM(_, name, _, _), _)), _|_]) = T :-

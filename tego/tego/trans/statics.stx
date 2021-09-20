@@ -9,6 +9,7 @@ imports
   statics/modules
   statics/references
   statics/types
+  statics/normalization
 
 /**
  * Checks a single-file entry point.

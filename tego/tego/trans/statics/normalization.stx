@@ -1,0 +1,213 @@
+module statics/normalization
+
+imports
+  signatures/Tego-sig
+
+  statics/declarations
+  statics/expressions
+  statics/modules
+  statics/references
+  statics/types
+
+/**
+ * Forces normalization of a delayed projection.
+ *
+ * @param type the type to normalize
+ * @return the normalized type
+ */
+rules strict : TYPE -> TYPE
+
+  strict(PROJ(s, d)) = strictA(s, d).
+  
+  strict(T) = T.
+
+  strictA : scope * occurrence -> TYPE
+  
+/**
+ * Normalizes a type with respect to the given list of scopes.
+ *
+ * Normalization creates a new instance scope for a type,
+ * and adds any substitutions found in the given scopes to this new instance scope.
+ *
+ * @param ss the scopes, ordered from closest to the use, to closest to the declaration 
+ * @param T the type to normalize
+ * @return the normalized type
+ */
+rules norm : list(scope) * TYPE -> TYPE
+  norms maps norm(*, list(*)) = list(*)
+  
+  norm([], T) = T.
+  norm(ss@[_|_], T) = normR(reverseScopes(ss), T).
+
+/**
+ * Normalizes a type with respect to the given list of scopes.
+ *
+ * Normalization creates a new instance scope for a type,
+ * and adds any substitutions found in the given scopes to this new instance scope.
+ *
+ * @param ss the scopes, ordered from closest to the declaration, to closest to the use 
+ * @param T the type to normalize
+ * @return the normalized type
+ */
+rules normR : list(scope) * TYPE -> TYPE
+  normsR maps normR(*, list(*)) = list(*)
+  
+  // Nothing to normalize here
+  normR([], T) = T.
+  normR(_, T@ANY()) = T.
+  normR(_, T@NOTHING()) = T.
+  normR(_, T@UNIT()) = T.
+  normR(_, T@STRING()) = T.
+  
+  // Replace the type variable by its substitution, if any
+  normR([s|ss], TVAR(decl)) = normVar(s, ss, decl).
+  
+  // Force normalization of the projection
+  normR(ss@[_|_], S@PROJ(_, _)) = normR(ss, strict(S)).
+  
+  // Replace the class scope by its instance scope, with the substutions added
+  normR([s|ss], CLASS(name, s_class)) = T :- {pdts decls Ts s_class_inst}
+    query subst filter e in s |-> pdts,                     // get all the substitutions in the current scope
+    unzipPDTs(pdts) == (decls, Ts),                         // unzip them into a list of declarations and a list of their substitutions
+    instWith(s_class, decls, Ts) == s_class_inst,           // add the substitutions to a new instance scope for the type  
+    normR(ss, CLASS(name, s_class_inst)) == T.              // recursively do the same with the remaining scope and the new type.
+  
+  // TODO: Normalize other things! For now, we'll just return the type
+  normR([s|ss], T) = T :-
+    true.
+
+  /**
+   * Normalizes a reference to a type variable to its type,
+   * by applying relevant substitutions. 
+   *
+   * @param s the scope in which to look for substitutions
+   * @param ss the remaining scopes
+   * @param tparam the type parameter being referenced
+   * @return the type of the variable
+   */
+  normVar : scope * list(scope) * TPARAM -> TYPE
+  normVar(s, ss, tparam) = U :- {Ts}
+    getSubsts(s, tparam) == Ts,
+    normVar2(s, ss, tparam, Ts) == U.
+  
+  /**
+   * Applies the given substitution to the type variable, if any.
+   *
+   * @param s the scope in which to look for substitutions
+   * @param ss the remaining scopes
+   * @param tparam the type parameter being referenced
+   * @param Ts the substitutions found
+   * @return the applied substitution, or the type variable if none where found
+   */
+  normVar2 : scope * list(scope) * TPARAM * list(TYPE) -> TYPE
+  normVar2(s, ss, tparam, [T]) = normR(ss, T).
+  normVar2(s, ss, tparam, [])  = normR(ss, TVAR(tparam)).
+  normVar2(s, ss, tparam, [_, _|_]) = normR(ss, TVAR(tparam)) :-
+    try { false } | error $[BUG: more than one possible substitution]. 
+  
+/**
+ * Creates a new instance scope and adds the given substitutions to that instance scope.
+ *
+ * This assumes that `decls` and `Ts` have the same length.
+ *
+ * @param s the scope to extend
+ * @param tparams the type parameters being substituted
+ * @param Ts the types the declarations are substituted by
+ * @return the created instance scope, or the original scope if no substitutions where added 
+ */
+rules instWith : scope * list(TPARAM) * list(TYPE) -> scope
+
+  // Nothing to instantiate. Let's not even make a scope for this.
+  instWith(s, [], []) = s.
+  
+  instWith(s, tparams@[_|_], Ts@[_|_]) = s_inst :-
+    new s_inst, s_inst -I-> s,
+    instWithA(s_inst, tparams, Ts).
+
+  /**
+   * Adds the given substitutions to the given scope.
+   * 
+   * This assumes that `decls` and `Ts` have the same length.
+   *
+   * @param s the scope to add the substitutions to
+   * @param tparams the type parameters being substituted
+   * @param Ts the types the declarations are substituted by 
+   */
+  instWithA : scope * list(TPARAM) * list(TYPE)
+  instWithA(_, [], []).
+  instWithA(s, [tparam|tparams], [T|Ts]) :-
+    !subst[tparam, T] in s,
+    instWithA(s, tparams, Ts). 
+
+/**
+ * Gets the substitutions for the specified type parameter.
+ *
+ * @param s the scope from which to search
+ * @param tparam the type parameter to search for
+ * @return a list of substitutions for the type parameter (should be one or none)
+ */
+rules getSubsts : scope * TPARAM -> list(TYPE)
+  getSubsts(s, tparam) = getSubstValues(ps) :-
+    query subst filter e and { d' :- d' == tparam } in s |-> ps.
+    
+  /**
+   * Extracts the type from a path-declaration-type triple.
+   * 
+   * @param pdt the path-declaration-type triple
+   * @return the type
+   */
+  getSubstValue : (path * (TPARAM * TYPE)) -> TYPE
+  getSubstValues maps getSubstValue(list(*)) = list(*)
+  getSubstValue((_, (_, T))) = T' :- T == T'.
+
+/**
+ * Gets a list of scopes from a path.
+ *
+ * @param path the path
+ * @return the list of scopes
+ */
+rules scopes : path -> list(scope)
+  scopes(p) = scopesAcc(p, []).
+  
+  /**
+   * Gets a list of scopes from a path.
+   *
+   * @param path the path
+   * @param acc the accumulator
+   * @return the list of scopes
+   */
+  scopesAcc : path * list(scope) -> list(scope)
+  scopesAcc(_PathEmpty(s), acc) = [s|acc].
+  scopesAcc(_PathStep(p, _, s), acc) = scopesAcc(p, [s|acc]).
+
+/**
+ * Reverses a list of scopes.
+ *
+ * @param ss the list of scopes to reverse
+ * @return the reversed list of scopes
+ */
+rules reverseScopes : list(scope) -> list(scope)
+  reverseScopes(ss) = reverseScopesAcc(ss, []).
+  
+  /**
+   * Reverses a list of scopes.
+   *
+   * @param ss the list of scopes to reverse
+   * @param acc the accumulator
+   * @return the reversed list of scopes
+   */
+  reverseScopesAcc : list(scope) * list(scope) -> list(scope)
+  reverseScopesAcc(    [], acc) = acc.
+  reverseScopesAcc([s|ss], acc) = reverseScopesAcc(ss, [s|acc]).
+
+/**
+ * Unzips a list of path-declaration-type triples into a list of declaration-type pairs.
+ *
+ * @param pdts the list of path-declaration-type triples
+ * @return the list of declaration-type pairs
+ */
+rules unzipPDTs : list((path * (TPARAM * TYPE))) -> (list(TPARAM) * list(TYPE))
+  unzipPDTs([]) = ([], []).
+  unzipPDTs([(_, (tparam, T))|pdts]) = ([tparam|tparams], [T|Ts]) :-
+    unzipPDTs(pdts) == (tparams, Ts).
+  
