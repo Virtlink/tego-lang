@@ -9,7 +9,16 @@ imports
   statics/types
 
 /**
- * Declares a Decl declaration.
+ * Handles (declares) a top-level declaration.
+ *
+ * Most declarations are given their own 'declaration scope', 
+ * in which nested declarations but also type parameters are declared.
+ * Declaration scopes are related to their parent declaration scope
+ * using a P (parent) edge.
+ * 
+ * The semantic type of a declaration includes the declaration scope,
+ * to allow resolving members and finding type parameters (through zero
+ * or more P edges).
  *
  * @param ms the private module scope
  * @param ms_pub the public module scope

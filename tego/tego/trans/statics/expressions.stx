@@ -8,6 +8,24 @@ imports
   statics/references
   statics/types
 
+/**
+ * Determines the type of an expression.
+ *
+ * Expressions of a parameterized type are given their own 'ínstance scope',
+ * in which type arguments are declared. Instance scopes are related to their
+ * parent instance/declaration scope using a P (parent) edge, and are related to
+ * their declaration scope using a DECL (declaration) edge.
+ *
+ * The semantic type of a declaration instance includes the instance scope,
+ * to allow resolving members and type arguments, and finding type parameters
+ * (through zero or one DECL edge and zero or more P edges).
+ *
+ * References to type parameters are modeled by the `TVAR(_)` type.
+ *
+ * @param s the resolution scope
+ * @param e the expression
+ * @return the semantic type
+ */
 rules typeOfExp : scope * Exp -> TYPE
   typesOfExps maps typeOfExp(*, list(*)) = list(*)
 
@@ -29,8 +47,8 @@ rules typeOfExp : scope * Exp -> TYPE
     T == STRATEGY([], IT, LIST(OT)),
     @e.type := T.
 
-  typeOfExp(s, e@Id()) = T@STRATEGY([], ANY(), ANY()) :-
-    @e.type := T.
+//  typeOfExp(s, e@Id()) = T@STRATEGY([], ANY(), ANY()) :-
+//    @e.type := T.
 
   typeOfExp(s, e@Fail()) = T@STRATEGY([], NULLABLE(ANY()), NOTHING()) :-
     @e.type := T.

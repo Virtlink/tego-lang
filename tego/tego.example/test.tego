@@ -3,5 +3,7 @@ module A
   
   val x: X
   
+  def foo(b: Bool): Int -> Int = x<Int>
+  
 module B
   public class X

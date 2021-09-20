@@ -195,7 +195,7 @@ context-free syntax
   Exp.Build                             = [![Exp]]
   
   // Built-ins
-  Exp.Id                                = [id]
+  //Exp.Id                                = [id]
   Exp.Fail                              = [fail]
 
 context-free priorities

@@ -15,10 +15,10 @@ test should define a generic strategy [[
   def foo<T>: T -> T = fail
 ]] analysis succeeds
 test should define a strategy with parameters [[
-  def foo(b: Bool): Int -> Int = id
+  def foo(b: Bool): Int -> Int = id<Int>
 ]] analysis succeeds
 test should define a strategy [[
-  def foo: Int -> Int = id
+  def foo: Int -> Int = id<Int>
 ]] analysis succeeds
 test should define an untyped strategy with parameters [[
   def foo(b) = fail
