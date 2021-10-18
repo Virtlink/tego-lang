@@ -1,7 +1,7 @@
 ## How to Contribute
 Thank you for wanting to contribute to this project! :tada::+1:
 
-> **Note**: This is a personal project for which I voluntary give my time.
+> **Note**: This is a personal project for which I voluntarily give my time.
 > I may not deal with your issue or pull request in a timely manner, or at all.
 > I also reserve the right to change your contribution in any way I deem fit
 > for this project, or even outright reject it.
@@ -11,7 +11,7 @@ Please go to [Stackoverflow](https://stackoverflow.com/) and ask your question t
 Please do **not** make an issue on the Github repository.
 
 #### **You found a bug**
-Search the [Issues](https://github.com/Virtlink/disjoint-map/issues) to ensure the bug has not been reported before.
+Search the [Issues](https://github.com/Virtlink/tego-lang/issues) to ensure the bug has not been reported before.
 
 If the bug is new, open a new issue with a _clear title and description_.
 Please indicate:
