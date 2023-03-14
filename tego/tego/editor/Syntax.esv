@@ -18,13 +18,15 @@ menus
 
   menu: "Syntax" (openeditor)
 
-    action: "Format"          = editor-format (source)
-    action: "Show parsed AST" = debug-show-aterm (source)
+    action: "Format"          		= editor-format (source)
+    action: "Show parsed AST" 		= debug-show-aterm (source)
 
-    action: "Show IR"         = debug-pp-ir
-    action: "Show IR AST"     = debug-show-ir
-    action: "Show ANF"        = debug-pp-anf
-    action: "Show ANF AST"    = debug-show-anf
+    action: "Show Desugared"        = debug-pp-desugar
+    action: "Show Desugared AST"	= debug-show-desugar
+    action: "Show IR"         		= debug-pp-ir
+    action: "Show IR AST"     		= debug-show-ir
+    action: "Show ANF"        		= debug-pp-anf
+    action: "Show ANF AST"    		= debug-show-anf
 
 
 views

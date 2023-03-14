@@ -69,6 +69,18 @@ you to write instead:
 <s1 |> s2 |> s3> a
 ```
 
+Which is desugared to:
+
+```tego
+<s1 ; flatMap(s2) ; flatMap(s3)> a
+```
+
+Which is sesugared to:
+
+```tego
+<flatMap(s3)> <flatMap(s2)> <s1> a
+```
+
 ## Do-notation
 When you want to name the arguments in the bind operator, you'll have to write
 something like this:

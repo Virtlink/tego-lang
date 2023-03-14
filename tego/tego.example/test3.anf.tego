@@ -1,0 +1,10 @@
+module A
+
+    import org/example::stringLength
+
+    public def callAnotherStrategy< >( ): String -> Int = stringLength
+
+extern module org/example
+
+
+    public extern def stringLength< >( ): String -> Int

@@ -3,7 +3,9 @@ module A
   
   val x: X
   
-  def foo(b: Bool): Int -> Int = x<Int>
+  fun foo(b: Bool): Int -> Int? = \:Int -> Int? = bar(b)\
+  
+  def bar(b: Bool): Int -> Int? = fail
   
 module B
   public class X

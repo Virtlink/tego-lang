@@ -1,0 +1,50 @@
+module lambdas
+
+language Tego
+
+fixture [[
+module A
+
+fun foo(i: Int, b: Bool): Int -> Int? = [[...]]
+]]
+
+test typed strategy lambda with type parameters and parameters [[
+  \<T>(t: T): Int -> Int = fail\
+]] analysis succeeds
+
+test typed strategy lambda with parameters [[
+  \(b: Bool): Int -> Int = fail\
+]] analysis succeeds
+
+test typed strategy lambda with type parameters [[
+  \<T>: T -> T? = fail\
+]] analysis succeeds
+
+test typed strategy lambda [[
+  \Int -> Int? = fail\
+]] analysis succeeds
+
+
+test typed rule lambda with type parameters and parameters [[
+  \<T>(t: T): Int -> Int :- v -> 10\
+]] analysis succeeds
+
+test typed rule lambda with parameters [[
+  \(b: Bool): Int -> Int :- v -> 10\
+]] analysis succeeds
+
+test typed rule lambda with type parameters [[
+  \<T>: T -> T? :- v -> v\
+]] analysis succeeds
+
+test typed rule lambda [[
+  \Int -> Int? :- v -> 10\
+]] analysis succeeds
+
+test untyped strategy lambda [[
+  \= !10\
+]] analysis succeeds
+
+test untyped rule lambda [[
+  \:- v -> 10\
+]] analysis succeeds

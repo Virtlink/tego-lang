@@ -52,13 +52,13 @@ context-free syntax
   Decl.StrategyDefNoType                = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) = [Exp]]
   Decl.StrategyDefNoTypeNoParams        = [[{DeclMod " "}*] def [ID] = [Exp]]                                                          // desugared
   
-  Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [ID] -> [Exp]]
-  Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [ID] -> [Exp]]      // desugared
-  Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [ID] -> [Exp]]          // desugared
-  Decl.RuleDefNoParamsNoTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [ID] -> [Exp]]                               // desugared
+  Decl.RuleDef                          = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]
+  Decl.RuleDefNoParams                  = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp] -> [Exp]]     // desugared
+  Decl.RuleDefNoTypeParams              = [[{DeclMod " "}*] def [ID]([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]]         // desugared
+  Decl.RuleDefNoParamsNoTypeParams      = [[{DeclMod " "}*] def [ID]: [Type] -> [Type] :- [Exp] -> [Exp]]                              // desugared
 
-  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) :- [ID] -> [Exp]]
-  Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [ID] -> [Exp]]                                                 // desugared
+  Decl.RuleDefNoType                    = [[{DeclMod " "}*] def [ID]([{ParamDeclNoType ", "}*]) :- [Exp] -> [Exp]]
+  Decl.RuleDefNoTypeNoParams            = [[{DeclMod " "}*] def [ID] :- [Exp] -> [Exp]]                                                // desugared
 
   Decl.StrategyDecl                     = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>([{Type ", "}*]): [Type] -> [Type]]
   Decl.StrategyDeclNoParams             = [[{DeclMod " "}*] def [ID]<[{TypeParamDecl ", "}*]>: [Type] -> [Type]]                       // desugared
@@ -150,6 +150,14 @@ context-free syntax
   
   Type.NullableType                     = [[Type]?]
 
+context-free priorities
+  {
+    Type.NullableType
+  } > {
+    Type.StrategyType
+    Type.StrategyTypeNoParams
+  }
+  
 /**
  * Core expressions.
  */
@@ -157,7 +165,7 @@ context-free sorts Exp
 context-free syntax
 
   // IR
-  Exp.Eval                              = [__eval([Exp], {[Exp] ", "}+)]
+  Exp.Eval                              = [__eval([Exp], [{Exp ", "}+])]
   Exp.Maybe                             = [__maybe([Exp])]
   Exp.Let                               = [let [ID] = [Exp],
 [Exp]]
@@ -166,6 +174,7 @@ context-free syntax
   Exp.Apply                             = [[Exp]([{Exp ", "}*])]
   
   // References
+  Exp.Capture                           = [@[MOD_ID]]
   Exp.Var                               = [[MOD_ID]]
   Exp.GenericInst                       = [[MOD_ID]<[{Type ", "}+]>]
   Exp.Member                            = [[Exp]::[ID]]
@@ -190,23 +199,21 @@ context-free syntax
   Exp.LambdaStrategyNoParams            = [\\<[{TypeParamDecl ", "}*]>: [Type] -> [Type] = [Exp]\\]                                    // desugared
   Exp.LambdaStrategyNoTypeParams        = [\\([{ParamDecl ", "}*]): [Type] -> [Type] = [Exp]\\]                                        // desugared
   Exp.LambdaStrategyNoParamsNoTypeParams= [\\: [Type] -> [Type] = [Exp]\\]                                                             // desugared
-  Exp.LambdaStrategyNoType              = [\\([{Exp ", "}*]) = [Exp]\\]
+  Exp.LambdaStrategyNoType              = [\\([{ParamDeclNoType ", "}*]) = [Exp]\\]
   Exp.LambdaStrategyNoTypeNoParams      = [\\= [Exp]\\]                                                                                // desugared
   
-  Exp.LambdaRule                        = [\\<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]\\]
-  Exp.LambdaRuleNoParams                = [\\<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [Exp] -> [Exp]\\]                          // desugared
-  Exp.LambdaRuleNoTypeParams            = [\\([{ParamDecl ", "}*]): [Type] -> [Type] :- [Exp] -> [Exp]\\]                              // desugared
-  Exp.LambdaRuleNoParamsNoTypeParams    = [\\: [Type] -> [Type] :- [Exp] -> [Exp]\\]                                                   // desugared
-  Exp.LambdaRuleNoType                  = [\\([{Exp ", "}*]) :- [Exp] -> [Exp]\\]
-  Exp.LambdaRuleNoTypeNoParams          = [\\:- [Exp] -> [Exp]\\]                                                                      // desugared
+  Exp.LambdaRule                        = [\\<[{TypeParamDecl ", "}*]>([{ParamDecl ", "}*]): [Type] -> [Type] :- [ID] -> [Exp]\\]
+  Exp.LambdaRuleNoParams                = [\\<[{TypeParamDecl ", "}*]>: [Type] -> [Type] :- [ID] -> [Exp]\\]                           // desugared
+  Exp.LambdaRuleNoTypeParams            = [\\([{ParamDecl ", "}*]): [Type] -> [Type] :- [ID] -> [Exp]\\]                               // desugared
+  Exp.LambdaRuleNoParamsNoTypeParams    = [\\: [Type] -> [Type] :- [ID] -> [Exp]\\]                                                    // desugared
+  Exp.LambdaRuleNoType                  = [\\([{ParamDeclNoType ", "}*]) :- [ID] -> [Exp]\\]
+  Exp.LambdaRuleNoTypeNoParams          = [\\:- [ID] -> [Exp]\\]                                                                       // desugared
   
 
 /**
  * Sugar expressions.
  */
 context-free syntax
-
-  Exp.Capture                           = [@[ID]]
 
   // Composition
   Exp.Seq                               = [[Exp]; [Exp]] {right}
@@ -234,10 +241,6 @@ context-free priorities
     Exp.Seq
   }
 
-context-free priorities
-  {
-    Type.StrategyType
-  }
 
 template options
   ID = keyword {reject}

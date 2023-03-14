@@ -1,0 +1,17 @@
+module types
+
+language Tego
+
+fixture [[
+module A
+
+val x: [[...]]
+]]
+
+test nullable primitive type [[
+  Int?
+]] parse succeeds
+
+test nullable strategy type [[
+  Int -> Int?
+]] parse succeeds

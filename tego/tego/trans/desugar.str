@@ -7,13 +7,20 @@ imports
 rules
 
   // Desugar to existing constructors defined in the syntax
-  desugar-all = topdown(try(
-    desugar-decl +
-    desugar-type +
-    desugar-exp
-  )); topdown(try(
-    desugar-module
-  ))
+  desugar-all = topdown(
+    try(desugar-decl) ;
+    try(desugar-type) ;
+    try(desugar-exp)
+  ); topdown(
+    try(desugar-module)
+  )
+  
+//  desugar-all = innermost(
+//    desugar-decl +
+//    desugar-type +
+//    desugar-exp +
+//    desugar-module
+//  )
 
 rules
 
@@ -42,6 +49,10 @@ rules
   
   desugar-decl: ClassDeclNoTypeParams(mods, name) -> ClassDecl(mods, name, [])
   
+  // Makes a strategy with an implicit input argument using an explicit input argument
+//  desugar-decl: StrategyDef(mods, name, typeParams, params, inType, outType, exp) -> RuleDef(mods, name, typeParams, params, inType, outType, inputVar, EvalOn(exp, Var(inputVar)))
+//    with inputVar := "__input"    // TODO: Generate unique var
+
 rules
 
   desugar-type: StrategyTypeNoParams(inType, outType) -> StrategyType([], inType, outType)
@@ -57,6 +68,26 @@ rules
   desugar-exp: LambdaRuleNoTypeParams(params, inType, outType, inExp, outExp) -> LambdaRule([], params, inType, outType, inExp, outExp)
   desugar-exp: LambdaRuleNoParamsNoTypeParams(inType, outType, inExp, outExp) -> LambdaRule([], [], inType, outType, inExp, outExp)
   desugar-exp: LambdaRuleNoTypeNoParams(inExp, outExp) -> LambdaRuleNoType([], inExp, outExp)
+  
+  desugar-exp: EvalOn(Apply(str, args*), exp) -> Eval(str, [args*, exp])
+  desugar-exp: EvalOn(str, exp) -> Eval(str, [exp])
+  
+  desugar-exp = innermost(desugar-exp-fix)
+  
+  desugar-exp-fix: EvalOn(Apply(str, args*), exp) -> Eval(str, [args*, exp])
+  desugar-exp-fix: EvalOn(str, exp) -> Eval(str, [exp])
+  
+  desugar-exp-fix: Eval(Seq(lhs, rhs), exp) -> Eval(rhs, Eval(lhs, exp))
+  
+  // lhs ||> rhs -> lhs ; flatMap(lhs)
+  desugar-exp-fix: FlatMap(lhs, rhs)
+            -> Seq(lhs, Apply(Var("flatMap"), [rhs]))
+  // flatMap(lhs, flatMap(rhs)) -> flatMap(lhs) ; flatMap(rhs)
+  desugar-exp-fix: Apply(Var("flatMap"), [Seq(lhs, Apply(Var("flatMap"), [rhs]))])
+            -> Seq(Apply(Var("flatMap"), [lhs]), Apply(Var("flatMap"), [rhs]))
+  // flatMap(lhs; rhs@(flatMap(_) ; _)) -> flatMap(lhs) ; rhs@(flatMap(_) ; _)
+  desugar-exp-fix: Apply(Var("flatMap"), [Seq(lhs, rhs@Seq(Apply(Var("flatMap"), [_]), _))])
+            -> Seq(Apply(Var("flatMap"), [lhs]), rhs)
 
 rules
 

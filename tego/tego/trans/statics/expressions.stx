@@ -137,14 +137,60 @@ rules typeOfExp : scope * Exp -> TYPE
 //    T == STRATEGY(s_decl, PTs, IT, OT),
 //    @e.type := T.
 //
-//  typeOfExp(s, e@LambdaStrategy(paramDefs, exp)) = T :- {ss}
-//    new ss, ss -P-> s,
-//    new s_decl,
-//    typesOfParamDefs(ss, paramDefs) == PTs,
-//    typeOfExp(ss, exp) == STRATEGY(_, [], IT, OT),
-//    T == STRATEGY(s_decl, PTs, IT, OT),
-//    @e.type := T.
-
+  typeOfExp(s, e@LambdaStrategy(typeParams, params, inType, outType, exp)) = T :- {ds es TTYPEPARAMS TPARAMS TIN TOUT TBODY TEXP}
+    new ds, ds -P-> s,                                      // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
+    declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
+    typeOfType(ds, inType) == TIN,                          // get strategy input type
+    typeOfType(ds, outType) == TOUT,                        // get strategy output type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    STRATEGY([], TIN, TOUT) == TBODY,                       // assign expected expression body type
+    typeOfExp(es, exp) == TEXP,                             // get actual expression body type
+    // It is an error if the expression type does not match the expected type,
+    // but we don't need this assertion for the semantic type check, so we'll wrap it in a `try{}`.
+    // Regardless of whether this fails, we will use the TIN and TOUT that where specified in the signature.
+    try { subtypeOf(TEXP, TBODY) } | error $[expected expression of type [TBODY], got [TEXP]] @exp,
+    @e.type := T.
+    
+    
+  typeOfExp(s, d@LambdaRule(typeParams, params, inType, outType, inVar, outExp)) = T :- {ds es TTYPEPARAMS TPARAMS TIN TOUT TINEXP TOUTEXP}
+    new ds, ds -P-> s,                                      // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareAllTypeParams(ds, typeParams) == TTYPEPARAMS,    // declare type parameters in declaration scope
+    declareParamDecls(es, ds, params) == TPARAMS,           // declare parameters in expression scope
+    typeOfType(ds, inType) == TIN,                          // get strategy input type
+    typeOfType(ds, outType) == TOUT,                        // get strategy output type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    declareParam(es, inVar, TIN),                           // declare the input parameter
+    typeOfExp(es, outExp) == TOUTEXP,                       // get actual output expression type
+    // It is an error if the expression type does not match the expected type,
+    // but we don't need this assertion for the semantic type check, so we'll wrap them in a `try{}`.
+    // Regardless of whether these fail, we will use the TIN and TOUT that where specified in the signature.
+    try { subtypeOf(TOUTEXP, TOUT) } | error $[expected expression of type [TOUT], got [TOUTEXP]] @outExp,
+    @d.type := T.
+    
+  typeOfExp(s, d@LambdaStrategyNoType(params, exp)) = T :- {ds es TPARAMS TIN TOUT}
+    new ds, ds -P-> s,                                      // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareParamDeclsNoType(es, params) == TPARAMS,         // declare parameters in expression scope
+    // We use fresh variables for types TIN and TOUT, and hope that they get a value
+    // from the expression body.
+    typeOfExp(es, exp) == STRATEGY([], TIN, TOUT),          // get actual expression body type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    @d.type := T.
+    
+  typeOfExp(s, d@LambdaRuleNoType(params, inVar, outExp)) = T :- {ds es TPARAMS TIN TOUT}
+    new ds, ds -P-> s,                                      // create declaration scope
+    new es, es -P-> ds,                                     // create expression scope
+    declareParamDeclsNoType(es, params) == TPARAMS,         // declare parameters in expression scope
+    // We use fresh variables for types TIN and TOUT, and hope that they get a value
+    // from the expression body.
+    declareParam(es, inVar, TIN),                           // declare the input parameter
+    typeOfExp(es, outExp) == TOUT,                          // get actual output expression type
+    STRATEGY(TPARAMS, TIN, TOUT) == T,                      // assign declaration type
+    @d.type := T.
+    
   typeOfExp(s, Exp-Plhdr()) = T.
 
 ///**

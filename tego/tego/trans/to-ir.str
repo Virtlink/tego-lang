@@ -14,27 +14,28 @@ rules
 
 rules
 
-  to-ir-all = innermost(
-    to-ir +
-    to-ir-flatmap
-  )
+  to-ir-all = id
+//  to-ir-all = innermost(
+//    to-ir +
+//    to-ir-flatmap
+//  )
 
-  // lhs ||> rhs -> lhs ; flatMap(lhs)
-  to-ir-flatmap: FlatMap(lhs, rhs) -> Seq(lhs, Apply(Var("flatMap"), [rhs]))
-  // flatMap(lhs, flatMap(rhs)) -> flatMap(lhs) ; flatMap(rhs)
-  to-ir-flatmap: Apply(Var("flatMap"), [Seq(lhs, Apply(Var("flatMap"), [rhs]))]) ->
-    Seq(Apply(Var("flatMap"), [lhs]), Apply(Var("flatMap"), [rhs]))
-  // flatMap(lhs; rhs@(flatMap(_) ; _)) -> flatMap(lhs) ; rhs@(flatMap(_) ; _)
-  to-ir-flatmap: Apply(Var("flatMap"), [Seq(lhs, rhs@Seq(Apply(Var("flatMap"), [_]), _))]) ->
-    Seq(Apply(Var("flatMap"), [lhs]), rhs)
+//  // lhs ||> rhs -> lhs ; flatMap(lhs)
+//  to-ir-flatmap: FlatMap(lhs, rhs) -> Seq(lhs, Apply(Var("flatMap"), [rhs]))
+//  // flatMap(lhs, flatMap(rhs)) -> flatMap(lhs) ; flatMap(rhs)
+//  to-ir-flatmap: Apply(Var("flatMap"), [Seq(lhs, Apply(Var("flatMap"), [rhs]))]) ->
+//    Seq(Apply(Var("flatMap"), [lhs]), Apply(Var("flatMap"), [rhs]))
+//  // flatMap(lhs; rhs@(flatMap(_) ; _)) -> flatMap(lhs) ; rhs@(flatMap(_) ; _)
+//  to-ir-flatmap: Apply(Var("flatMap"), [Seq(lhs, rhs@Seq(Apply(Var("flatMap"), [_]), _))]) ->
+//    Seq(Apply(Var("flatMap"), [lhs]), rhs)
 
-  // Makes a strategy with an implicit input argument using an explicit input argument
-  to-ir: StrategyDef(mods, name, typeParams, params, inType, outType, exp)
-      -> RuleDef(mods, name, typeParams, params, inType, outType, Var(inputVar), EvalOn(exp, Var(inputVar)))
-  with inputVar := "__input"    // TODO: Generate unique var
+//  // Makes a strategy with an implicit input argument using an explicit input argument
+//  to-ir: StrategyDef(mods, name, typeParams, params, inType, outType, exp)
+//      -> RuleDef(mods, name, typeParams, params, inType, outType, Var(inputVar), EvalOn(exp, Var(inputVar)))
+//  with inputVar := "__input"    // TODO: Generate unique var
 
   // <a; b> x -> <b> <a> x
-  to-ir: Eval(Seq(lhs, rhs), exp) -> Eval(rhs, Eval(lhs, exp))
+//  to-ir: Eval(Seq(lhs, rhs), exp) -> Eval(rhs, Eval(lhs, exp))
 
 rules
 

@@ -13,6 +13,7 @@ public def complete(v: ITermVar): SolverState -> [SolverState]
   expandAllQueries(v)    ||>
   expandDeterministic(v)
 
+
 def expandAllPredicates(v: ITermVar): SolverState -> [SolverState]
 = repeatSS(
     limitSS(1, selectConstraints(CUser::class, \(constraint)= containsVar(v, constraint)\)) ||>

@@ -1,0 +1,17 @@
+module A
+
+import org/example::stringLength
+
+//public def captureAVariable(): String -> String
+//= @s; !s
+
+public def callAnotherStrategy(): String -> Int
+= stringLength
+
+//public def callAnotherStrategy(): String -> Int :- __input
+//-> __eval(stringLength, __input)
+    
+extern module org/example
+
+def stringLength(): String -> Int
+

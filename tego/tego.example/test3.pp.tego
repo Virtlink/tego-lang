@@ -1,0 +1,10 @@
+module A
+
+    import org/example::stringLength
+
+    public def callAnotherStrategy( ): String -> Int :- __input -> __eval(stringLength, __input)
+
+extern module org/example
+
+
+    def stringLength( ): String -> Int

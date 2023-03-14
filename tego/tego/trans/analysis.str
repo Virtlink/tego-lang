@@ -75,6 +75,17 @@ rules // Debugging
     with filename := <guarantee-extension(|"type.aterm")> path
        ; result   := <get-type> selected
 
+  // Shows desugared
+  debug-show-desugar: (selected, _, _, path, project-path) -> (filename, result)
+    with filename := <guarantee-extension(|"desug.aterm")> path
+       ; result   := <desugar-all; strip-annos> selected
+
+  // Prints desugared
+  debug-pp-desugar: (selected, _, _, path, project-path) -> (filename, result)
+    with ext      := <get-extension> path
+       ; filename := <guarantee-extension(|$[desug.[ext]])> path
+       ; result   := <desugar-all; strip-annos; pp-debug> selected
+       
   // Shows IR
   debug-show-ir: (selected, _, _, path, project-path) -> (filename, result)
     with filename := <guarantee-extension(|"ir.aterm")> path
